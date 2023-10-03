@@ -4,25 +4,36 @@ format: html
 editor: visual
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document.
-To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code.
-You can embed code like this:
-
 ```{r}
-1 + 1
-```
-
-You can add options to executable code like this
-
-```{r}
+#| label: setup
+#| output: false
+#| message: false
 #| echo: false
-2 * 2
+library(eurostat)
+library(dineq)
+library(readr)
+library(ggplot2)
+library(tidyverse)
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+```{r}
+#| label: Datasets
+#| echo: false
+#| 
+nama_10r_3gdp_tsv <- read_delim("nama_10r_3gdp.tsv.gz", 
+    delim = "\t", escape_double = FALSE, 
+    na = "NA", trim_ws = TRUE, 
+    show_col_types = FALSE)
+
+demo_r_pjanaggr3_tsv <- read_delim("demo_r_pjanaggr3.tsv.gz", 
+    delim = "\t", escape_double = FALSE, 
+    na = "NA", trim_ws = TRUE, 
+    show_col_types = FALSE)
+
+
+```
+
+```{r}
+
+```
