@@ -20,16 +20,8 @@ library(stringr)
 ```
 
 ```{r}
-nama_10r_3gdp_page_linear_csv <- read_csv("nama_10r_3gdp_page_linear.csv.gz", 
+nama_10r_3gdp_linear_csv <- read_csv("nama_10r_3gdp_linear.csv.gz", 
     na = "NA")
-
-```
-
-```{r}
-gdp_it <- nama_10r_3gdp_page_linear_csv |> 
-  filter(geo == "IT")
-
-
 ```
 
 ```{r}
@@ -37,11 +29,11 @@ country_codes <- c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
 ```
 
 ```{r}
-gdp_it <- nama_10r_3gdp_page_linear_csv %>%
-  filter(str_detect(geo, "IT"))
-gdp_se <- nama_10r_3gdp_page_linear_csv |> 
-  filter(str_detect(geo, "SE"))
-gdp_be <- nama_10r_3gdp_page_linear_csv |> 
-  filter(str_detect(geo, "BE"))
+# Subset of countries from 2000 to 2020
+gdp_filtered <- nama_10r_3gdp_linear_csv |> 
+    filter(TIME_PERIOD %in% c(2000:2020)) |> 
+  filter(str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")) |> 
+  select(year = TIME_PERIOD, geo, OBS_VALUE, OBS_FLAG) 
+  
 
 ```
