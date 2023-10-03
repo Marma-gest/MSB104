@@ -4,6 +4,8 @@ format: html
 editor: visual
 ---
 
+Italy, Sweden, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Bulgaria
+
 ```{r}
 #| label: setup
 #| output: false
