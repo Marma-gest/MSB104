@@ -20,20 +20,76 @@ library(stringr)
 ```
 
 ```{r}
+#| label: Datasets
+# Loading the full datasets
 nama_10r_3gdp_linear_csv <- read_csv("nama_10r_3gdp_linear.csv.gz", 
     na = "NA")
+demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz", 
+    na = "NA")
+
 ```
 
 ```{r}
-country_codes <- c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
+# Country code list: "IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
 ```
 
 ```{r}
 # Subset of countries from 2000 to 2020
+# Filtering geo = 5 to only get NUTS3 level data
 gdp_filtered <- nama_10r_3gdp_linear_csv |> 
-    filter(TIME_PERIOD %in% c(2000:2020)) |> 
-  filter(str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")) |> 
-  select(year = TIME_PERIOD, geo, OBS_VALUE, OBS_FLAG) 
-  
+  filter(nchar(geo) == 5) |>
+    filter(
+      TIME_PERIOD %in% c(2000:2020)) |> 
+  filter(
+    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")) |> 
+  select(
+    year = TIME_PERIOD, 
+    geo, OBS_VALUE, OBS_FLAG
+    ) 
+
+```
+
+```{r}
+# Filtering population demo for nuts3 countries and years
+# Filtering sex = T to only get the total of both genders
+pop <- demo_r_pjanaggr3_linear_csv |> 
+    filter(nchar(geo) == 5) |>
+  filter(sex == "T") |> 
+   filter(
+      TIME_PERIOD %in% c(2000:2020)) |> 
+  filter(
+    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")) |> 
+  select(
+    year = TIME_PERIOD, 
+    geo, OBS_VALUE, OBS_FLAG, sex
+    ) 
+
+```
+
+```{r}
+# GDP calculation
+merged_data <- merge(gdp_filtered, pop, by = "geo")
+```
+
+```{r}
+nrow(gdp_filtered)
+nrow(pop)
+
+ncol(gdp_filtered)
+ncol(pop)
+```
+
+```{r}
+na_sum <- sum(is.na(pop))
+na_sumGDP <- sum(is.na(gdp_filtered))
+```
+
+```{r}
+gdpnuts3 <- nama_10r_3gdp_linear_csv |> 
+  filter(nchar(geo) > 4) |> 
+     filter(
+      TIME_PERIOD %in% c(2000:2020)) |> 
+  filter(
+    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG"))
 
 ```
