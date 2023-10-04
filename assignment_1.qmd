@@ -17,16 +17,15 @@ library(readr)
 library(tidyverse)
 library(stringr)
 
+
 ```
 
 ```{r}
-#| label: Datasets
-# Loading the full datasets
+# Loading datasets
 nama_10r_3gdp_linear_csv <- read_csv("nama_10r_3gdp_linear.csv.gz", 
     na = "NA")
 demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz", 
     na = "NA")
-
 ```
 
 ```{r}
@@ -38,13 +37,14 @@ demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz",
 # Filtering geo = 5 to only get NUTS3 level data
 gdp_filtered <- nama_10r_3gdp_linear_csv |> 
   filter(nchar(geo) == 5) |>
+  filter(unit == "MIO_EUR") |> 
     filter(
       TIME_PERIOD %in% c(2000:2020)) |> 
   filter(
     str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")) |> 
   select(
     year = TIME_PERIOD, 
-    geo, OBS_VALUE, OBS_FLAG
+    geo, GDP = OBS_VALUE
     ) 
 
 ```
@@ -61,35 +61,33 @@ pop <- demo_r_pjanaggr3_linear_csv |>
     str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")) |> 
   select(
     year = TIME_PERIOD, 
-    geo, OBS_VALUE, OBS_FLAG, sex
+    geo, Population = OBS_VALUE
     ) 
 
 ```
 
 ```{r}
-# GDP calculation
-merged_data <- merge(gdp_filtered, pop, by = "geo")
+# Merging the two datasets
+merged_data <- merge(gdp_filtered, pop, by = "geo") |> 
+  select(
+    -year.y,
+    Year = year.x,)
 ```
 
 ```{r}
-nrow(gdp_filtered)
-nrow(pop)
+merged_data <- merge(gdp_filtered, pop, by = c("geo","year"), all = TRUE) 
 
-ncol(gdp_filtered)
-ncol(pop)
+
 ```
 
 ```{r}
-na_sum <- sum(is.na(pop))
-na_sumGDP <- sum(is.na(gdp_filtered))
+# Adding GDP variable by deviding gdp on population
+merged_data <- merged_data |> 
+  mutate(
+    Yi = GDP / Population
+  )
 ```
 
-```{r}
-gdpnuts3 <- nama_10r_3gdp_linear_csv |> 
-  filter(nchar(geo) > 4) |> 
-     filter(
-      TIME_PERIOD %in% c(2000:2020)) |> 
-  filter(
-    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG"))
+## Gini coefficients calculation
 
-```
+
