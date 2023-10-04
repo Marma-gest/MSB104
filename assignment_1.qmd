@@ -2,9 +2,9 @@
 title: "assignment_1"
 format: html
 editor: visual
+bibliography: [MSB104.bib]
+author: Marius Martinussen, Espen Knutsen
 ---
-
-Italy, Sweden, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Bulgaria
 
 ```{r}
 #| label: setup
@@ -20,8 +20,17 @@ library(stringr)
 
 ```
 
+## Part A: Sub-national GDP and GDP per capita
+
+### 1. Data acquisition
+
+Below is a short extract of the raw datasets from Eurostat.
+
 ```{r}
+#| echo: FALSE
+#| output: FALSE
 # Loading datasets
+# # Country code list: "IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
 nama_10r_3gdp_linear_csv <- read_csv("nama_10r_3gdp_linear.csv.gz", 
     na = "NA")
 demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz", 
@@ -29,10 +38,38 @@ demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz",
 ```
 
 ```{r}
-# Country code list: "IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
+#| echo: FALSE
+nama_10r_3gdp_linear_csv |> 
+    print(
+    n = 5,
+    width = 80
+  )
+
+demo_r_pjanaggr3_linear_csv |> 
+  print(
+    n = 5,
+    width = 80
+  )
+
 ```
 
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
+
+## Description
+
+The datasets contain observations from all countries in the EU.
+The countries in focus are Italy, Sweden, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, and Bulgaria.
+We have used their respective country codes to filter out the relevant data and the variables of interest.
+The variables we are interested in are the following:
+
+-   geo = Tells us which country and sub-region we are looking at
+-   time_period = Observed years
+-   obs_value = The value of the observation
+-   Unit = Currency
+
+By filtering out irrelevant data and variables, we end up with the following datasets:
 ```{r}
+#| echo: FALSE
 # Subset of countries from 2000 to 2020
 # Filtering geo = 5 to only get NUTS3 level data
 gdp_filtered <- nama_10r_3gdp_linear_csv |> 
@@ -50,6 +87,7 @@ gdp_filtered <- nama_10r_3gdp_linear_csv |>
 ```
 
 ```{r}
+#| echo: FALSE
 # Filtering population demo for nuts3 countries and years
 # Filtering sex = T to only get the total of both genders
 pop <- demo_r_pjanaggr3_linear_csv |> 
@@ -67,6 +105,22 @@ pop <- demo_r_pjanaggr3_linear_csv |>
 ```
 
 ```{r}
+#| echo: FALSE
+gdp_filtered |> 
+  print(
+    n = 5,
+    width = 80
+  )
+pop |> 
+  print(
+    n = 5,
+    width = 80
+  )
+
+```
+
+```{r}
+#| echo: FALSE
 # Merging the two datasets
 merged_data <- merge(gdp_filtered, pop, by = "geo") |> 
   select(
@@ -75,12 +129,16 @@ merged_data <- merge(gdp_filtered, pop, by = "geo") |>
 ```
 
 ```{r}
+#| echo: FALSE
 merged_data <- merge(gdp_filtered, pop, by = c("geo","year"), all = TRUE) 
 
 
 ```
 
+### 2. GDP per capita calculation
+
 ```{r}
+#| echo: FALSE
 # Adding GDP variable by deviding gdp on population
 merged_data <- merged_data |> 
   mutate(
@@ -88,6 +146,14 @@ merged_data <- merged_data |>
   )
 ```
 
-## Gini coefficients calculation
+### 3. Describe analysis
 
+## Part B: Regional inequity
 
+### 1. Literature review
+
+```{r}
+
+```
+
+### 2. Gini coefficient calculation
