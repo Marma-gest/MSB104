@@ -143,7 +143,7 @@ merged_data <- merge(gdp_filtered, pop, by = c("geo","year"), all = TRUE)
 # Adding GDP variable by deviding gdp on population
 merged_data <- merged_data |> 
   mutate(
-    Yi = GDP / Population
+    GDP_pc_n3 = GDP / Population
   )
 ```
 
@@ -160,14 +160,50 @@ merged_data <- merged_data |>
 ### 2. Gini coefficient calculation
 
 ```{r}
+# Calculating GINI in nuts3 data for nuts2 regions to measure inequity on a nuts2 scale
 merged_data <- merged_data |> 
-  mutate(
-    gini_coeff = gini.wtd(GDP, weights = Population)
-  )
+ mutate(
+    nuts2 = substr(geo, 1,4),
+    nuts0 = substr(geo, 1,2)
+ )
 ```
 
 ```{r}
 #Grouping NUTS3 to NUTS2
+# group_by(id:nuts2, year) %>%
+# mutate(id:nuts3) = substr(id_nuts3, 1,4)
+# select(id:nuts3, gdp:nuts3, year)
+# #
+merged_data <- merged_data |> 
+  filter(!is.na(Population),
+         Population != 0,
+         GDP_pc_n3 != 0, 
+         GDP_pc_n3 != "NA"
+  ) |> 
+group_by(nuts2, year) |> 
+  mutate(gini_n2 = gini.wtd(GDP_pc_n3, Population)) |> 
+  ungroup() |> 
+  select(nuts0, nuts2, geo, year, GDP, Population, GDP_pc_n3, gini_n2)
+
 
 ```
+
+
+
+
+```{r}
+  group_by(nuts2, year) |> 
+  mutate(gini_n2 = gini.wtd(GDP_pc_n3, Population)) |> 
+  ungroup()
+```
+
+```{r}
+merged_data <- merged_data |> 
+  mutate(
+    gini_coeff = gini.wtd(nuts2, weights = Population),
+    na.rm = TRUE
+  )
+
+```
+
 
