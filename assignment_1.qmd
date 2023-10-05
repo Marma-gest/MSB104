@@ -30,7 +30,7 @@ Below is a short extract of the raw datasets from Eurostat.
 #| echo: FALSE
 #| output: FALSE
 # Loading datasets
-# # Country code list: "IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
+# Country code list: "IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
 nama_10r_3gdp_linear_csv <- read_csv("nama_10r_3gdp_linear.csv.gz", 
     na = "NA")
 demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz", 
@@ -68,17 +68,18 @@ The variables we are interested in are the following:
 -   Unit = Currency
 
 By filtering out irrelevant data and variables, we end up with the following datasets:
+
 ```{r}
 #| echo: FALSE
 # Subset of countries from 2000 to 2020
 # Filtering geo = 5 to only get NUTS3 level data
 gdp_filtered <- nama_10r_3gdp_linear_csv |> 
-  filter(nchar(geo) == 5) |>
-  filter(unit == "MIO_EUR") |> 
-    filter(
-      TIME_PERIOD %in% c(2000:2020)) |> 
   filter(
-    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")) |> 
+    nchar(geo) == 5, 
+    unit == "MIO_EUR", 
+      TIME_PERIOD %in% c(2000:2020),
+    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
+    ) |> 
   select(
     year = TIME_PERIOD, 
     geo, GDP = OBS_VALUE
@@ -91,12 +92,12 @@ gdp_filtered <- nama_10r_3gdp_linear_csv |>
 # Filtering population demo for nuts3 countries and years
 # Filtering sex = T to only get the total of both genders
 pop <- demo_r_pjanaggr3_linear_csv |> 
-    filter(nchar(geo) == 5) |>
-  filter(sex == "T") |> 
-   filter(
-      TIME_PERIOD %in% c(2000:2020)) |> 
-  filter(
-    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")) |> 
+    filter(
+      nchar(geo) == 5,
+      sex == "T", 
+      TIME_PERIOD %in% c(2000:2020), 
+    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
+    ) |> 
   select(
     year = TIME_PERIOD, 
     geo, Population = OBS_VALUE
@@ -157,3 +158,16 @@ merged_data <- merged_data |>
 ```
 
 ### 2. Gini coefficient calculation
+
+```{r}
+merged_data <- merged_data |> 
+  mutate(
+    gini_coeff = gini.wtd(GDP, weights = Population)
+  )
+```
+
+```{r}
+#Grouping NUTS3 to NUTS2
+
+```
+
