@@ -228,11 +228,24 @@ BE |> ggplot(mapping = aes(
 ```
 
 ```{r}
-IT <- merged_data |> filter(str_detect(geo, "IT"))
+IT_NORTH <- merged_data |> filter(str_detect(geo, "ITC|ITH"))
 ```
 
 ```{r}
-IT |> ggplot(mapping = aes(
+IT_NORTH |> ggplot(mapping = aes(
+  x = year, 
+  y = GDP_pc_n3, 
+  colour = geo
+)) + 
+  geom_line()
+```
+
+```{r}
+IT_SOUTH <- merged_data |> filter(str_detect(geo, "ITF|ITI|ITG"))
+```
+
+```{r}
+IT_SOUTH |> ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
