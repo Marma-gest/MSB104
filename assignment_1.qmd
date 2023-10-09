@@ -94,7 +94,8 @@ gdp_filtered <- nama_10r_3gdp_linear_csv |>
 pop <- demo_r_pjanaggr3_linear_csv |> 
     filter(
       nchar(geo) == 5,
-      sex == "T", 
+      sex == "T",
+      age == "TOTAL",
       TIME_PERIOD %in% c(2000:2020), 
     str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
     ) |> 
@@ -188,22 +189,118 @@ group_by(nuts2, year) |>
 
 ```
 
-
-
-
 ```{r}
-  group_by(nuts2, year) |> 
-  mutate(gini_n2 = gini.wtd(GDP_pc_n3, Population)) |> 
-  ungroup()
-```
-
-```{r}
+#| echo: FALSE
+# Adding GDP variable by deviding gdp on population
 merged_data <- merged_data |> 
-  mutate(
-    gini_coeff = gini.wtd(nuts2, weights = Population),
-    na.rm = TRUE
-  )
-
+  mutate(GDP_pc_n3 = (GDP / Population)*1000000)
 ```
 
+Austria
 
+```{r}
+AT <- merged_data |> filter(str_detect(geo, "AT"))
+  
+```
+
+```{r}
+AT |> ggplot(mapping = aes(
+  x = year, 
+  y = GDP_pc_n3, 
+  colour = geo
+)) + 
+  geom_line()
+```
+
+Belgium
+
+```{r}
+BE <- merged_data |> filter(str_detect(geo, "BE"))
+```
+
+```{r}
+BE |> ggplot(mapping = aes(
+  x = year, 
+  y = GDP_pc_n3, 
+  colour = geo
+)) + 
+  geom_line()
+```
+
+```{r}
+IT <- merged_data |> filter(str_detect(geo, "IT"))
+```
+
+```{r}
+IT |> ggplot(mapping = aes(
+  x = year, 
+  y = GDP_pc_n3, 
+  colour = geo
+)) + 
+  geom_line()
+```
+
+```{r}
+SE <- merged_data |> filter(str_detect(geo, "SE"))
+```
+
+```{r}
+SE |> ggplot(mapping = aes(
+  x = year, 
+  y = GDP_pc_n3, 
+  colour = geo
+)) + 
+  geom_line()
+```
+
+```{r}
+HR <- merged_data |> filter(str_detect(geo, "HR"))
+```
+
+```{r}
+HR |> ggplot(mapping = aes(
+  x = year, 
+  y = GDP_pc_n3, 
+  colour = geo
+)) + 
+  geom_line()
+```
+
+```{r}
+RS <- merged_data |> filter(str_detect(geo, "RS"))
+```
+
+```{r}
+RS |> ggplot(mapping = aes(
+  x = year, 
+  y = GDP_pc_n3, 
+  colour = geo
+)) + 
+  geom_line()
+```
+
+```{r}
+BA <- merged_data |> filter(str_detect(geo, "BA"))
+```
+
+```{r}
+BA |> ggplot(mapping = aes(
+  x = year, 
+  y = GDP_pc_n3, 
+  colour = geo
+)) + 
+  geom_line()
+```
+
+```{r}
+BG <- merged_data |> filter(str_detect(geo, "BG"))
+```
+
+```{r}
+BG |> ggplot(mapping = aes(
+  x = year, 
+  y = GDP_pc_n3, 
+  colour = geo
+)) + 
+  geom_line()
+```
