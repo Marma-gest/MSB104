@@ -24,6 +24,20 @@ library(stringr)
 
 ### 1. Data acquisition
 
+By using Eurostat, we have downloaded data containing GDP and population for each country in the EU from year 1990 to 2023.
+However, we are only interested in the following countries from 2000 to 2020:
+
+### Countries of interest
+
+-   Italy
+-   Sweden
+-   Belgium
+-   Austria
+-   Croatia
+-   Serbia
+-   Bosnia and Herzegovina
+-   Bulgaria
+
 Below is a short extract of the raw datasets from Eurostat.
 
 ```{r}
@@ -57,9 +71,7 @@ demo_r_pjanaggr3_linear_csv |>
 
 ## Description
 
-The datasets contain observations from all countries in the EU.
-The countries in focus are Italy, Sweden, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, and Bulgaria.
-We have used their respective country codes to filter out the relevant data and the variables of interest.
+In order to substract the countries in focus, we have used the metadata provided by Eurostat to filter out the data and variables of interest, using their respective country codes.
 The variables we are interested in are the following:
 
 -   geo = Tells us which country and sub-region we are looking at
@@ -67,7 +79,7 @@ The variables we are interested in are the following:
 -   obs_value = The value of the observation
 -   Unit = Currency
 
-By filtering out irrelevant data and variables, we end up with the following datasets:
+By filtering out irrelevant data and variables and rearranging the dataset to provide a clearer view, results with the following datasets:
 
 ```{r}
 #| echo: FALSE
@@ -144,6 +156,15 @@ filter(!is.na(Population),
 
 ### 2. GDP per capita calculation
 
+In order to visualize the GDP per capita, we have merged the two datasets together and added a new variable that executes this formula in order to generate the GDP per capita for every country.
+
+$$
+y_i = \frac{\textit{GDP}_i}{\textit{population}_i}$$
+
+It is worth noting that the GDP data from Eurostat is represented in million euros,, meaning that 1 in this case, equals 1 million euros.
+0.1 represent 100 000 euros, and so on.
+This will be consistent through all our visualized data.
+
 ```{r}
 #| echo: FALSE
 # Adding GDP variable by deviding gdp on population
@@ -159,7 +180,7 @@ merged_data <- merged_data |>
 #| echo: FALSE
 # Adding GDP variable by deviding gdp on population
 merged_data <- merged_data |> 
-  mutate(GDP_pc_n3 = (GDP / Population)*1000000)
+  mutate(GDP_pc_n3 = (GDP / Population))
 ```
 
 Austria
@@ -178,6 +199,10 @@ AT |> ggplot(mapping = aes(
   colour = geo
 )) + 
   geom_line()
+```
+
+```{r}
+summary(merged_data)
 ```
 
 Belgium
@@ -267,7 +292,7 @@ SE |> ggplot(mapping = aes(
   geom_line()
 ```
 
-Croatia - become a member in 2012
+Croatia - became a member in 2012
 
 ```{r}
 #| echo: FALSE
