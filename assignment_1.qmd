@@ -132,7 +132,12 @@ merged_data <- merge(gdp_filtered, pop, by = "geo") |>
 
 ```{r}
 #| echo: FALSE
-merged_data <- merge(gdp_filtered, pop, by = c("geo","year"), all = TRUE) 
+merged_data <- merge(gdp_filtered, pop, by = c("geo","year"), all = TRUE) |> 
+filter(!is.na(Population),
+         Population != 0,
+         GDP != 0, 
+         GDP != "NA"
+)
 
 
 ```
@@ -160,11 +165,13 @@ merged_data <- merged_data |>
 Austria
 
 ```{r}
+#| echo: FALSE
 AT <- merged_data |> filter(str_detect(geo, "AT"))
   
 ```
 
 ```{r}
+#| echo: FALSE
 AT |> ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
@@ -176,10 +183,12 @@ AT |> ggplot(mapping = aes(
 Belgium
 
 ```{r}
+#| echo: FALSE
 BE <- merged_data |> filter(str_detect(geo, "BE"))
 ```
 
 ```{r}
+#| echo: FALSE
 BE |> ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
@@ -191,10 +200,12 @@ BE |> ggplot(mapping = aes(
 Bulgaria
 
 ```{r}
+#| echo: FALSE
 BG <- merged_data |> filter(str_detect(geo, "BG"))
 ```
 
 ```{r}
+#| echo: FALSE
 BG |> ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
@@ -208,10 +219,12 @@ Italy
 North Italy
 
 ```{r}
+#| echo: FALSE
 IT_NORTH <- merged_data |> filter(str_detect(geo, "ITC|ITH"))
 ```
 
 ```{r}
+#| echo: FALSE
 IT_NORTH |> ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
@@ -223,10 +236,12 @@ IT_NORTH |> ggplot(mapping = aes(
 South Italy
 
 ```{r}
+#| echo: FALSE
 IT_SOUTH <- merged_data |> filter(str_detect(geo, "ITF|ITI|ITG"))
 ```
 
 ```{r}
+#| echo: FALSE
 IT_SOUTH |> ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
@@ -238,10 +253,12 @@ IT_SOUTH |> ggplot(mapping = aes(
 Sweden
 
 ```{r}
+#| echo: FALSE
 SE <- merged_data |> filter(str_detect(geo, "SE"))
 ```
 
 ```{r}
+#| echo: FALSE
 SE |> ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
@@ -253,10 +270,12 @@ SE |> ggplot(mapping = aes(
 Croatia - become a member in 2012
 
 ```{r}
+#| echo: FALSE
 HR <- merged_data |> filter(str_detect(geo, "HR"))
 ```
 
 ```{r}
+#| echo: FALSE
 HR |> ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
@@ -268,10 +287,12 @@ HR |> ggplot(mapping = aes(
 Serbia (EU candidate countries)
 
 ```{r}
+#| echo: FALSE
 RS <- merged_data |> filter(str_detect(geo, "RS"))
 ```
 
 ```{r}
+#| echo: FALSE
 RS |> ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
@@ -283,16 +304,22 @@ RS |> ggplot(mapping = aes(
 Bosnia and Herzegovia (EU candidate Countries)
 
 ```{r}
+#| echo: FALSE
 BA <- merged_data |> filter(str_detect(geo, "BA"))
 ```
 
 ```{r}
+#| echo: FALSE
 BA |> ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
 )) + 
   geom_line()
+```
+
+```{r}
+
 ```
 
 ## Part B: Regional inequity
@@ -302,6 +329,7 @@ BA |> ggplot(mapping = aes(
 ### 2. Gini coefficient calculation
 
 ```{r}
+#| echo: FALSE
 # Calculating GINI in nuts3 data for nuts2 regions to measure inequity on a nuts2 scale
 merged_data <- merged_data |> 
  mutate(
@@ -311,6 +339,7 @@ merged_data <- merged_data |>
 ```
 
 ```{r}
+#| echo: FALSE
 #Grouping NUTS3 to NUTS2
 # group_by(id:nuts2, year) %>%
 # mutate(id:nuts3) = substr(id_nuts3, 1,4)
@@ -335,10 +364,12 @@ group_by(nuts2, year) |>
 Austria
 
 ```{r}
+#| echo: FALSE
 AT_nuts2 <- merged_data |> filter(str_detect(nuts2, "AT"))
 ```
 
 ```{r}
+#| echo: FALSE
 AT_nuts2 |> ggplot(mapping = aes(
   x = year, 
   y = gini_n2, 
