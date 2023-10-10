@@ -150,45 +150,6 @@ merged_data <- merged_data |>
 
 ### 3. Describe analysis
 
-## Part B: Regional inequity
-
-### 1. Literature review
-
-```{r}
-
-```
-
-### 2. Gini coefficient calculation
-
-```{r}
-# Calculating GINI in nuts3 data for nuts2 regions to measure inequity on a nuts2 scale
-merged_data <- merged_data |> 
- mutate(
-    nuts2 = substr(geo, 1,4),
-    nuts0 = substr(geo, 1,2)
- )
-```
-
-```{r}
-#Grouping NUTS3 to NUTS2
-# group_by(id:nuts2, year) %>%
-# mutate(id:nuts3) = substr(id_nuts3, 1,4)
-# select(id:nuts3, gdp:nuts3, year)
-# #
-merged_data <- merged_data |> 
-  filter(!is.na(Population),
-         Population != 0,
-         GDP_pc_n3 != 0, 
-         GDP_pc_n3 != "NA"
-  ) |> 
-group_by(nuts2, year) |> 
-  mutate(gini_n2 = gini.wtd(GDP_pc_n3, Population)) |> 
-  ungroup() |> 
-  select(nuts0, nuts2, geo, year, GDP, Population, GDP_pc_n3, gini_n2)
-
-
-```
-
 ```{r}
 #| echo: FALSE
 # Adding GDP variable by deviding gdp on population
@@ -227,6 +188,25 @@ BE |> ggplot(mapping = aes(
   geom_line()
 ```
 
+Bulgaria
+
+```{r}
+BG <- merged_data |> filter(str_detect(geo, "BG"))
+```
+
+```{r}
+BG |> ggplot(mapping = aes(
+  x = year, 
+  y = GDP_pc_n3, 
+  colour = geo
+)) + 
+  geom_line()
+```
+
+Italy
+
+North Italy
+
 ```{r}
 IT_NORTH <- merged_data |> filter(str_detect(geo, "ITC|ITH"))
 ```
@@ -239,6 +219,8 @@ IT_NORTH |> ggplot(mapping = aes(
 )) + 
   geom_line()
 ```
+
+South Italy
 
 ```{r}
 IT_SOUTH <- merged_data |> filter(str_detect(geo, "ITF|ITI|ITG"))
@@ -253,6 +235,8 @@ IT_SOUTH |> ggplot(mapping = aes(
   geom_line()
 ```
 
+Sweden
+
 ```{r}
 SE <- merged_data |> filter(str_detect(geo, "SE"))
 ```
@@ -265,6 +249,8 @@ SE |> ggplot(mapping = aes(
 )) + 
   geom_line()
 ```
+
+Croatia - become a member in 2012
 
 ```{r}
 HR <- merged_data |> filter(str_detect(geo, "HR"))
@@ -279,6 +265,8 @@ HR |> ggplot(mapping = aes(
   geom_line()
 ```
 
+Serbia (EU candidate countries)
+
 ```{r}
 RS <- merged_data |> filter(str_detect(geo, "RS"))
 ```
@@ -291,6 +279,8 @@ RS |> ggplot(mapping = aes(
 )) + 
   geom_line()
 ```
+
+Bosnia and Herzegovia (EU candidate Countries)
 
 ```{r}
 BA <- merged_data |> filter(str_detect(geo, "BA"))
@@ -305,15 +295,41 @@ BA |> ggplot(mapping = aes(
   geom_line()
 ```
 
+## Part B: Regional inequity
+
+### 1. Literature review
+
+### 2. Gini coefficient calculation
+
 ```{r}
-BG <- merged_data |> filter(str_detect(geo, "BG"))
+# Calculating GINI in nuts3 data for nuts2 regions to measure inequity on a nuts2 scale
+merged_data <- merged_data |> 
+ mutate(
+    nuts2 = substr(geo, 1,4),
+    nuts0 = substr(geo, 1,2)
+ )
 ```
 
 ```{r}
-BG |> ggplot(mapping = aes(
-  x = year, 
-  y = GDP_pc_n3, 
-  colour = geo
-)) + 
-  geom_line()
+#Grouping NUTS3 to NUTS2
+# group_by(id:nuts2, year) %>%
+# mutate(id:nuts3) = substr(id_nuts3, 1,4)
+# select(id:nuts3, gdp:nuts3, year)
+# #
+merged_data <- merged_data |> 
+  filter(!is.na(Population),
+         Population != 0,
+         GDP_pc_n3 != 0, 
+         GDP_pc_n3 != "NA"
+  ) |> 
+group_by(nuts2, year) |> 
+  mutate(gini_n2 = gini.wtd(GDP_pc_n3, Population)) |> 
+  ungroup() |> 
+  select(nuts0, nuts2, geo, year, GDP, Population, GDP_pc_n3, gini_n2)
+
+
 ```
+
+### Data Presentation
+
+Austria
