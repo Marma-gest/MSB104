@@ -323,13 +323,26 @@ merged_data <- merged_data |>
          GDP_pc_n3 != "NA"
   ) |> 
 group_by(nuts2, year) |> 
-  mutate(gini_n2 = gini.wtd(GDP_pc_n3, Population)) |> 
+  mutate(gini_n2 = gini.wtd(GDP_pc_n3, Population)*100) |> 
   ungroup() |> 
   select(nuts0, nuts2, geo, year, GDP, Population, GDP_pc_n3, gini_n2)
 
 
 ```
 
-### Data Presentation
+### Data Presentation.
 
 Austria
+
+```{r}
+AT_nuts2 <- merged_data |> filter(str_detect(nuts2, "AT"))
+```
+
+```{r}
+AT_nuts2 |> ggplot(mapping = aes(
+  x = year, 
+  y = gini_n2, 
+  colour = geo
+)) + 
+  geom_line()
+```
