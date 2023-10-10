@@ -2,6 +2,7 @@
 *.Rproj
 *.html
 *.pdf
+*.png
 
 # History files
 .Rhistory
