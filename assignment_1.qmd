@@ -119,6 +119,22 @@ pop <- demo_r_pjanaggr3_linear_csv |>
 ```
 
 ```{r}
+
+# Use this and huxreg for data descriptions
+#AT %>%
+ # select(GDP,Population,GDP_pc_n3) %>% 
+
+#data.frame(
+ # Variable = names(summary_data),
+ # Mean = summary_data[, "Mean"],
+ # SD = summary_data[, "Std. Dev."],
+ # Min = summary_data[, "Min."],
+ # Max = summary_data[, "Max."],
+ # stringsAsFactors = FALSE
+#)
+```
+
+```{r}
 #| echo: FALSE
 gdp_filtered |> 
   print(
@@ -187,13 +203,9 @@ Austria
 
 ```{r}
 #| echo: FALSE
-AT <- merged_data |> filter(str_detect(geo, "AT"))
-  
-```
-
-```{r}
-#| echo: FALSE
-AT |> ggplot(mapping = aes(
+merged_data |> 
+  filter(str_detect(geo, "AT")) |> 
+  ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
@@ -209,12 +221,9 @@ Belgium
 
 ```{r}
 #| echo: FALSE
-BE <- merged_data |> filter(str_detect(geo, "BE"))
-```
-
-```{r}
-#| echo: FALSE
-BE |> ggplot(mapping = aes(
+merged_data |> 
+  filter(str_detect(geo, "BE")) |> 
+  ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
@@ -226,12 +235,9 @@ Bulgaria
 
 ```{r}
 #| echo: FALSE
-BG <- merged_data |> filter(str_detect(geo, "BG"))
-```
-
-```{r}
-#| echo: FALSE
-BG |> ggplot(mapping = aes(
+merged_data |> 
+  filter(str_detect(geo, "AT")) |> 
+  ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
@@ -245,12 +251,10 @@ North Italy
 
 ```{r}
 #| echo: FALSE
-IT_NORTH <- merged_data |> filter(str_detect(geo, "ITC|ITH"))
-```
-
-```{r}
-#| echo: FALSE
-IT_NORTH |> ggplot(mapping = aes(
+# We are deviding italy into two parts, north and south
+merged_data |>
+  filter(str_detect(geo, "ITC|ITH")) |> 
+  ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
@@ -262,12 +266,9 @@ South Italy
 
 ```{r}
 #| echo: FALSE
-IT_SOUTH <- merged_data |> filter(str_detect(geo, "ITF|ITI|ITG"))
-```
-
-```{r}
-#| echo: FALSE
-IT_SOUTH |> ggplot(mapping = aes(
+merged_data |> 
+  filter(str_detect(geo, "ITF|ITI|ITG")) |> 
+  ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
@@ -279,12 +280,9 @@ Sweden
 
 ```{r}
 #| echo: FALSE
-SE <- merged_data |> filter(str_detect(geo, "SE"))
-```
-
-```{r}
-#| echo: FALSE
-SE |> ggplot(mapping = aes(
+merged_data |> 
+  filter(str_detect(geo, "SE")) |> 
+  ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
@@ -296,12 +294,9 @@ Croatia - became a member in 2012
 
 ```{r}
 #| echo: FALSE
-HR <- merged_data |> filter(str_detect(geo, "HR"))
-```
-
-```{r}
-#| echo: FALSE
-HR |> ggplot(mapping = aes(
+merged_data |> 
+  filter(str_detect(geo, "HR")) |> 
+  ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
@@ -313,12 +308,9 @@ Serbia (EU candidate countries)
 
 ```{r}
 #| echo: FALSE
-RS <- merged_data |> filter(str_detect(geo, "RS"))
-```
-
-```{r}
-#| echo: FALSE
-RS |> ggplot(mapping = aes(
+merged_data |> 
+  filter(str_detect(geo, "RS")) |> 
+  ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
@@ -330,21 +322,14 @@ Bosnia and Herzegovia (EU candidate Countries)
 
 ```{r}
 #| echo: FALSE
-BA <- merged_data |> filter(str_detect(geo, "BA"))
-```
-
-```{r}
-#| echo: FALSE
-BA |> ggplot(mapping = aes(
+merged_data |> 
+  filter(str_detect(geo, "BA")) |> 
+  ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
 )) + 
   geom_line()
-```
-
-```{r}
-
 ```
 
 ## Part B: Regional inequity
@@ -390,12 +375,9 @@ Austria
 
 ```{r}
 #| echo: FALSE
-AT_nuts2 <- merged_data |> filter(str_detect(nuts2, "AT"))
-```
-
-```{r}
-#| echo: FALSE
-AT_nuts2 |> ggplot(mapping = aes(
+merged_data |> 
+  filter(str_detect(nuts2, "AT")) |> 
+  ggplot(mapping = aes(
   x = year, 
   y = gini_n2, 
   colour = geo
@@ -406,7 +388,10 @@ AT_nuts2 |> ggplot(mapping = aes(
 ```{r}
 
 #| echo: FALSE
-AT_nuts2 |> ggplot(mapping = aes(
+# Nuts2 for AT
+merged_data |> 
+  filter(str_detect(geo, "AT")) |> 
+ggplot(mapping = aes(
   x = year, 
   y = gini_n2, 
   colour = geo
@@ -417,51 +402,8 @@ AT_nuts2 |> ggplot(mapping = aes(
 # scatterplot, x axis nuts 2 and y axid population
 # x axis nuts region 1, 2, 3
 
-p <- ggplot(data = merged_data, aes(
-  x = year,
-  y = GDP,
-  group_by = nuts0,
-  colour = geo
-)) + 
-  geom_point()
-p + theme(legend.position = "none")
 # Variation over time 
 # Focus on one year
 # scatterplot, x axis nuts 2 and y axid population
 # x axis nuts region 1, 2, 3
-
-p2 <- ggplot(data = merged_data, aes(
-  x = nuts0,
-  y = Population,
-  colour = geo,
-)) +
-  geom_point() 
-p2 + theme(legend.position = "none")
-
-
-```
-
-```{r}
-p3 <- ggplot(data = merged_data, aes(
-  x = nuts0,
-  y = GDP,
-  colour = geo
-)) +
-  geom_point()
-p3 + theme(legend.position = "none")
-```
-
-```{r}
-ggplot(data = merged_data, aes(
-  
-))
-```
-
-```{r}
-ggplot(data = merged_data, aes(x = year, y = GDP_pc_n3, color = geo)) +
-  geom_point() +  # You can change the type of plot according to your data and preferences
-  facet_wrap(~ nuts0) +
-  labs(x = "Year", y = "GDP", title = "Facet Grid Plot by Country") +
- theme(legend.position = "none"
- )
 ```
