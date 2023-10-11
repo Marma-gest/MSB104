@@ -180,7 +180,7 @@ merged_data <- merged_data |>
 #| echo: FALSE
 # Adding GDP variable by deviding gdp on population
 merged_data <- merged_data |> 
-  mutate(GDP_pc_n3 = (GDP / Population))
+  mutate(GDP_pc_n3 = (GDP / Population)*1000000)
 ```
 
 Austria
@@ -377,7 +377,7 @@ merged_data <- merged_data |>
          GDP_pc_n3 != "NA"
   ) |> 
 group_by(nuts2, year) |> 
-  mutate(gini_n2 = gini.wtd(GDP_pc_n3, Population)*100) |> 
+  mutate(gini_n2 = gini.wtd(GDP_pc_n3, Population)) |> 
   ungroup() |> 
   select(nuts0, nuts2, geo, year, GDP, Population, GDP_pc_n3, gini_n2)
 
@@ -401,4 +401,67 @@ AT_nuts2 |> ggplot(mapping = aes(
   colour = geo
 )) + 
   geom_line()
+```
+
+```{r}
+
+#| echo: FALSE
+AT_nuts2 |> ggplot(mapping = aes(
+  x = year, 
+  y = gini_n2, 
+  colour = geo
+)) + 
+  geom_point()
+# Variation over time 
+# Focus on one year
+# scatterplot, x axis nuts 2 and y axid population
+# x axis nuts region 1, 2, 3
+
+p <- ggplot(data = merged_data, aes(
+  x = year,
+  y = GDP,
+  group_by = nuts0,
+  colour = geo
+)) + 
+  geom_point()
+p + theme(legend.position = "none")
+# Variation over time 
+# Focus on one year
+# scatterplot, x axis nuts 2 and y axid population
+# x axis nuts region 1, 2, 3
+
+p2 <- ggplot(data = merged_data, aes(
+  x = nuts0,
+  y = Population,
+  colour = geo,
+)) +
+  geom_point() 
+p2 + theme(legend.position = "none")
+
+
+```
+
+```{r}
+p3 <- ggplot(data = merged_data, aes(
+  x = nuts0,
+  y = GDP,
+  colour = geo
+)) +
+  geom_point()
+p3 + theme(legend.position = "none")
+```
+
+```{r}
+ggplot(data = merged_data, aes(
+  
+))
+```
+
+```{r}
+ggplot(data = merged_data, aes(x = year, y = GDP_pc_n3, color = geo)) +
+  geom_point() +  # You can change the type of plot according to your data and preferences
+  facet_wrap(~ nuts0) +
+  labs(x = "Year", y = "GDP", title = "Facet Grid Plot by Country") +
+ theme(legend.position = "none"
+ )
 ```
