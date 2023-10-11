@@ -290,6 +290,15 @@ merged_data |>
   geom_line()
 ```
 
+Sweden: We have an extreme value in the form of a significantly higher GDP per capita in sub region SE110 which is Stockholm.
+This can be explained by the fact that it is the capital and it is natural that value creation is centralized around Stockholm.
+
+The data shows that there is a fall in GDP per capita throughout Sweden in 2008.
+The natural explanation for this would be the financial crisis in 2008.
+
+The data also shows a reduction in 2019 - 2020 in many sub-regions that can be linked to covid 19.
+The reason why not all sub-regions had this drop may be that large parts of Sweden did not comply with the restrictions linked to the infection of the virus.
+
 Croatia - became a member in 2012
 
 ```{r}
@@ -318,6 +327,10 @@ merged_data |>
   geom_line()
 ```
 
+The reason why the dataset lacks GDP per capita in Serbia from 2000 - 2017 is explained by the fact that Serbia is an EU candidate and not part of the EU.
+It is therefore partly unclear where we get data from 2017 - 2020, but can be explained by the fact that Serbia applied to join the EU in December 2009, and received the status of "EU candidate" in March 2012.
+The reason why then data dating back to 2012 may not have a connection with the fact that this is a war-torn country.
+
 Bosnia and Herzegovia (EU candidate Countries)
 
 ```{r}
@@ -331,6 +344,8 @@ merged_data |>
 )) + 
   geom_line()
 ```
+
+The reason why Bosnia and Herzegovina lacks data from 2000 - 2020 in Eurostat is explained by the fact that they did not become an EU candidate until December 2022.
 
 ## Part B: Regional inequity
 
