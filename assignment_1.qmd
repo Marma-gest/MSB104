@@ -168,7 +168,9 @@ It is worth noting that the GDP data from Eurostat is represented in million eur
 This will be consistent through all our visualized data.
 
 GDP or Gross Domestic Product is a measure of value creation in a country.
-This is described by Eurostat to be "a measure of economic activity, defined as the value of all goods and services produced minus the value of any goods or services used in their creation" @eurosta2023. How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes" @eurostat2023. To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth" @eurostat2023.
+This is described by Eurostat to be "a measure of economic activity, defined as the value of all goods and services produced minus the value of any goods or services used in their creation" @eurosta2023.
+How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes" @eurostat2023.
+To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth" @eurostat2023.
 
 ```{r}
 #| echo: FALSE
@@ -498,18 +500,4 @@ merged_data |>
   theme(plot.title = element_text(size = 20)) 
 
    
-```
-
-```{r}
-#| fig.height = 15, fig.width = 12
-# Added fig arguments in chunk in order to control the size of the facet wraps and colourgraded the gini coefficient intervals
-merged_data |> 
-  ggplot(mapping = aes(
-    year, gini_n2, colour = gini_n2
-  )) +
-  geom_line(alpha = 0.5) +
-  scale_colour_gradient(low = "skyblue", high = "red") +
-  facet_wrap(~ nuts0, ncol = 2, scales = "free", shrink = FALSE) +
-               labs(title = "Visualization of the gini coefficient intervals in each country", size = 20) +
-  theme(plot.title = element_text(size = 20)) 
 ```
