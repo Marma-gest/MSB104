@@ -1,6 +1,6 @@
 ---
 title: "assignment_1"
-format: html
+format: pdf
 editor: visual
 bibliography: [MSB104.bib, MSB104_Assignment.bib]
 author: Marius Martinussen, Espen Knutsen
@@ -18,6 +18,10 @@ library(tidyverse)
 library(stringr)
 library(huxtable)
 library(vtable)
+library(ggplotify)
+library(grid)
+library(dplyr)
+library(gridExtra)
 
 ```
 
@@ -160,17 +164,14 @@ filter(!is.na(Population),
 
 In order to visualize the GDP per capita, we have merged the two datasets together and added a new variable that executes this formula in order to generate the GDP per capita for every country.
 
-$$
-y_i = \frac{\textit{GDP}_i}{\textit{population}_i}$$
+$y_i = \frac{\text{GDP}_i}{\text{population}_i}$
 
 It is worth noting that the GDP data from Eurostat is represented in million euros,, meaning that 1 in this case, equals 1 million euros.
 0.1 represent 100 000 euros, and so on.
 This will be consistent through all our visualized data.
 
 GDP or Gross Domestic Product is a measure of value creation in a country.
-This is described by Eurostat to be "a measure of economic activity, defined as the value of all goods and services produced minus the value of any goods or services used in their creation" @eurosta2023.
-How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes" @eurostat2023.
-To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth" @eurostat2023.
+This is described by Eurostat to be "a measure of economic activity, defined as the value of all goods and services produced minus the value of any goods or services used in their creation"@eurostat2023. How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes"@eurostat2023. To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth"@eurostat2023.
 
 ```{r}
 #| echo: FALSE
@@ -512,9 +513,7 @@ In order to calculate the Gini coefficient for NUTS2 regions using NUTS3 data, w
 This has been done by subtracting the common denominator, country codes.
 Grouping makes it possible to utilize the formula by weighing the level 2 regions GDP per capita by population, as seen below.
 
-$$
-GINW_j=\frac{1}{2 \bar{y_j}} \sum_{i}^{n_j}\sum_{l}^{n_j}\frac{p_i}{P_j} \frac{p_l}{P_j} |y_i-y_l|
-$$
+$GINW_j=\frac{1}{2 \bar{y_j}} \sum_{i}^{n_j}\sum_{l}^{n_j}\frac{p_i}{P_j} \frac{p_l}{P_j} |y_i-y_l|$
 
 ```{r}
 #| echo: FALSE
