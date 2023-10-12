@@ -2,7 +2,7 @@
 title: "assignment_1"
 format: html
 editor: visual
-bibliography: [MSB104.bib]
+bibliography: [MSB104.bib, MSB104_Assignment.bib]
 author: Marius Martinussen, Espen Knutsen
 ---
 
