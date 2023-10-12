@@ -16,6 +16,7 @@ library(dineq)
 library(readr)
 library(tidyverse)
 library(stringr)
+library(huxtable)
 
 
 ```
@@ -119,22 +120,6 @@ pop <- demo_r_pjanaggr3_linear_csv |>
 ```
 
 ```{r}
-
-# Use this and huxreg for data descriptions
-#AT %>%
- # select(GDP,Population,GDP_pc_n3) %>% 
-
-#data.frame(
- # Variable = names(summary_data),
- # Mean = summary_data[, "Mean"],
- # SD = summary_data[, "Std. Dev."],
- # Min = summary_data[, "Min."],
- # Max = summary_data[, "Max."],
- # stringsAsFactors = FALSE
-#)
-```
-
-```{r}
 #| echo: FALSE
 gdp_filtered |> 
   print(
@@ -208,13 +193,20 @@ merged_data |>
   ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
-  colour = geo
+  colour = geo,
 )) + 
-  geom_line()
+  geom_line() +
+  labs(title = "Austria",
+       x = "Year",
+       y = "GDP per capita")
 ```
 
 ```{r}
-summary(merged_data)
+#| echo: FALSE
+merged_data |> 
+  filter(str_detect(geo, "AT")) |> 
+  select(-1,-year) |> 
+  summary()
 ```
 
 Belgium
@@ -228,7 +220,18 @@ merged_data |>
   y = GDP_pc_n3, 
   colour = geo
 )) + 
-  geom_line()
+  geom_line() +
+    labs(title = "Belgium",
+       x = "Year",
+       y = "GDP per capita")
+```
+
+```{r}
+#| echo: FALSE
+merged_data |> 
+  filter(str_detect(geo, "BE")) |> 
+  select(-1,-year) |> 
+  summary()
 ```
 
 Bulgaria
@@ -236,13 +239,24 @@ Bulgaria
 ```{r}
 #| echo: FALSE
 merged_data |> 
-  filter(str_detect(geo, "AT")) |> 
+  filter(str_detect(geo, "BG")) |> 
   ggplot(mapping = aes(
   x = year, 
   y = GDP_pc_n3, 
   colour = geo
 )) + 
-  geom_line()
+  geom_line() +
+    labs(title = "Bulgaria",
+       x = "Year",
+       y = "GDP per capita")
+```
+
+```{r}
+#| echo: FALSE
+merged_data |> 
+  filter(str_detect(geo, "BG")) |> 
+  select(-1,-year) |> 
+  summary()
 ```
 
 Italy
@@ -259,7 +273,18 @@ merged_data |>
   y = GDP_pc_n3, 
   colour = geo
 )) + 
-  geom_line()
+  geom_line() +
+    labs(title = "North Italy",
+       x = "Year",
+       y = "GDP per capita")
+```
+
+```{r}
+#| echo: FALSE
+merged_data |> 
+  filter(str_detect(geo, "ITCH|ITH")) |> 
+  select(-1,-year) |> 
+  summary()
 ```
 
 South Italy
@@ -273,7 +298,18 @@ merged_data |>
   y = GDP_pc_n3, 
   colour = geo
 )) + 
-  geom_line()
+  geom_line() +
+    labs(title = "South Italy",
+       x = "Year",
+       y = "GDP per capita")
+```
+
+```{r}
+#| echo: FALSE
+merged_data |> 
+  filter(str_detect(geo, "ITF|ITI|ITG")) |> 
+  select(-1,-year) |> 
+  summary()
 ```
 
 Sweden
@@ -287,7 +323,18 @@ merged_data |>
   y = GDP_pc_n3, 
   colour = geo
 )) + 
-  geom_line()
+  geom_line() +
+    labs(title = "Sweden",
+       x = "Year",
+       y = "GDP per capita")
+```
+
+```{r}
+#| echo: FALSE
+merged_data |> 
+  filter(str_detect(geo, "SE")) |> 
+  select(-1,-year) |> 
+  summary()
 ```
 
 Sweden: We have an extreme value in the form of a significantly higher GDP per capita in sub region SE110 which is Stockholm.
@@ -310,7 +357,18 @@ merged_data |>
   y = GDP_pc_n3, 
   colour = geo
 )) + 
-  geom_line()
+  geom_line() +
+    labs(title = "Croatia",
+       x = "Year",
+       y = "GDP per capita")
+```
+
+```{r}
+#| echo: FALSE
+merged_data |> 
+  filter(str_detect(geo, "HR")) |> 
+  select(-1,-year) |> 
+  summary()
 ```
 
 Serbia (EU candidate countries)
@@ -324,7 +382,18 @@ merged_data |>
   y = GDP_pc_n3, 
   colour = geo
 )) + 
-  geom_line()
+  geom_line() +
+    labs(title = "Serbia",
+       x = "Year",
+       y = "GDP per capita")
+```
+
+```{r}
+#| echo: FALSE
+merged_data |> 
+  filter(str_detect(geo, "RS")) |> 
+  select(-1,-year) |> 
+  summary()
 ```
 
 The reason why the dataset lacks GDP per capita in Serbia from 2000 - 2017 is explained by the fact that Serbia is an EU candidate and not part of the EU.
@@ -332,18 +401,6 @@ It is therefore partly unclear where we get data from 2017 - 2020, but can be ex
 The reason why then data dating back to 2012 may not have a connection with the fact that this is a war-torn country.
 
 Bosnia and Herzegovia (EU candidate Countries)
-
-```{r}
-#| echo: FALSE
-merged_data |> 
-  filter(str_detect(geo, "BA")) |> 
-  ggplot(mapping = aes(
-  x = year, 
-  y = GDP_pc_n3, 
-  colour = geo
-)) + 
-  geom_line()
-```
 
 The reason why Bosnia and Herzegovina lacks data from 2000 - 2020 in Eurostat is explained by the fact that they did not become an EU candidate until December 2022.
 
@@ -421,4 +478,23 @@ ggplot(mapping = aes(
 # Focus on one year
 # scatterplot, x axis nuts 2 and y axid population
 # x axis nuts region 1, 2, 3
+```
+
+```{r}
+#| fig.height = 15, fig.width = 12
+merged_data |> 
+  ggplot(mapping = aes(
+    year, gini_n2, colour = gini_n2
+  )) +
+  geom_point(alpha = 1, size = 1, stroke = 1,) +
+  scale_colour_gradient(low = "blue", high = "red") +
+  facet_wrap(~ nuts0, ncol = 2, scales = "free", shrink = FALSE)
+
+   
+```
+
+```{}
+```
+
+```{}
 ```
