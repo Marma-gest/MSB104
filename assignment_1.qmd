@@ -17,7 +17,7 @@ library(readr)
 library(tidyverse)
 library(stringr)
 library(huxtable)
-
+library(vtable)
 
 ```
 
@@ -208,7 +208,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "AT")) |> 
   select(-1,-year) |> 
-  summary()
+  st("GDP_pc_n3", add.median = TRUE)
 ```
 
 Belgium
@@ -234,7 +234,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "BE")) |> 
   select(-1,-year) |> 
-  summary()
+   st("GDP_pc_n3", add.median = TRUE)
 ```
 
 Bulgaria
@@ -260,7 +260,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "BG")) |> 
   select(-1,-year) |> 
-  summary()
+   st("GDP_pc_n3", add.median = TRUE)
 ```
 
 Italy
@@ -289,7 +289,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "ITCH|ITH")) |> 
   select(-1,-year) |> 
-  summary()
+  st("GDP_pc_n3", add.median = TRUE)
 ```
 
 South Italy
@@ -315,7 +315,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "ITF|ITI|ITG")) |> 
   select(-1,-year) |> 
-  summary()
+   st("GDP_pc_n3", add.median = TRUE)
 ```
 
 Sweden
@@ -341,7 +341,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "SE")) |> 
   select(-1,-year) |> 
-  summary()
+   st("GDP_pc_n3", add.median = TRUE)
 ```
 
 Sweden: We have an extreme value in the form of a significantly higher GDP per capita in sub region SE110 which is Stockholm.
@@ -376,7 +376,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "HR")) |> 
   select(-1,-year) |> 
-  summary()
+   st("GDP_pc_n3", add.median = TRUE)
 ```
 
 Serbia (EU candidate countries)
@@ -402,7 +402,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "RS")) |> 
   select(-1,-year) |> 
-  summary()
+   st("GDP_pc_n3", add.median = TRUE)
 ```
 
 The reason why the dataset lacks GDP per capita in Serbia from 2000 - 2017 is explained by the fact that Serbia is an EU candidate and not part of the EU.
