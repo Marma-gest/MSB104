@@ -329,7 +329,7 @@ merged_data |>
 
 The reason why the dataset lacks GDP per capita in Serbia from 2000 - 2017 is explained by the fact that Serbia is an EU candidate and not part of the EU.
 It is therefore partly unclear where we get data from 2017 - 2020, but can be explained by the fact that Serbia applied to join the EU in December 2009, and received the status of "EU candidate" in March 2012.
-The reason why then data dating back to 2012 may not have a connection with the fact that this is a war-torn country.
+The reason why there is no data dating back to 2012 may have a connection with the fact that this is a war-torn country.
 
 Bosnia and Herzegovia (EU candidate Countries)
 
