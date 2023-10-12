@@ -1,6 +1,6 @@
 ---
 title: "assignment_1"
-format: pdf
+format: html
 editor: visual
 bibliography: [MSB104.bib, MSB104_Assignment.bib]
 author: Marius Martinussen, Espen Knutsen
@@ -164,14 +164,15 @@ filter(!is.na(Population),
 
 In order to visualize the GDP per capita, we have merged the two datasets together and added a new variable that executes this formula in order to generate the GDP per capita for every country.
 
-$y_i = \frac{\text{GDP}_i}{\text{population}_i}$
+$y_i = \frac{\text{GDP}_i}{\text{population}_i} * 10^6$
 
-It is worth noting that the GDP data from Eurostat is represented in million euros,, meaning that 1 in this case, equals 1 million euros.
-0.1 represent 100 000 euros, and so on.
-This will be consistent through all our visualized data.
+It is worth noting that the GDP data from Eurostat is represented in million euros.
+In order to better understand the graphs we have produced, we decided to multiply by one million, so that all numbers in the graph containing the GDP per capita is in full Euros.
 
 GDP or Gross Domestic Product is a measure of value creation in a country.
-This is described by Eurostat to be "a measure of economic activity, defined as the value of all goods and services produced minus the value of any goods or services used in their creation"@eurostat2023. How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes"@eurostat2023. To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth"@eurostat2023.
+This is described by Eurostat to be "a measure of economic activity, defined as the value of all goods and services produced minus the value of any goods or services used in their creation" @eurostat2023.
+How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes" @eurostat2023.
+To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth" @eurostat2023.
 
 ```{r}
 #| echo: FALSE
