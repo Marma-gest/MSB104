@@ -501,7 +501,20 @@ The reason why Bosnia and Herzegovina lacks data from 2000 - 2020 in Eurostat is
 
 ### 1. Literature review
 
+The Gini coefficient is a measurement for inequality, used in regions to measure the inequalities in sub regions of a country @lessmann2017 .
+We have used the weighted Gini coefficient which takes a regions GDP per capita with regards to population, The reasoning behind this is to get the true Gini coefficient, and not omit the population variable, as it is a important variable for explaining a regions inequality.
+By looking at the gini coefficient at a NUTS2 level, we are expecting to see the socio-economic differences, and to understand the reasoning behind the inequity based on factors such as resource allocation.
+By looking at a 20 year span, we are also expecting to be able to predict and forecast future trends.
+
 ### 2. Gini coefficient calculation
+
+In order to calculate the Gini coefficient for NUTS2 regions using NUTS3 data, we first have to group population and GDP per capita of the level 3 data to level 2.
+This has been done by subtracting the common denominator, country codes.
+Grouping makes it possible to utilize the formula by weighing the level 2 regions GDP per capita by population, as seen below.
+
+$$
+GINW_j=\frac{1}{2 \bar{y_j}} \sum_{i}^{n_j}\sum_{l}^{n_j}\frac{p_i}{P_j} \frac{p_l}{P_j} |y_i-y_l|
+$$
 
 ```{r}
 #| echo: FALSE
@@ -549,3 +562,22 @@ merged_data |>
 
    
 ```
+
+## Outliers
+
+### Bulgaria (South west: BG41)
+
+The main outlier in Bulgaria the line that from 2000, was already over 15%.
+This is the region BG41, also known as south west.
+The reason behind this outlying difference is because the capital of Bulgaira, Sofia, is a sub-region of BG41.
+In Sofia, the GDP per capita in 2020 was nearly triple as much as the second highest sub-regions GDP per capita.
+
+### Italy (Lombardia: ITC4)
+
+Lombardia has the biggest inequality in the whole of Italy, with the highest Gini coefficient ( Gini \>0.15 in 2020).
+ITC4 contains big cities such as Milano, which has two of the biggest football teams in the world, and is known for being the capital of fashion.
+This attracts tourism and a spike in the regions GDP.
+
+### Belgium (East Flanders: BE23)
+
+Explained by the span of GDP per capita in sub-regions where the highest GDP per capita being 49 964 and the lowest 17 401, while the average spans between \[17 000:21 000\].
