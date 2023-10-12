@@ -75,10 +75,10 @@ demo_r_pjanaggr3_linear_csv |>
 In order to substract the countries in focus, we have used the metadata provided by Eurostat to filter out the data and variables of interest, using their respective country codes.
 The variables we are interested in are the following:
 
--   **geo** = Tells us which country and sub-region we are looking at on a NUTS3 level
--   **time_period** = Observed years
--   **obs_value** = The value of the observation
--   **Unit** = Currency (Million Euros)
+-   geo = Tells us which country and sub-region we are looking at
+-   time_period = Observed years
+-   obs_value = The value of the observation
+-   Unit = Currency
 
 By filtering out irrelevant data and variables and rearranging the dataset to provide a clearer view, results with the following datasets:
 
@@ -158,17 +158,19 @@ filter(!is.na(Population),
 
 ### 2. GDP per capita calculation
 
-In order to visualize the GDP per capita, we have merged the two datasets together and added a new variable that executes this formula in order to generate the GDP per capita for every sub region on a NUTS3 level.
+In order to visualize the GDP per capita, we have merged the two datasets together and added a new variable that executes this formula in order to generate the GDP per capita for every country.
 
 $$
-y_i = \frac{\textit{GDP}_i}{\textit{population}_i} * 10^6$$
+y_i = \frac{\textit{GDP}_i}{\textit{population}_i}$$
 
-IFor making the visualized data easily readable, we decided to multiply the formula by one million, as this will show the GDP per capita with the full number in Euros.
+It is worth noting that the GDP data from Eurostat is represented in million euros,, meaning that 1 in this case, equals 1 million euros.
+0.1 represent 100 000 euros, and so on.
+This will be consistent through all our visualized data.
 
 GDP or Gross Domestic Product is a measure of value creation in a country.
-This is described by Eurostat to be "*a measure of economic activity, defined as the value of all goods and services produced minus the value of any goods or services used in their creation*" @eurosta2023.
-How Eurostat calculates the annual growth rate in GDP "*comparisons of the dynamics of economic development both over time and between economies of different sizes*" @eurostat2023.
-To measure the growth rate of GDP over time "*in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth*" @eurostat2023.
+This is described by Eurostat to be "a measure of economic activity, defined as the value of all goods and services produced minus the value of any goods or services used in their creation" @eurosta2023.
+How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes" @eurostat2023.
+To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth" @eurostat2023.
 
 ```{r}
 #| echo: FALSE
@@ -222,6 +224,12 @@ This may be due to the fact that this is an administrative district, and is ofte
 All sub-regions have a decline in GDP per per capita from 2019 -- 2020 in connection with covid 19, where some sub-regions have a more marked decline than others.
 This probably has a natural explanation in how the guidelines were followed through covid and how much the individual sub-region's gdp per capita depends on tourism.
 
+In summary of the data set, Austria has a minimum value and a maximum value of 14,236 and 57,760 gdp per year, respectively.
+capita, with a standard deviation of 9542.
+This standard deviation measures how much spread or variance there is in the values in the data set.
+Furthermore, the data set has an average of 32,066 GDP per capita, with a median of 30,679 GDP per capita.
+When the median is lower than the mean, this means that the data set has more values closer to the minimum value in the data set.
+
 ### Belgium
 
 ```{r}
@@ -251,6 +259,12 @@ merged_data |>
 The data set shows us that we have an outliner in the form of BE100 (Brussels) which has a significantly higher GDP per capita.
 This has a natural connection with the fact that Brussels is the capital of Belgium, and has a higher traffic for trade than the other sub-regions.
 
+Summarized by the data set, Belgium has a minimum value and a maximum value of 12756 and 71959 gdp per year respectively.
+capita, with a standard deviation of 10143.
+This standard deviation measures how much spread or variance there is in the values in the data set.
+Furthermore, the data set has an average of 29,182 GDP per capita, with a median of 27,132 GDP per capita.
+When the median is lower than the mean, this means that the data set has more values closer to the minimum value in the data set.
+
 ### Bulgaria
 
 ```{r}
@@ -279,6 +293,12 @@ merged_data |>
 
 The explanation behind the significantly higher GDP per capita.
 capita in Sofia is that it is the capital of Bulgaria and is the administrative, cultural and economic center of the country.
+
+Summarized by the data set, Bulgaria has a minimum value and a maximum value of 1087 and 19833 GDP per year respectively.
+capita, with a standard deviation of 2283.
+This standard deviation measures how much spread or variance there is in the values in the data set.
+Furthermore, the dataset has an average of 3826 GDP per capita, with a median of 3378 GDP per capita.
+When the median is lower than the mean, this means that the data set has more values closer to the minimum value in the data set.
 
 Italy
 
@@ -313,6 +333,12 @@ merged_data |>
 
 Outliners: ITC4C (milano) og til dels ITH10 (boltzano)
 
+In summary of the data set, Northern Italy has a minimum value and a maximum value of 19,555 and 55,890 gdp respectively.
+capita, with a standard deviation of 5107.
+This standard deviation measures how much spread or variance there is in the values in the data set.
+Furthermore, the dataset has an average of 29,733 GDP per capita, with a median of 29,097 GDP per capita.
+When the median is higher than the mean, this means that the data set has more values closer to the maximum value in the data set.
+
 ### South Italy
 
 ```{r}
@@ -340,6 +366,12 @@ merged_data |>
 ```
 
 Outliners: ITI14(Chieti), ITI43(Taranto).
+
+Summarized by the data set, Southern Italy has a minimum value and a maximum value of 11713 and 42801 gdp per year respectively.
+capita, with a standard deviation of 5302.
+This standard deviation measures how much spread or variance there is in the values in the data set.
+Furthermore, the data set has an average of 20995 GDP per capita, with a median of 19788 GDP per capita.
+When the median is lower than the mean, this means that the data set has more values closer to the minimum value in the data set.
 
 ### Sweden
 
@@ -376,6 +408,12 @@ The natural explanation for this would be the financial crisis in 2008.
 The data also shows a reduction in 2019 - 2020 in many sub-regions that can be linked to covid 19.
 The reason why not all sub-regions had this drop may be that large parts of Sweden did not comply with the restrictions linked to the infection of the virus.
 
+Summarized by the data set, Sweden has a minimum value and a maximum value of 23331 and 66250 GDP per year respectively.
+capita, with a standard deviation of 7515.
+This standard deviation measures how much spread or variance there is in the values in the data set.
+Furthermore, the data set has an average of 35,757 GDP per capita, with a median of 39,550 GDP per capita.
+When the median is higher than the mean, this means that the data set has more values closer to the maximum value in the data set.
+
 ### Croatia - became a member in 2012
 
 ```{r}
@@ -408,6 +446,12 @@ From the data set, we see that all the subregions have a similar trend pattern, 
 
 There are three sub regions in the form of HR031, HR036 and HR037 which are Primorsko Goranska, Istrian and Dubrovnik-Neretva stand out with a higher GDP per Capita.
 All these sub-regions are located along the coast, and this would likley attract tourism.
+
+In summary of the data set, Croatia has a minimum value and a maximum value of 4144 and 15985 GDP per year respectively.
+capita, with a standard deviation of 2692.
+This standard deviation measures how much spread or variance there is in the values in the data set.
+Furthermore, the data set has an average of 9644 GDP per capita, with a median of 9155 GDP per capita.
+When the median is lower than the mean, this means that the data set has more values closer to the minimum value in the data set.
 
 ### Serbia (EU candidate country)
 
@@ -443,6 +487,12 @@ In the data set, there is an outliner RS221 (Bor region) which stands out signif
 The rest of the sub-regions follow the same trends in GDP per capita, but differ, on the other hand, in that the sub-regions lie in the interval between approximately 2,500 £ to 3,600£ and 4,000 £ to 5,200 £.
 This may indicate that the sub-regions are grouped in 2 different intervals in GDP per capita
 
+Summarized by the data set, Serbia has a minimum value and a maximum value of 2534 and 8312 GDP per year respectively.
+capita, with a standard deviation of 1081.
+This standard deviation measures how much spread or variance there is in the values in the data set.
+Furthermore, the data set has an average of 4209 GDP per capita, with a median of 4116 GDP per capita.
+When the median is lower than the mean, this means that the data set has more values closer to the minimum value in the data set.
+
 Bosnia and Herzegovia (EU candidate Countries)
 
 The reason why Bosnia and Herzegovina lacks data from 2000 - 2020 in Eurostat is explained by the fact that they did not become an EU candidate until December 2022.
@@ -451,18 +501,7 @@ The reason why Bosnia and Herzegovina lacks data from 2000 - 2020 in Eurostat is
 
 ### 1. Literature review
 
-The Gini coefficient is a measurement for inequality, used in regions to measure the inequalities in sub regions of a country @lessmann2017 .
-We have used the weighted Gini coefficient which takes a regions GDP per capita with regards to population, The reasoning behind this is to get the true Gini coefficient, and not omit the population variable, as it is a important variable for explaining a regions inequality.
-
 ### 2. Gini coefficient calculation
-
-In order to calculate the Gini coefficient for NUTS2 regions using NUTS3 data, we first have to group population and GDP per capita of the level 3 data to level 2.
-This has been done by subtracting the common denominator, country codes.
-Grouping makes it possible to utilize the formula by weighing the level 2 regions GDP per capita by population, as seen below.
-
-$$
-GINW_j=\frac{1}{2 \bar{y_j}} \sum_{i}^{n_j}\sum_{l}^{n_j}\frac{p_i}{P_j} \frac{p_l}{P_j} |y_i-y_l|
-$$
 
 ```{r}
 #| echo: FALSE
