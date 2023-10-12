@@ -176,7 +176,7 @@ merged_data <- merged_data |>
   )
 ```
 
-### 3. Describe analysis
+### 3. Descriptive analysis
 
 ```{r}
 #| echo: FALSE
@@ -456,20 +456,28 @@ A
 # Added fig arguments in chunk in order to control the size of the facet wraps and colourgraded the gini coefficient intervals
 merged_data |> 
   ggplot(mapping = aes(
-    year, gini_n2, colour = gini_n2
+    year, gini_n2, colour = gini_n2, group = nuts2
   )) +
+  geom_line(alpha = 0.5) +
   geom_point(alpha = 1, size = 1, stroke = 1,) +
   scale_colour_gradient(low = "skyblue", high = "red") +
   facet_wrap(~ nuts0, ncol = 2, scales = "free", shrink = FALSE) +
                labs(title = "Visualization of the gini coefficient intervals in each country", size = 20) +
-  theme(plot.title = element_text(size = 20))
-
+  theme(plot.title = element_text(size = 20)) 
 
    
 ```
 
-```         
-```
-
-```         
+```{r}
+#| fig.height = 15, fig.width = 12
+# Added fig arguments in chunk in order to control the size of the facet wraps and colourgraded the gini coefficient intervals
+merged_data |> 
+  ggplot(mapping = aes(
+    year, gini_n2, colour = gini_n2
+  )) +
+  geom_line(alpha = 0.5) +
+  scale_colour_gradient(low = "skyblue", high = "red") +
+  facet_wrap(~ nuts0, ncol = 2, scales = "free", shrink = FALSE) +
+               labs(title = "Visualization of the gini coefficient intervals in each country", size = 20) +
+  theme(plot.title = element_text(size = 20)) 
 ```
