@@ -211,6 +211,14 @@ merged_data |>
   st("GDP_pc_n3", add.median = TRUE)
 ```
 
+Outliners: None
+
+The sub-regions follow the same trends in GDP per per capita, with certain exceptions linked to a marked decrease in AT331 (Außerfern) in connection with 2008 (the financial crisis).
+This may be due to the fact that this is an administrative district, and is often more exposed to a financial crisis.
+
+All sub-regions have a decline in GDP per per capita from 2019 -- 2020 in connection with covid 19, where some sub-regions have a more marked decline than others.
+This probably has a natural explanation in how the guidelines were followed through covid and how much the individual sub-region's gdp per capita depends on tourism.
+
 Belgium
 
 ```{r}
@@ -236,6 +244,9 @@ merged_data |>
   select(-1,-year) |> 
    st("GDP_pc_n3", add.median = TRUE)
 ```
+
+The data set shows us that we have an outliner in the form of BE100 (Brussels) which has a significantly higher GDP per capita.
+This has a natural connection with the fact that Brussels is the capital of Belgium, and has a higher traffic for trade than the other sub-regions.
 
 Bulgaria
 
@@ -263,7 +274,12 @@ merged_data |>
    st("GDP_pc_n3", add.median = TRUE)
 ```
 
+The explanation behind the significantly higher GDP per capita.
+capita in Sofia is that it is the capital of Bulgaria and is the administrative, cultural and economic center of the country.
+
 Italy
+
+The reason why we divide Italy into north and south is because it makes our ggplot more clear.
 
 North Italy
 
@@ -292,6 +308,8 @@ merged_data |>
   st("GDP_pc_n3", add.median = TRUE)
 ```
 
+Outliners: ITC4C (milano) og til dels ITH10 (boltzano)
+
 South Italy
 
 ```{r}
@@ -317,6 +335,8 @@ merged_data |>
   select(-1,-year) |> 
    st("GDP_pc_n3", add.median = TRUE)
 ```
+
+Outliners: ITI14(Chieti), ITI43(Taranto).
 
 Sweden
 
@@ -379,6 +399,13 @@ merged_data |>
    st("GDP_pc_n3", add.median = TRUE)
 ```
 
+From the data set we see that Croatia are missing populationdata in the subregions HR050, HR061- HR065 and HR021 - HR028.
+We therefore only have data from the subregions HR031 - HR037 to take a closer look at GDP per capita.
+From the data set, we see that all the subregions have a similar trend pattern, where the fall in GDP in 2019 - 2020 can be explained by Covid - 19.
+
+There are three sub regions in the form of HR031, HR036 and HR037 which are Primorsko Goranska, Istrian and Dubrovnik-Neretva stand out with a higher GDP per Capita.
+All these sub-regions are located along the coast, and this would likley attract tourism.
+
 Serbia (EU candidate countries)
 
 ```{r}
@@ -408,6 +435,10 @@ merged_data |>
 The reason why the dataset lacks GDP per capita in Serbia from 2000 - 2017 is explained by the fact that Serbia is an EU candidate and not part of the EU.
 It is therefore partly unclear where we get data from 2017 - 2020, but can be explained by the fact that Serbia applied to join the EU in December 2009, and received the status of "EU candidate" in March 2012.
 The reason why there is no data dating back to 2012 may have a connection with the fact that this is a war-torn country.
+
+In the data set, there is an outliner RS221 (Bor region) which stands out significantly in the form of a higher GDP per capita, but also a significant increase in GDP per capita from 2018 - 2020 for approx 5,800 £ to 8,000 £ GDP per capita.
+The rest of the sub-regions follow the same trends in GDP per capita, but differ, on the other hand, in that the sub-regions lie in the interval between approximately 2,500 £ to 3,600£ and 4,000 £ to 5,200 £.
+This may indicate that the sub-regions are grouped in 2 different intervals in GDP per capita
 
 Bosnia and Herzegovia (EU candidate Countries)
 
