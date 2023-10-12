@@ -185,7 +185,7 @@ merged_data <- merged_data |>
   mutate(GDP_pc_n3 = (GDP / Population)*1000000)
 ```
 
-Austria
+### Austria
 
 ```{r}
 #| echo: FALSE
@@ -219,7 +219,7 @@ This may be due to the fact that this is an administrative district, and is ofte
 All sub-regions have a decline in GDP per per capita from 2019 -- 2020 in connection with covid 19, where some sub-regions have a more marked decline than others.
 This probably has a natural explanation in how the guidelines were followed through covid and how much the individual sub-region's gdp per capita depends on tourism.
 
-Belgium
+### Belgium
 
 ```{r}
 #| echo: FALSE
@@ -248,7 +248,7 @@ merged_data |>
 The data set shows us that we have an outliner in the form of BE100 (Brussels) which has a significantly higher GDP per capita.
 This has a natural connection with the fact that Brussels is the capital of Belgium, and has a higher traffic for trade than the other sub-regions.
 
-Bulgaria
+### Bulgaria
 
 ```{r}
 #| echo: FALSE
@@ -281,7 +281,7 @@ Italy
 
 The reason why we divide Italy into north and south is because it makes our ggplot more clear.
 
-North Italy
+### North Italy
 
 ```{r}
 #| echo: FALSE
@@ -310,7 +310,7 @@ merged_data |>
 
 Outliners: ITC4C (milano) og til dels ITH10 (boltzano)
 
-South Italy
+### South Italy
 
 ```{r}
 #| echo: FALSE
@@ -338,7 +338,7 @@ merged_data |>
 
 Outliners: ITI14(Chieti), ITI43(Taranto).
 
-Sweden
+### Sweden
 
 ```{r}
 #| echo: FALSE
@@ -373,7 +373,7 @@ The natural explanation for this would be the financial crisis in 2008.
 The data also shows a reduction in 2019 - 2020 in many sub-regions that can be linked to covid 19.
 The reason why not all sub-regions had this drop may be that large parts of Sweden did not comply with the restrictions linked to the infection of the virus.
 
-Croatia - became a member in 2012
+### Croatia - became a member in 2012
 
 ```{r}
 #| echo: FALSE
@@ -406,7 +406,7 @@ From the data set, we see that all the subregions have a similar trend pattern, 
 There are three sub regions in the form of HR031, HR036 and HR037 which are Primorsko Goranska, Istrian and Dubrovnik-Neretva stand out with a higher GDP per Capita.
 All these sub-regions are located along the coast, and this would likley attract tourism.
 
-Serbia (EU candidate countries)
+### Serbia (EU candidate country)
 
 ```{r}
 #| echo: FALSE
@@ -478,9 +478,7 @@ group_by(nuts2, year) |>
 
 ```
 
-### Data Presentation.
-
-A
+### Data Presentation
 
 ```{r, echo=FALSE}
 #| fig.height = 15, fig.width = 12
