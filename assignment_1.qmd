@@ -145,6 +145,7 @@ merged_data <- merge(gdp_filtered, pop, by = "geo") |>
 
 ```{r}
 #| echo: FALSE
+# merging the two datasets from eurostat and removing NA and zero values
 merged_data <- merge(gdp_filtered, pop, by = c("geo","year"), all = TRUE) |> 
 filter(!is.na(Population),
          Population != 0,
@@ -203,6 +204,7 @@ merged_data |>
 
 ```{r}
 #| echo: FALSE
+# Generates descriptive statistics for variables in plot for AT
 merged_data |> 
   filter(str_detect(geo, "AT")) |> 
   select(-1,-year) |> 
@@ -228,6 +230,7 @@ merged_data |>
 
 ```{r}
 #| echo: FALSE
+# Generates descriptive statistics for variables in plot for BE
 merged_data |> 
   filter(str_detect(geo, "BE")) |> 
   select(-1,-year) |> 
@@ -253,6 +256,7 @@ merged_data |>
 
 ```{r}
 #| echo: FALSE
+# Generates descriptive statistics for variables in plot for BG
 merged_data |> 
   filter(str_detect(geo, "BG")) |> 
   select(-1,-year) |> 
@@ -281,6 +285,7 @@ merged_data |>
 
 ```{r}
 #| echo: FALSE
+# Generates descriptive statistics for variables in plot for North Italy
 merged_data |> 
   filter(str_detect(geo, "ITCH|ITH")) |> 
   select(-1,-year) |> 
@@ -306,6 +311,7 @@ merged_data |>
 
 ```{r}
 #| echo: FALSE
+# Generates descriptive statistics for variables in plot for Southern italy
 merged_data |> 
   filter(str_detect(geo, "ITF|ITI|ITG")) |> 
   select(-1,-year) |> 
@@ -331,6 +337,7 @@ merged_data |>
 
 ```{r}
 #| echo: FALSE
+# Generates descriptive statistics for variables in plot for SE
 merged_data |> 
   filter(str_detect(geo, "SE")) |> 
   select(-1,-year) |> 
@@ -365,6 +372,7 @@ merged_data |>
 
 ```{r}
 #| echo: FALSE
+# Generates descriptive statistics for variables in plot for HR
 merged_data |> 
   filter(str_detect(geo, "HR")) |> 
   select(-1,-year) |> 
@@ -390,6 +398,7 @@ merged_data |>
 
 ```{r}
 #| echo: FALSE
+# Generates descriptive statistics for variables in plot for RS
 merged_data |> 
   filter(str_detect(geo, "RS")) |> 
   select(-1,-year) |> 
@@ -422,11 +431,8 @@ merged_data <- merged_data |>
 
 ```{r}
 #| echo: FALSE
-#Grouping NUTS3 to NUTS2
-# group_by(id:nuts2, year) %>%
-# mutate(id:nuts3) = substr(id_nuts3, 1,4)
-# select(id:nuts3, gdp:nuts3, year)
-# #
+# Grouping NUTS3 to NUTS2
+# Adding the gini coefficient to the gpd pr capita variable and weighing by population (grouped by nuts2)
 merged_data <- merged_data |> 
   filter(!is.na(Population),
          Population != 0,
@@ -443,58 +449,27 @@ group_by(nuts2, year) |>
 
 ### Data Presentation.
 
-Austria
+A
 
-```{r}
-#| echo: FALSE
-merged_data |> 
-  filter(str_detect(nuts2, "AT")) |> 
-  ggplot(mapping = aes(
-  x = year, 
-  y = gini_n2, 
-  colour = geo
-)) + 
-  geom_line()
-```
-
-```{r}
-
-#| echo: FALSE
-# Nuts2 for AT
-merged_data |> 
-  filter(str_detect(geo, "AT")) |> 
-ggplot(mapping = aes(
-  x = year, 
-  y = gini_n2, 
-  colour = geo
-)) + 
-  geom_point()
-# Variation over time 
-# Focus on one year
-# scatterplot, x axis nuts 2 and y axid population
-# x axis nuts region 1, 2, 3
-
-# Variation over time 
-# Focus on one year
-# scatterplot, x axis nuts 2 and y axid population
-# x axis nuts region 1, 2, 3
-```
-
-```{r}
+```{r, echo=FALSE}
 #| fig.height = 15, fig.width = 12
+# Added fig arguments in chunk in order to control the size of the facet wraps and colourgraded the gini coefficient intervals
 merged_data |> 
   ggplot(mapping = aes(
     year, gini_n2, colour = gini_n2
   )) +
   geom_point(alpha = 1, size = 1, stroke = 1,) +
-  scale_colour_gradient(low = "blue", high = "red") +
-  facet_wrap(~ nuts0, ncol = 2, scales = "free", shrink = FALSE)
+  scale_colour_gradient(low = "skyblue", high = "red") +
+  facet_wrap(~ nuts0, ncol = 2, scales = "free", shrink = FALSE) +
+               labs(title = "Visualization of the gini coefficient intervals in each country", size = 20) +
+  theme(plot.title = element_text(size = 20))
+
 
    
 ```
 
-```{}
+```         
 ```
 
-```{}
+```         
 ```
