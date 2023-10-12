@@ -216,7 +216,7 @@ merged_data |>
   st("GDP_pc_n3", add.median = TRUE)
 ```
 
-Outliners: None
+Outliers: None
 
 The sub-regions follow the same trends in GDP per per capita, with certain exceptions linked to a marked decrease in AT331 (Außerfern) in connection with 2008 (the financial crisis).
 This may be due to the fact that this is an administrative district, and is often more exposed to a financial crisis.
@@ -256,7 +256,7 @@ merged_data |>
    st("GDP_pc_n3", add.median = TRUE)
 ```
 
-The data set shows us that we have an outliner in the form of BE100 (Brussels) which has a significantly higher GDP per capita.
+The data set shows us that we have an outliers in the form of BE100 (Brussels) which has a significantly higher GDP per capita.
 This has a natural connection with the fact that Brussels is the capital of Belgium, and has a higher traffic for trade than the other sub-regions.
 
 Summarized by the data set, Belgium has a minimum value and a maximum value of 12756 and 71959 gdp per year respectively.
@@ -331,7 +331,7 @@ merged_data |>
   st("GDP_pc_n3", add.median = TRUE)
 ```
 
-Outliners: ITC4C (milano) og til dels ITH10 (boltzano)
+Outliers: ITC4C (milano) og til dels ITH10 (boltzano)
 
 In summary of the data set, Northern Italy has a minimum value and a maximum value of 19,555 and 55,890 gdp respectively.
 capita, with a standard deviation of 5107.
@@ -365,7 +365,7 @@ merged_data |>
    st("GDP_pc_n3", add.median = TRUE)
 ```
 
-Outliners: ITI14(Chieti), ITI43(Taranto).
+Outliers: ITI14(Chieti), ITI43(Taranto).
 
 Summarized by the data set, Southern Italy has a minimum value and a maximum value of 11713 and 42801 gdp per year respectively.
 capita, with a standard deviation of 5302.
@@ -483,7 +483,7 @@ The reason why the dataset lacks GDP per capita in Serbia from 2000 - 2017 is ex
 It is therefore partly unclear where we get data from 2017 - 2020, but can be explained by the fact that Serbia applied to join the EU in December 2009, and received the status of "EU candidate" in March 2012.
 The reason why there is no data dating back to 2012 may have a connection with the fact that this is a war-torn country.
 
-In the data set, there is an outliner RS221 (Bor region) which stands out significantly in the form of a higher GDP per capita, but also a significant increase in GDP per capita from 2018 - 2020 for approx 5,800 £ to 8,000 £ GDP per capita.
+In the data set, there is an outliers RS221 (Bor region) which stands out significantly in the form of a higher GDP per capita, but also a significant increase in GDP per capita from 2018 - 2020 for approx 5,800 £ to 8,000 £ GDP per capita.
 The rest of the sub-regions follow the same trends in GDP per capita, but differ, on the other hand, in that the sub-regions lie in the interval between approximately 2,500 £ to 3,600£ and 4,000 £ to 5,200 £.
 This may indicate that the sub-regions are grouped in 2 different intervals in GDP per capita
 
@@ -581,3 +581,8 @@ This attracts tourism and a spike in the regions GDP.
 ### Belgium (East Flanders: BE23)
 
 Explained by the span of GDP per capita in sub-regions where the highest GDP per capita being 49 964 and the lowest 17 401, while the average spans between \[17 000:21 000\].
+
+### Not included countries
+
+We have not included the following countries based on a lack of observations on level 3 data.
+Croatia has 140 observations , Serbia has 68 and Bosnia and Herzegovina became a EU candidate in 2022 and because of this lacks any data.
