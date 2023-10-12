@@ -75,10 +75,10 @@ demo_r_pjanaggr3_linear_csv |>
 In order to substract the countries in focus, we have used the metadata provided by Eurostat to filter out the data and variables of interest, using their respective country codes.
 The variables we are interested in are the following:
 
--   geo = Tells us which country and sub-region we are looking at
--   time_period = Observed years
--   obs_value = The value of the observation
--   Unit = Currency
+-   **geo** = Tells us which country and sub-region we are looking at on a NUTS3 level
+-   **time_period** = Observed years
+-   **obs_value** = The value of the observation
+-   **Unit** = Currency (Million Euros)
 
 By filtering out irrelevant data and variables and rearranging the dataset to provide a clearer view, results with the following datasets:
 
@@ -158,19 +158,17 @@ filter(!is.na(Population),
 
 ### 2. GDP per capita calculation
 
-In order to visualize the GDP per capita, we have merged the two datasets together and added a new variable that executes this formula in order to generate the GDP per capita for every country.
+In order to visualize the GDP per capita, we have merged the two datasets together and added a new variable that executes this formula in order to generate the GDP per capita for every sub region on a NUTS3 level.
 
 $$
-y_i = \frac{\textit{GDP}_i}{\textit{population}_i}$$
+y_i = \frac{\textit{GDP}_i}{\textit{population}_i} * 10^6$$
 
-It is worth noting that the GDP data from Eurostat is represented in million euros,, meaning that 1 in this case, equals 1 million euros.
-0.1 represent 100 000 euros, and so on.
-This will be consistent through all our visualized data.
+IFor making the visualized data easily readable, we decided to multiply the formula by one million, as this will show the GDP per capita with the full number in Euros.
 
 GDP or Gross Domestic Product is a measure of value creation in a country.
-This is described by Eurostat to be "a measure of economic activity, defined as the value of all goods and services produced minus the value of any goods or services used in their creation" @eurosta2023.
-How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes" @eurostat2023.
-To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth" @eurostat2023.
+This is described by Eurostat to be "*a measure of economic activity, defined as the value of all goods and services produced minus the value of any goods or services used in their creation*" @eurosta2023.
+How Eurostat calculates the annual growth rate in GDP "*comparisons of the dynamics of economic development both over time and between economies of different sizes*" @eurostat2023.
+To measure the growth rate of GDP over time "*in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth*" @eurostat2023.
 
 ```{r}
 #| echo: FALSE
@@ -308,7 +306,7 @@ merged_data |>
 #| echo: FALSE
 # Generates descriptive statistics for variables in plot for North Italy
 merged_data |> 
-  filter(str_detect(geo, "ITCH|ITH")) |> 
+  filter(str_detect(geo, "ITC|ITH")) |> 
   select(-1,-year) |> 
   st("GDP_pc_n3", add.median = TRUE)
 ```
@@ -453,7 +451,18 @@ The reason why Bosnia and Herzegovina lacks data from 2000 - 2020 in Eurostat is
 
 ### 1. Literature review
 
+The Gini coefficient is a measurement for inequality, used in regions to measure the inequalities in sub regions of a country @lessmann2017 .
+We have used the weighted Gini coefficient which takes a regions GDP per capita with regards to population, The reasoning behind this is to get the true Gini coefficient, and not omit the population variable, as it is a important variable for explaining a regions inequality.
+
 ### 2. Gini coefficient calculation
+
+In order to calculate the Gini coefficient for NUTS2 regions using NUTS3 data, we first have to group population and GDP per capita of the level 3 data to level 2.
+This has been done by subtracting the common denominator, country codes.
+Grouping makes it possible to utilize the formula by weighing the level 2 regions GDP per capita by population, as seen below.
+
+$$
+GINW_j=\frac{1}{2 \bar{y_j}} \sum_{i}^{n_j}\sum_{l}^{n_j}\frac{p_i}{P_j} \frac{p_l}{P_j} |y_i-y_l|
+$$
 
 ```{r}
 #| echo: FALSE
