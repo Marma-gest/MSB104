@@ -1,6 +1,6 @@
 ---
 title: "assignment_1"
-format: html
+format: pdf
 editor: visual
 bibliography: [MSB104.bib, MSB104_Assignment.bib]
 author: Marius Martinussen, Espen Knutsen
@@ -179,7 +179,7 @@ To measure the growth rate of GDP over time "in volume, GDP in current prices is
 # Adding GDP variable by deviding gdp on population
 merged_data <- merged_data |> 
   mutate(
-    GDP_pc_n3 = GDP / Population
+    GDPpcn3 = GDP / Population
   )
 ```
 
@@ -189,7 +189,7 @@ merged_data <- merged_data |>
 #| echo: FALSE
 # Adding GDP variable by deviding gdp on population
 merged_data <- merged_data |> 
-  mutate(GDP_pc_n3 = (GDP / Population)*1000000)
+  mutate(GDPpcn3 = (GDP / Population)*1000000)
 ```
 
 ### Austria
@@ -200,7 +200,7 @@ merged_data |>
   filter(str_detect(geo, "AT")) |> 
   ggplot(mapping = aes(
   x = year, 
-  y = GDP_pc_n3, 
+  y = GDPpcn3, 
   colour = geo,
 )) + 
   geom_line() +
@@ -215,7 +215,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "AT")) |> 
   select(-1,-year) |> 
-  st("GDP_pc_n3", add.median = TRUE)
+  st("GDPpcn3", add.median = TRUE)
 ```
 
 Outliers: None
@@ -240,7 +240,7 @@ merged_data |>
   filter(str_detect(geo, "BE")) |> 
   ggplot(mapping = aes(
   x = year, 
-  y = GDP_pc_n3, 
+  y = GDPpcn3, 
   colour = geo
 )) + 
   geom_line() +
@@ -255,7 +255,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "BE")) |> 
   select(-1,-year) |> 
-   st("GDP_pc_n3", add.median = TRUE)
+   st("GDPpcn3", add.median = TRUE)
 ```
 
 The data set shows us that we have an outliers in the form of BE100 (Brussels) which has a significantly higher GDP per capita.
@@ -275,7 +275,7 @@ merged_data |>
   filter(str_detect(geo, "BG")) |> 
   ggplot(mapping = aes(
   x = year, 
-  y = GDP_pc_n3, 
+  y = GDPpcn3, 
   colour = geo
 )) + 
   geom_line() +
@@ -290,7 +290,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "BG")) |> 
   select(-1,-year) |> 
-   st("GDP_pc_n3", add.median = TRUE)
+   st("GDPpcn3", add.median = TRUE)
 ```
 
 The explanation behind the significantly higher GDP per capita.
@@ -315,7 +315,7 @@ merged_data |>
   filter(str_detect(geo, "ITC|ITH")) |> 
   ggplot(mapping = aes(
   x = year, 
-  y = GDP_pc_n3, 
+  y = GDPpcn3, 
   colour = geo
 )) + 
   geom_line() +
@@ -330,7 +330,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "ITC|ITH")) |> 
   select(-1,-year) |> 
-  st("GDP_pc_n3", add.median = TRUE)
+  st("GDPpcn3", add.median = TRUE)
 ```
 
 Outliers: ITC4C (milano) og til dels ITH10 (boltzano)
@@ -349,7 +349,7 @@ merged_data |>
   filter(str_detect(geo, "ITF|ITI|ITG")) |> 
   ggplot(mapping = aes(
   x = year, 
-  y = GDP_pc_n3, 
+  y = GDPpcn3, 
   colour = geo
 )) + 
   geom_line() +
@@ -364,7 +364,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "ITF|ITI|ITG")) |> 
   select(-1,-year) |> 
-   st("GDP_pc_n3", add.median = TRUE)
+   st("GDPpcn3", add.median = TRUE)
 ```
 
 Outliers: ITI14(Chieti), ITI43(Taranto).
@@ -383,7 +383,7 @@ merged_data |>
   filter(str_detect(geo, "SE")) |> 
   ggplot(mapping = aes(
   x = year, 
-  y = GDP_pc_n3, 
+  y = GDPpcn3, 
   colour = geo
 )) + 
   geom_line() +
@@ -398,7 +398,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "SE")) |> 
   select(-1,-year) |> 
-   st("GDP_pc_n3", add.median = TRUE)
+   st("GDPpcn3", add.median = TRUE)
 ```
 
 Sweden: We have an extreme value in the form of a significantly higher GDP per capita in sub region SE110 which is Stockholm.
@@ -424,7 +424,7 @@ merged_data |>
   filter(str_detect(geo, "HR")) |> 
   ggplot(mapping = aes(
   x = year, 
-  y = GDP_pc_n3, 
+  y = GDPpcn3, 
   colour = geo
 )) + 
   geom_line() +
@@ -439,7 +439,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "HR")) |> 
   select(-1,-year) |> 
-   st("GDP_pc_n3", add.median = TRUE)
+   st("GDPpcn3", add.median = TRUE)
 ```
 
 From the data set we see that Croatia are missing populationdata in the subregions HR050, HR061- HR065 and HR021 - HR028.
@@ -463,7 +463,7 @@ merged_data |>
   filter(str_detect(geo, "RS")) |> 
   ggplot(mapping = aes(
   x = year, 
-  y = GDP_pc_n3, 
+  y = GDPpcn3, 
   colour = geo
 )) + 
   geom_line() +
@@ -478,7 +478,7 @@ merged_data |>
 merged_data |> 
   filter(str_detect(geo, "RS")) |> 
   select(-1,-year) |> 
-   st("GDP_pc_n3", add.median = TRUE)
+   st("GDPpcn3", add.median = TRUE)
 ```
 
 The reason why the dataset lacks GDP per capita in Serbia from 2000 - 2017 is explained by the fact that Serbia is an EU candidate and not part of the EU.
@@ -533,13 +533,13 @@ merged_data <- merged_data |>
 merged_data <- merged_data |> 
   filter(!is.na(Population),
          Population != 0,
-         GDP_pc_n3 != 0, 
-         GDP_pc_n3 != "NA"
+         GDPpcn3 != 0, 
+         GDPpcn3 != "NA"
   ) |> 
 group_by(nuts2, year) |> 
-  mutate(gini_n2 = gini.wtd(GDP_pc_n3, Population)) |> 
+  mutate(gini_n2 = gini.wtd(GDPpcn3, Population)) |> 
   ungroup() |> 
-  select(nuts0, nuts2, geo, year, GDP, Population, GDP_pc_n3, gini_n2)
+  select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2)
 
 
 ```
