@@ -1,0 +1,793 @@
+---
+title: "Assignment 1: Data and Descriptive"
+author: "Asbjørn Gaard & René Rødde Bracci"
+format: html
+editor: visual
+bibliography: [MSB104_Assignment1.bib]
+---
+
+```{r}
+#| label: setup
+#| output: false
+#| message: false
+#| echo: false
+library(eurostat)
+library(dineq)
+library(tidyverse)
+library(gridExtra)
+library(modelr)
+library(grid)
+library(ggplotify)
+library(vtable)
+library(dplyr)
+library(dineq)
+```
+
+# Introduction
+
+This paper presents GDP per capita and regional inequity for Germany, Finland and Romania.
+Furthermore, the paper discusses numbers we calculated from the downloaded data from Eurostat.
+A complete overview of the numbers is attached in the appendix.
+
+# Sub-national GDP and GDP per Capita
+
+## **Data Acquisition**
+
+### Population per sub-region in DE, FI & RO
+
+```{r}
+#| echo: false
+# Downloaded file for population in DE (Germany), FI (Finland) and RO (Romania). Furthermore, we load up the file i RStudio by import the file in Library(readr). Moreover, we commended RStudio to read the file "demo_r_pjanaggr3_page_linear_csv". Additionally, we implement the function na = "NA" for RStudio to read the missing values. Lastly, we add the function "show_col_types = FALSE" to prevent RStudio displaying the column data types while reading the file. 
+library(readr)
+demo_r_pjanaggr3_page_linear_csv <- read_csv("demo_r_pjanaggr3_page_linear.csv.gz", 
+    na = "NA", show_col_types = FALSE)
+```
+
+```{r}
+#| echo: false
+# First step is to rename the file for the assigned countries (DE, FI & RO). Furthermore, we utilize the function filter with str_sub considering a better overview of relevant dataset. Lastly, we are interested in population in every sub_regionals in the relevant contries. To receive and organise the relevant data, the function "Select" is used.  
+DE_FI_RO_pop <- demo_r_pjanaggr3_page_linear_csv |>
+	filter(str_sub
+	       (geo, start = 1L, end = 2L) %in% c("DE", "FI", "RO")) |>
+	select(Year = TIME_PERIOD, Sub_regions = geo, Population = OBS_VALUE)
+```
+
+```{r}
+#| echo: false
+#| paged.print: false
+#| tbl-cap: Population per sub-region in DE, FI & RO
+# Table with overview of population per region in the countries of Germany, Finland and Romania.
+DE_FI_RO_pop |> 
+  print(
+    n = 5 ,
+    width = 100 ,
+    )
+```
+
+## GDP per sub-region in DE, FI & RO
+
+```{r}
+#| echo: false
+# Download file for GDP in DE (Germany), FI (Finland) and RO (Romania). Furthermore, we load up the file i RStudio by import the file in Library(readr). Moreover, we commend RStudio to read the file "nama_10r_3gdp_page_linear_csv". Additionally, we implement the function na = "NA" for RStudio to read the missing values. Lastly, we add the function "show_col_types = FALSE" to prevent RStudio displaying the column data types while reading the file. 
+library(readr)
+nama_10r_3gdp_page_linear_csv <- read_csv("nama_10r_3gdp_page_linear.csv.gz", 
+    na = "NA", show_col_types = FALSE)
+```
+
+```{r}
+#| echo: false
+# First step is to rename the file for the assigned countries (DE, FI & RO). Furthermore, we utilize the function filter with str_sub considering a better overview of relevant dataset. Lastly, we are interested in population in every sub_regionals in the relevant contries. To receive and organise the relevant data, the function "Select" is used.  
+DE_FI_RO_gdp <- nama_10r_3gdp_page_linear_csv |>
+	filter(str_sub
+	       (geo, start = 1L, end = 2L) %in% c("DE", "FI", "RO")) |>
+	select(Year = TIME_PERIOD, Sub_regions = geo, GDP = OBS_VALUE)
+```
+
+```{r}
+#| echo: false
+#| paged.print: false
+#| tbl-cap: GDP per sub-region in DE, FI & RO
+# Table with overview of GPD per region in the countries of Germany, Finland and Romania.
+DE_FI_RO_gdp |> 
+  print(
+    n = 5 ,
+    width = 100 ,
+    )
+```
+
+### Overview of presented datasets and structure
+
+The first dataset we downloaded from Eurostat was **demo_r_pjanaggr3,** which contains population data from Europe.
+In our case, we have selected population data from Finland, Germany and Romania.
+According to @eurostat2021, the dataset of demography is a set of statistical numbers each country in Europe sends yearly to Eurostat by 31 December of the following calendar year.
+Furthermore, the definition of "population" is, according to @eurostat2021, all persons having their residences in a member state, including all live births and deaths during the year when the statistical numbers are heading to Eurostat.
+Moreover, the demographic data at a regional level are separated into different groups named NUTS, which are defined as nomenclature for territorial units for statistics [@eurostat2021].
+The purpose of the NUTS function is to subdivide the territory of the European Union into 104 regions at NUTS level 1 and break it down by to 281 at NUTS level 2 and 1348 at NUTS level 3 [@eurostat2021].
+In the beginning of this paper, we have focused on the numbers of NUTS 3 level, but the dataset containing population data has been broken down by sex and broad age groups (0-14, 15-64 and 65 or more).
+
+The following dataset we downloaded from Eurostat was the **nama_10r_3gdp dataset**.
+Furthermore, this dataset is also broken down to NUTS level 3 which focus on GDP data from the sub-regions in Finland, Germany and Romania.
+According to @eurostat2023, GDP (Gross domsetsic product) at market prices is defined as the final result of the production activity of resident producer units [@eurostat2023].
+
+## **GDP per Capita Calculation**
+
+```{r}
+#| echo: false
+# Merging data
+merged_data <- merge(DE_FI_RO_pop, DE_FI_RO_gdp) 
+```
+
+```{r}
+#| echo: false
+# Step one: choose dataset for transformation. 
+# Step two: mutate and create new column (GDP_per_capita)
+merged_data <- merged_data |> 
+  mutate(
+    GDP_per_capita = 1000000 * GDP/Population
+    )
+```
+
+```{r}
+#| echo: false
+# Creating new dataset only containing population, GDP and GDP per capita
+merged_data_GDPpc <- merged_data %>%
+  select(Population, GDP, GDP_per_capita)
+```
+
+```{r}
+#| echo: false
+#| tbl-cap: GDP per Capita Calculation
+# Summary for viewing the new dataset. 
+summary(merged_data_GDPpc) 
+```
+
+### Calculation steps
+
+$$
+y_i = \frac{\textit{GDP}_i}{\textit{population}_i}
+$$
+
+The first step in calculating GDP per capita for each sub-region, was to merge the two datasets of GDP and population.
+We named the new dataset merged_data.
+Furthermore, we started with transforming the new dataset by creating a new column called GDP_per_capita.
+We calculated GDP per capita by using the formula GDP divided by Population, but to view more presentable numbers, we multiplied the formula with 1 000 000 since we want to provide GDP per capita in million EURO.
+Lastly, we created another new dataset called merged_data_GDPpc and provided the summary function to get an overview of various summary statistics and information for each column in the merged_data_GDPpc dataset.
+
+## Descriptive Analysis
+
+### Germany
+
+```{r}
+#| echo: false
+#| warning: false
+# Create new dataset called GDP_DE_nuts2.
+# Filter sub-regions from Germany by using str_sub to extract a substring from the Sub_regions columns containing the letters DE for Germany.
+# Creating new column called id_nuts2 to save the new data for calculating Gini coefficient, for presenting the numbers of regional inequity in Germany at NUTS2 level.
+# Next step is to group the numbers of NUTS2 level sorted by the the code of the region in NUTS2 level and year.
+# Finally summarise the Gini coefficient numbers of each German region in NUTS2 level by multiplying 1 000 000 with GDP divided by population. 
+GDP_DE_nuts2 <- merged_data %>%
+  filter(
+    str_sub(Sub_regions, start = 1L, end = 2L) == "DE"
+  ) |> 
+  mutate(
+    id_nuts2 = fct(str_sub(Sub_regions, start = 1L, end = 4L))
+  ) |> 
+  group_by(id_nuts2, Year) %>%
+  summarise(
+    GDP_per_capita_nuts2_DE = sum(1000000*GDP)/sum(Population)
+    ) 
+```
+
+```{r}
+#| echo: false
+# Since Germany contains many regions, we have deceided to present them in two new values.
+# DEz1North and DEz2SOUTH are the two values where we have devided Germany in South and North. 
+# Created a combined value consisting of the Northern and Southern part of Germany.
+DEz1NORTH <- c("DE30", "DE40", "DE50", "DE60", "DE80", "DE91", "DE92", "DE93", "DE94", "DEA1", "DEA2", "DEA3", "DEA4", "DEA5", "DEE0", "DEF0", "DEG0") 
+DEz2SOUTH <- c("DE11", "DE12", "DE13", "DE14", "DE21", "DE22", "DE23", "DE24", "DE25", "DE26", "DE27", "DE71", "DE72", "DE73", "DEB1", "DEB2", "DEB3", "DEC0", "DED2", "DED4", "DED5")
+DE <- c(DEz1NORTH, DEz2SOUTH)
+```
+
+```{r}
+#| label: fig-regional_gdp_per_year_NG
+#| echo: false
+#| cap-location: bottom
+#| fig-cap: "GDP per capita in year - Northern Germany"
+# First step is to place the location of the figure caption and name it.
+# Secondly, we filter GDP_DE_nuts2 to contain the values in Northern Germany (DEz1NORTH) from column id_nuts2.
+# Thirdly, we represent the data in GPD_DE_nuts2 by mapping them in a plot using ggplot, where the x-axis represents year and y-axis represents GPD_per_capita. Furthermore the colour is determined by id_nuts2.
+# Fourthly, we use geom_line since this gives a accurate description of our data from Germany.
+GDP_DE_nuts2 |>
+  filter(
+    id_nuts2 %in% DEz1NORTH
+  ) |> 
+  ggplot(mapping = aes(
+    x = Year, 
+    y = GDP_per_capita_nuts2_DE, 
+    colour = id_nuts2)
+    ) +
+  geom_line()
+```
+
+```{r}
+#| label: fig-regional_gdp_per_year_SG
+#| echo: false
+#| #| cap-location: bottom
+#| fig-cap: "GDP per capita in year - Southern Germany"
+# Duplicating the same steps for Southern Germany (DEz2SOUTH) as for the Northern part. 
+GDP_DE_nuts2 |>
+  filter(
+    id_nuts2 %in% DEz2SOUTH
+  ) |> 
+  ggplot(mapping = aes(
+    x = Year, 
+    y = GDP_per_capita_nuts2_DE, 
+    colour = id_nuts2)
+    ) +
+  geom_line()
+```
+
+```{r}
+#| echo: false
+# Creating new dataset called desc_stat_DE_nuts2 and grouping it by year. 
+# Using the summarise() function to summarize various statistics for each year. 
+desc_stat_DE_nuts2 <- GDP_DE_nuts2 |> 
+  group_by(Year) |> 
+  summarise(
+    min_GDP_each_year = min(GDP_per_capita_nuts2_DE),
+    max_GDP_each_year = max(GDP_per_capita_nuts2_DE),
+    median_GDP_each_year = median(GDP_per_capita_nuts2_DE),
+    mean_GDP_each_year = mean(GDP_per_capita_nuts2_DE),
+    sd_GDP_each_year = sd(GDP_per_capita_nuts2_DE),
+    var_GDP_each_year = sd_GDP_each_year^2
+  )
+```
+
+#### Description of the numbers from German regions
+
+In order to achieve a presentable figure showing GDP per year for the German sub-regions, we decided to divide the data into Northern and Southern Germany.
+This prevented the data from becoming overly clustered and improved our ability to interpret the graphs.
+The first figure presents data for Northern Germany, and the second figure presents data for Southern Germany.
+
+In @fig-regional_gdp_per_year_NG we see that there is a relatively similar trend in GDP growth per year from 2000 to 2020, with the exception of one outlier.
+This is the top graph which has a much higher GDP per capita than the other regions.
+This region is Hamburg (DE60), which is located in Northern Germany, which had a GDP per capita of 45,659 € in 2000, and 64,366 € in 2020.
+Hamburg is home to a diverse range of industries, including maritime trade, logistics, manufacturing, aviation, and media.
+Also, the Port of Hamburg is one of Europe's largest and busiest ports.
+
+The region with the lowest GDP per capita was Thüringen (DEG0), which is located in Northern Germany, with a GDP of 16,139 € in 2000, and 28,874 € in 2020.
+Thüringen has a relatively small and less diversified economy compared to other German states.
+It relies heavily on traditional industries such as agriculture and manufacturing, which may not contribute significantly to GDP.
+We also note that there is a significant fall in GDP per capita in 2010 for the region Mecklenburg-Vorpommern (DE80).
+
+In @fig-regional_gdp_per_year_SG we see that there is a relatively similar trend in GDP growth per year from 2000 to 2020, with the exception of three outliers.
+The first outlier is the top graph (Hamburg) which is significantly higher than the rest.
+The two other outliers are the second and third highest graphs, which are also significantly higher, however lower than Hamburg.
+These regions are Braunschweig (DE91), where we find Wolfsburg, and Bremen (DE50).
+We also note that there is a significant fall in GDP per capita in 2010 for the regions Chemnitz (DED4) and Leipzig (DED5).
+
+In Germany in 2000, GDP per capita had an average value (mean) of 25,593 €.
+The median value of 24,894 € indicates that the distribution is slightly skewed to the left, with about half of the population having values below the mean.
+The standard deviation of 5,872 € quantifies the extent of variation around the mean, suggesting a moderate level of variability in GDP per capita across the population.
+
+In 2020, GDP per capita had an average value (mean) of 39,439 €.
+The median value of 38,941 € indicates that the distribution is slightly skewed to the left, with about half of the population having values below the mean.
+The higher standard deviation of 8,267 € compared to 2000 quantifies the extent of variation around the mean, suggesting a relatively higher level of variability in economic indicators across the population in 2020.
+
+We can also observe that there is a slope in both figures from 2007 to 2009.
+This is most likely caused by the Financial Crisis (2007-2008), which caused the GDP per capita to decline.
+There is also a slope in both figures in 2019, which is most likely due to Covid-19.
+
+### Finland
+
+```{r}
+#| echo: false
+#| warning: false
+# Create new dataset called GDP_FI_nuts2.
+# Filter sub-regions from Finland by using str_sub to extract a substring from the Sub_regions columns containing the letters FI for Finland.
+# Creating new column called id_nuts2 to save the new data for calculating Gini coefficient, for presenting the numbers of regional inequity in Finland at NUTS2 level.
+# Next step is to group the numbers of NUTS2 level sorted by the the code of the region in NUTS2 level and year.
+# Finally summarise the Gini coefficient numbers of each Finnish region in NUTS2 level by multiplying 1 000 000 with GDP divided by population. 
+GDP_FI_nuts2 <- merged_data %>%
+  filter(
+    str_sub(Sub_regions, start = 1L, end = 2L) == "FI"
+  ) |> 
+  mutate(
+    id_nuts2 = fct(str_sub(Sub_regions, start = 1L, end = 4L))
+  ) |> 
+  group_by(id_nuts2, Year) %>%
+  summarise(
+    GDP_per_capita_nuts2_FI = sum(1000000*GDP)/sum(Population)
+    ) 
+```
+
+```{r}
+#| label: fig-regional_gdp_per_year_FI
+#| echo: false
+#| #| cap-location: bottom
+#| fig-cap: "GDP per capita in year - Finland"
+# First step is to place the location of the figure caption and name it.
+# Secondly, we filter GDP_FI_nuts2 to contain the regions in Finland from column id_nuts2.
+# Thirdly, we represent the data in GPD_FI_nuts2 by mapping them in a plot using ggplot, where the x-axis represents year and y-axis represents GPD_per_capita. Furthermore the colour is determined by id_nuts2.
+# Fourthly, we use geom_line since this gives a accurate description of our data from Finland
+GDP_FI_nuts2 |>
+  ggplot(mapping = aes(
+    x = Year, 
+    y = GDP_per_capita_nuts2_FI, 
+    colour = id_nuts2)
+    ) +
+  geom_line()
+```
+
+```{r}
+#| echo: false
+# Creating new dataset called desc_stat_FI_nuts2 and grouping it by year. 
+# Using the summarise() function to summarize various statistics for each year. 
+desc_stat_FI_nuts2 <- GDP_FI_nuts2 |> 
+  group_by(Year) |> 
+  summarise(
+    min_GDP_each_year = min(GDP_per_capita_nuts2_FI),
+    max_GDP_each_year = max(GDP_per_capita_nuts2_FI),
+    median_GDP_each_year = median(GDP_per_capita_nuts2_FI),
+    mean_GDP_each_year = mean(GDP_per_capita_nuts2_FI),
+    sd_GDP_each_year = sd(GDP_per_capita_nuts2_FI),
+    var_GDP_each_year = sd_GDP_each_year^2
+  )
+```
+
+#### Description of the numbers from Finnish regions
+
+In @fig-regional_gdp_per_year_FI we see that there is a relatively similar trend in GDP growth per year from 2000 to 2020, with the exception of two outliers.
+The first one is the graph at the top which has a much higher GDP per capita than the other regions.
+This region is Helsinki-Uusimaa (FI1B) which had a GDP per capita of 36,478 € in 2000, and 55,750 € in 2020.
+Helsinki, the capital of Finland, is located in the Uusimaa region.
+Being the largest city and the national capital, Helsinki serves as the economic, financial, and cultural center of Finland.
+Furthermore, the region FI20 (Åland) experience a significant drop in GDP per capita from year 2017 to 2020.
+We assume that one of the reason of this drop in GDP per capita is regarding the pandemic resulting in less tourist visits on Åland.
+
+The region with the lowest GDP per capita was Pohjois- ja Itä-Suomi (FI1D), with a GDP of 20,605 € in 2000, and 36,072 € in 2020.
+Pohjois- ja Itä-Suomi is located in Northern and Eastern Finland, which characterized by their vast, sparsely populated areas and harsh climatic conditions.
+These factors can limit economic activities in certain sectors.
+
+In Finland in 2000, while the average GDP per capita was 27,201 €, there was moderate income inequality, with some segments of the population earning significantly more or less than the average.
+The difference between the mean (€27,201) and median (24,523 €) implies the presence of relatively high-income individuals or regions that influenced the mean value.
+
+In Finland in 2020, while the average GDP per capita was 41,669 €, there was a noticeable level of income inequality.
+Some segments of the population earned significantly more or less than the average, as evidenced by the difference between the mean (41,669 €) and median (38,178€).
+The presence of a right-skewed distribution indicates the influence of relatively high-income individuals or regions on the mean value.
+Also in the graphs for Finland we see the effects on GDP of the Financial Crisis (2007-2008) and Covid-19.
+Lastly, the devlopement in standard deviation from year 2000 until 2015 indicates that some regions stands out from the average GDP per capita.
+These regions are FI20 (Åland) and FI1B (Helsinki-Uusimaa).
+From year 2015 until 2020, we can see an reduction in standard deviation which indicates that the GDP per capita in different regions in Finland is more close to the average of GDP per capita in the country.
+
+### Romania
+
+```{r}
+#| echo: false
+#| warning: false
+# Create new dataset called GDP_RO_nuts2.
+# Filter sub-regions from Romania by using str_sub to extract a substring from the Sub_regions columns containing the letters RO for Romania
+# Creating new column called id_nuts2 to save the new data for calculating Gini coefficient, for presenting the numbers of regional inequity in Romania at NUTS2 level.
+# Next step is to group the numbers of NUTS2 level sorted by the the code of the region in NUTS2 level and year.
+# Finally summarise the Gini coefficient numbers of each Romanian region in NUTS2 level by multiplying 1 000 000 with GDP divided by population. 
+GDP_RO_nuts2 <- merged_data %>%
+  filter(
+    str_sub(Sub_regions, start = 1L, end = 2L) == "RO"
+  ) |> 
+  mutate(
+    id_nuts2 = fct(str_sub(Sub_regions, start = 1L, end = 4L))
+  ) |> 
+  group_by(id_nuts2, Year) %>%
+  summarise(
+    GDP_per_capita_nuts2_RO = sum(1000000*GDP)/sum(Population)
+    ) 
+```
+
+```{r}
+#| label: fig-regional_gdp_per_year_RO
+#| echo: false
+#| #| cap-location: bottom
+#| fig-cap: "GDP per capita in year - Romania"
+# First step is to place the location of the figure caption and name it.
+# Secondly, we filter GDP_RO_nuts2 to contain the regions in Romania from column id_nuts2.
+# Thirdly, we represent the data in GPD_RO_nuts2 by mapping them in a plot using ggplot, where the x-axis represents year and y-axis represents GPD_per_capita. Furthermore the colour is determined by id_nuts2.
+# Fourthly, we use geom_line since this gives a accurate description of our data from Romania
+GDP_RO_nuts2 |>
+  ggplot(mapping = aes(
+    x = Year, 
+    y = GDP_per_capita_nuts2_RO, 
+    colour = id_nuts2)
+    ) +
+  geom_line()
+```
+
+```{r}
+#| echo: false
+# Creating new dataset called desc_stat_RO_nuts2 and grouping it by year. 
+# Using the summarise() function to summarize various statistics for each year. 
+desc_stat_RO_nuts2 <- GDP_RO_nuts2 |> 
+  group_by(Year) |> 
+  summarise(
+    min_GDP_each_year = min(GDP_per_capita_nuts2_RO),
+    max_GDP_each_year = max(GDP_per_capita_nuts2_RO),
+    median_GDP_each_year = median(GDP_per_capita_nuts2_RO),
+    mean_GDP_each_year = mean(GDP_per_capita_nuts2_RO),
+    sd_GDP_each_year = sd(GDP_per_capita_nuts2_RO),
+    var_GDP_each_year = sd_GDP_each_year^2
+  )
+```
+
+#### Description of the numbers from Romanian regions
+
+In @fig-regional_gdp_per_year_RO we see that there is a very similar trend in GDP growth per year from 2000 to 2020, with the exception of one outlier.
+This is the top graph which has a much higher GDP per capita than the other regions.
+This region is București-Ilfov (RO32), which had a GDP of 3972 €, and 26,270 € in 2020.
+București (Bucharest) is not only the capital city of Romania, but also its economic and financial center.
+As the capital, it serves as the hub for government institutions, businesses, and financial organizations.
+
+The region with the lowest GDP per capita was Nord-Est (RO21), with a GDP of 1253 € in 2000, and 7478 € in 2020.
+Nord-Est has an economy that is predominantly based on agriculture, which tends to have lower productivity and lower value-added compared to other sectors such as manufacturing, services, or technology.
+
+In Romania in 2000, the average GDP per capita was 1889 €, however there was significant variation in income levels across different regions or segments of the population.
+The median (1619 €), being lower than the mean (1889 €), hints at the presence of income inequality or disparities in economic well-being.
+
+In 2020, the average GDP per capita was around 11,628 €, however there is still significant variation in income levels across different regions or segments of the population.
+The median (9822 €), being lower than the mean (11,628 €), hints at the presence of income inequality or disparities in economic well-being.
+Also in the graphs for Romania we see the effects on GDP of the Financial Crisis (2007-2008) and Covid-19.
+Lastly, the development in standard deviation from year 2000 until 2008 indicates that the region București-Ilfov (RO32) stands out from the average GDP per capita, but the drop in 2008 is maybe a result of the financial crisis.
+On the other hand, the same region has a an increase in the standard deviation from year 2009 to 2020 due to the GDP per capita in RO32 București-Ilfov increases more than the average of GDP per capita in remaining regions in Romania.
+
+# Regional inequity
+
+## Literature review
+
+Regional inequality shows variation in regional GDP per capita, and according to @lessmann_and_seidel2017, regional inequality occurs when one region experiences different assumptions than other regions.
+Moreover, when the level of economic development is high, there is significant regional inequality [@lessmann_and_seidel2017].
+According to @williamson1965, one crucial difference that leads to regional inequality is the access to natural resources.
+Regions rich in natural resources grow faster than regions in the rest of the country, which results in inequality.
+Furthermore, openness is another critical element of why regional inequality occurs.
+A region with more significant access to the international trade market than other regions with limited access will gain more from international trade if international trade costs decrease [@lessmann_and_seidel2017].
+
+Moreover, openness can also contribute to foreign investors investing in a more attractive region, e.g., access to natural resources.
+In the end, this led to an imbalance in regional equality.
+Additionally, mobility can provide regional inequality through differences in transport costs from one region to another [@lessmann_and_seidel2017].
+The differences in transport costs are caused, e.g. by fuel consumption per kilometre.
+ 
+
+Furthermore, another significant element creating regional inequality is bureaucracy, policy and stability in a country [@lessmann_and_seidel2017].
+Civil war affects the country's balance of regional equality and creates different assumptions.
+An example is regions in a country that experience increasing aid.
+Receiving assistance from foreign aid organisations creates inequality.
+Lastly, @lessmann_and_seidel2017 state that an area where ethnic groups dominate as a minority can result in regional inequity.
+
+Based on the research conducted by @lessmann_and_seidel2017, considering regional inequities is essential since it can influence economic outcomes.
+The research shows many examples of high- and low-income countries experiencing unbalanced regional development that results in income inequality [@lessmann_and_seidel2017].
+
+## GINI Coefficient Calculation
+
+```{r}
+#| echo: false
+# Creating two new columns in the dataset merged_data called id_nuts2 and id_nuts0. Secondly, extracting the first four characters of the Sub_regions column and assigns it to the new id_nuts2 column, as well as the first two characters and assigns them to the new id_nuts0 column. Lastly, remove grouping. 
+merged_data <- merged_data %>%
+  mutate(
+    id_nuts2 = substr(Sub_regions,1,4),
+    id_nuts0 = substr(Sub_regions,1,2)
+    ) %>%
+  ungroup()
+# Creating new dataset called merged_temp and group the data by id_nuts2 and Year. Use mutate to calculate a new column called gini_n2 using the gini.wtd function, which compute a weighted Gini coefficient based on GDP per capita. Finally, remove grouping. 
+merged_temp <- merged_data %>%
+  group_by(id_nuts2, Year) %>%
+  mutate(gini_n2 = gini.wtd(GDP_per_capita)) %>%
+  ungroup()
+```
+
+```{r}
+#| echo: false
+# Creating two new columns called id_nuts2 and id_nuts0. Secondly, extracting the first four characters of the Sub_regions column and assigns it to the new id_nuts2 column, as well as the first two characters and assigns them to the new id_nuts0 column. Lastly, choosing columns to be retained listed within the select function.
+merged_temp <- merged_temp %>%
+  mutate(id_nuts2 = substr(Sub_regions, 1,4),
+          id_nuts0 = substr(Sub_regions, 1,2)) %>%
+  select(Year, Sub_regions, Population, GDP, GDP_per_capita, id_nuts0, id_nuts2, gini_n2)
+```
+
+To calculate the population-weighted Gini coefficient for GDP for each European NUTS2 level region within Germany, Finland and Romania, we used the data on the GDP and population for the different regions and associated countries.
+The Gini coefficient measures income or wealth inequality within a population [@imfnd].
+In this case, we want to calculate the Gini coefficient for GDP, which is a measure of economic inequality.
+We calculated the Gini coefficient using the following formula:
+
+$$
+GINW_j=\frac{1}{2 \bar{y_j}} \sum_{i}^{n_j}\sum_{l}^{n_j}\frac{p_i}{P_j} \frac{p_l}{P_j} |y_i-y_l|
+$$
+
+We want to calculate the weighted average of the Gini coefficients based on the population of each region or country.
+We do this by calculating a new column called gini_n2 using mutate, and applying the gini.wtd function, which compute a weighted Gini coefficient based on GDP per capita.
+
+The population-weighted Gini coefficient provides a measure of economic inequality across all our regions and associated countries, taking into account their respective populations [@imfnd].
+A Gini coefficient close to 0 indicates a more equal distribution of income or wealth among the population.
+In societies with low Gini coefficients, there is relatively less income or wealth inequality, and resources are more evenly distributed among individuals or households.
+These societies tend to have a larger middle class and fewer people living in poverty or extreme wealth [@imfnd]
+
+A Gini coefficient close to 1 signifies a high level of income or wealth inequality.
+In societies with high Gini coefficients, a significant portion of the income or wealth is concentrated among a small percentage of the population, leading to pronounced disparities.
+These societies may have a large gap between the rich and the poor, with some individuals or households having substantially more resources than others [@imfnd].
+
+The zero values occur as a result of some regions are actually defined as a region, but in reality they are a foreign embassy, army base or offshore energy production with no permanent residence.
+This means they do not have any GDP per capita [@eurostat2021].
+Moreover, we assume that the zero values can also be a result of missing data report from different regions in Germany and Finland.
+
+## Data presentation and discussion
+
+### Germany
+
+```{r}
+#| echo: false
+# Firstly, we create a new dataset called Gini_stat_DE_nuts2. 
+# Secondly, we filter the data to include only rows where the id_nuts2 variable is in the DE group. 
+# Thirdly, after filtering, the data is grouped by the Year variable. This means that subsequent calculations will be performed separately for each year.
+# Lastly, we use summarise to calculates summary statistics for the gini_n2 variable within each group (each year). 
+Gini_stat_DE_nuts2 <- merged_temp %>%
+  filter(id_nuts2 %in% DE) |> 
+  group_by(Year) |> 
+  summarise(
+    min = min(gini_n2),
+    max = max(gini_n2),
+    median = median(gini_n2),
+    mean = mean(gini_n2),
+    sd = sd(gini_n2),
+    var = sd^2
+  )
+```
+
+```{r}
+#| label: fig-regional_gini_per_year_RO
+#| echo: false
+#| #| cap-location: bottom
+#| fig-cap: "GDP per capita in year - Germany"
+# Firstly, we add a table caption at the bottom of the figure. 
+# Secondly, we use the data from the dataset merged_temp and the function filter to ensure that the data we receive only represents Germany. 
+# Thirdly, we use the function ggplot to presentate the Gini coefficient numbers from Germany in a geom_point. 
+merged_temp |>
+  filter(id_nuts2 %in% DE) |>
+  ggplot(mapping = aes(
+    x = Year, 
+    y = gini_n2, 
+    colour = id_nuts2)
+    ) +
+  geom_point()
+```
+
+@lessmann_and_seidel2017 state regional inequities can influence economic outcomes.
+Moreover, when it comes to the German economy, this is not an exception.
+Firstly, some outliers occur in our plot chart.
+The region that stands out is the region DE91.
+According to @eurostat2022, this region in NUTS2 level is named Braunschweig, which includes NUTS3 level cities like Braunschweig, Saltzgitter and Wolfsburg.
+
+Furthermore, Wolfsburg is a centre for education and research.
+Moreover, Wolfsburg is also where the headquarters of Volkswagen AG is based.
+The company is one of the biggest companies worldwide.
+Wolfsburg is also home to many other national and international businesses like Hexad and Sumitomo.
+All these companies contribute to an excellent economic infrastructure.
+Taking this into account as well, this might describe why the Gini Coefficient in the region DE91 is above 0.43% and indicates a moderate level of income inequality.
+
+Regarding the region with the lowest Gini coefficient, we find regions in the NUT2 level where the Gini coefficient was zero.
+This is also why the minimum value shows a value of zero.
+The regions we discovered in this case were Leipzig (DED5), Chemnitz (DED4), Dresden (DED2), Hamburg (DE60) and Berlin (DE30) @eurostat2022.
+We assume that, in reality, there is no chance for perfect regional equality, and the reason for the Gini coefficient showing a value of zero might indicate that there is missing reported data from these regions.
+Moreover, when it comes to standard deviation, it is the year 2016 that stands out.
+This indicates that some regions operate with a more significant Gini coefficient than the average of regions in Germany.
+According to our calculations, the region that stands out is DE91 (Braunschweig).
+Lastly, the mean and median from 2000 until 2010 operate with minor differences.
+Still, from 2011 to 2020, we can see that, especially in 2016, there is a significant difference where the mean is 0,02427% greater than the median.
+This indicates that the data of Gini coefficients contains a few extreme values.
+This value, again, is related to the region DE91 (Braunschweig).
+
+### Finland
+
+```{r}
+#| echo: false
+# Creating a new value containing the Gini coefficient numbers from the regions at NUTS2 level in Finland.  
+FI <- c("FI19", "FI1B", "FI1C", "FI1D", "FI20")
+```
+
+```{r}
+#| echo: false
+# Firstly, we create a new dataset called Gini_stat_FI_nuts2. 
+# Secondly, we filter the data to include only rows where the id_nuts2 variable is in the FI group. 
+# Thirdly, after filtering, the data is grouped by the Year variable. This means that subsequent calculations will be performed separately for each year.
+# Lastly, we use summarise to calculates summary statistics for the gini_n2 variable within each group (each year).
+Gini_stat_FI_nuts2 <- merged_temp %>%
+  filter(id_nuts2 %in% FI) |> 
+  group_by(Year) |> 
+  summarise(
+    min = min(gini_n2),
+    max = max(gini_n2),
+    median = median(gini_n2),
+    mean = mean(gini_n2),
+    sd = sd(gini_n2),
+    var = sd^2
+  )
+```
+
+```{r}
+#| label: fig-regional_gini_nuts2_Finland
+#| echo: false
+#| cap-location: bottom
+#| fig-cap: "Gini coefficient numbers on nuts2 level per year in Finland"
+# Firstly, we add a table caption at the bottom of the figure. 
+# Secondly, we use the data from the dataset merged_temp and the function filter to ensure that the data we receive only represents Finland 
+# Thirdly, we use the function ggplot to presentate the Gini coefficient numbers from Finland in a geom_point. 
+merged_temp |>
+  filter(id_nuts2 %in% FI) |>
+  ggplot(mapping = aes(
+    x = Year, 
+    y = gini_n2, 
+    colour = id_nuts2)
+    ) +
+  geom_point()
+```
+
+Regarding Finland, the regions with the highest regional inequalities are the regions FI19, which, according to @eurostat2022, is Western Finland, and FI1C, which is Southern Finland.
+The most populated cities like Helsinki, Tampere, Turku and Oulu are located in these regions.
+Our calculations show that Western Finland (FI19) region had the highest Gini coefficient in 2010.
+The cities of Oulu, Tampere and Turku are centres of industrial activities and contribute to investments that impact the Gini coefficient.
+Regarding the region with the lowest Gini coefficient, we discovered the same case with Finland as with Germany: Some regions operate with a zero value of the Gini coefficient.
+Again, we assume this might have to do with missing reported data.
+The region at the NUTS2 level that has a Gini coefficient value at zero is FI20, which, according to @eurostat2022, is Åland.
+
+Moreover, looking at our calculations and the plot chart of Finland, there is a significant drop in regional inequality from 2011 to 2020.
+The standard deviation tells us that no regions stand out from others compared to the average of regional inequality.
+Furthermore, from 2000 until 2010, the median values are more significant than the mean values, indicating that there are less extreme values of the Gini coefficient and, again, a lower case of regional inequality.
+
+### Romania
+
+```{r}
+#| echo: false
+# Creating a new value containing the Gini coefficient numbers from the regions at NUTS2 level in Romania  
+RO <- c("RO11", "RO12", "RO21", "RO22", "RO31", "RO32", "RO41", "RO42")
+```
+
+```{r}
+#| echo: false
+# Firstly, we create a new dataset called Gini_stat_RO_nuts2. 
+# Secondly, we filter the data to include only rows where the id_nuts2 variable is in the RO group. 
+# Thirdly, after filtering, the data is grouped by the Year variable. This means that subsequent calculations will be performed separately for each year.
+# Lastly, we use summarise to calculates summary statistics for the gini_n2 variable within each group (each year).
+Gini_stat_RO_nuts2 <- merged_temp %>%
+  filter(id_nuts2 %in% RO) |> 
+  group_by(Year) |> 
+  summarise(
+    min = min(gini_n2),
+    max = max(gini_n2),
+    median = median(gini_n2),
+    mean = mean(gini_n2),
+    sd = sd(gini_n2),
+    var = sd^2
+  )
+```
+
+```{r}
+#| label: fig-regional_gini_nuts2_Romania
+#| echo: false
+#| cap-location: bottom
+#| fig-cap: "Gini coefficient numbers on nuts2 level per year in Romania"
+# Firstly, we add a table caption at the bottom of the figure. 
+# Secondly, we use the data from the dataset merged_temp and the function filter to ensure that the data we receive only represents Romania. 
+# Thirdly, we use the function ggplot to presentate the Gini coefficient numbers from Romania in a geom_point. 
+merged_temp |>
+  filter(id_nuts2 %in% RO) |>
+  ggplot(mapping = aes(
+    x = Year, 
+    y = gini_n2, 
+    colour = id_nuts2)
+    ) +
+  geom_point()
+```
+
+In Romania, four regions have a high Gini coefficient.
+According to @eurostat2022, these regions are RO32 ( Bucuresti region), RO31 (Sud-Muntenia) -- surrounding the Bucuresti region, RO22 (Sud-Est), which is the region located along the Black Sea with cities like Constanta and RO42 (Timisoara) where important Romanian industries are located.
+Moreover, the region RO22 is a popular tourist destination, and the business targets the tourist market.
+The mentioned areas generate income that can influence regional inequality compared to a region like RU12 (Centru).
+This region has no administrative power and is defined as a development region.
+The region receives funding from the EU and distributes them to cities and other sub-regions.
+
+Furthermore, the region with the highest regional inequality in Romania was Bucuresti in 2020.
+The same region experienced the lowest regional inequality in 2006.
+Moreover, the median and mean are relatively similar which indicate that the Gini coefficient do not contains any significant extreme value.
+Lastly, the low standard deviation indicates that the regional inequalities in Romania are close to the average of regional inequalities the different regions experience.
+
+# Appendix
+
+## Germany
+
+### GDP per capita
+
+```{r}
+#| echo: false
+# To ensure the table do not contain previous grouping, we use the ungroup function. Moreover, we select desirable variable. Additional, the st fuction is utilised to compute summary statistics for the selected columns. Lastly, the summ-fuction specifies the summary statistics to calculate
+GDP_DE_nuts2 |> 
+  ungroup() |> 
+  select(Year, GDPpc = GDP_per_capita_nuts2_DE) |> 
+  st(group = "Year", group.long = TRUE, 
+     summ = c('notNA(x)','mean(x)', 'median(x)', 
+              'sd(x)','min(x)','max(x)'),
+     )
+```
+
+### Gini coefficient
+
+```{r}
+#| echo: false
+#| tbl-cap: Descriptive statistics based on Gini coeffisient from NUTS2 level in Germany
+# Firstly, we add a table caption. 
+# Secondly, we remove grouping and then we add a new group containing year, min, max, median, mean, sd and var. 
+# Thirdly, we use kable to create a create nicely formatted table
+Gini_stat_DE_nuts2 |> 
+  ungroup() |> 
+  select(Year, min, max, median, mean, sd, var) %>%
+  kable(digits = 5)
+```
+
+## Finland
+
+### GDP per capita
+
+```{r}
+#| echo: false
+# To ensure the table do not contain previous grouping, we use the ungroup function. Moreover, we select desirable variable. Additional, the st fuction is utilised to compute summary statistics for the selected columns. Lastly, the summ-fuction specifies the summary statistics to calculate
+GDP_FI_nuts2 |> 
+  ungroup() |> 
+  select(Year, GDPpc = GDP_per_capita_nuts2_FI) |> 
+  st(group = "Year", group.long = TRUE, 
+     summ = c('notNA(x)','mean(x)', 'median(x)', 
+              'sd(x)','min(x)','max(x)'),
+     )
+```
+
+### Gini coefficient
+
+```{r}
+#| echo: false
+#| tbl-cap: Descriptive statistics based on Gini coeffisient from NUTS2 level in Finland
+# Firstly, we add a table caption. 
+# Secondly, we remove grouping and then we add a new group containing year, min, max, median, mean, sd and var. 
+# Thirdly, we use kable to create a create nicely formatted table.
+Gini_stat_FI_nuts2 |> 
+  ungroup() |> 
+  select(Year, min, max, median, mean, sd, var) %>%
+  kable(digits = 5)
+```
+
+## Romania
+
+### GDP per capita
+
+```{r}
+#| echo: false
+# To ensure the table do not contain previous grouping, we use the ungroup function. Moreover, we select desirable variable. Additional, the st fuction is utilised to compute summary statistics for the selected columns. Lastly, the summ-fuction specifies the summary statistics to calculate
+GDP_RO_nuts2 |> 
+  ungroup() |> 
+  select(Year, GDPpc = GDP_per_capita_nuts2_RO) |> 
+  st(group = "Year", group.long = TRUE, 
+     summ = c('notNA(x)','mean(x)', 'median(x)', 
+              'sd(x)','min(x)','max(x)'),
+     )
+```
+
+### Gini coefficient
+
+```{r}
+#| echo: false
+#| tbl-cap: Descriptive statistics based on Gini coeffisient from NUTS2 level in Romania
+# Firstly, we add a table caption. 
+# Secondly, we remove grouping and then we add a new group containing year, min, max, median, mean, sd and var. 
+# Thirdly, we use kable to create a create nicely formatted table
+Gini_stat_RO_nuts2 |> 
+  ungroup() |> 
+  select(Year, min, max, median, mean, sd, var) %>%
+  kable(digits = 5)
+```
+
+```{r}
+#| echo: false
+# siste
+```
