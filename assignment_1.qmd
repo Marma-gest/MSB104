@@ -647,13 +647,13 @@ We have not included the following countries based on a lack of observations on 
 Croatia has 140 observations , Serbia has 68 and Bosnia and Herzegovina became a EU candidate in 2022 and because of this lacks any data.
 
 ```{r}
-lmgdpgini <- lm(gini_n2 ~ GDP, subset(merged_data, year == 2010 & nuts2 == "SE"))
-huxreg(lmgdpgini)
+lmgdpginiDE <- lm(gini_n2 ~ I(GDP/100000), subset(merged_data, year == 2010 & nuts0 == "DE"))
+lmgdpginiIT <- lm(gini_n2 ~ I(GDP/100000), subset(merged_data, year == 2010 & nuts0 == "IT"))
+huxreg(lmgdpginiDE, lmgdpginiIT)
 ```
 
-```{r}
-lmgdpgini
-```
+`{)}`
 
-```{)}
-```
+Velge hvordan vi ønsker å definere GDP.
+
+Navngi modeller.
