@@ -42,6 +42,7 @@ However, we are only interested in the following countries from 2000 to 2020:
 -   Serbia
 -   Bosnia and Herzegovina
 -   Bulgaria
+-   Germany
 
 Below is a short extract of the raw datasets from Eurostat.
 
@@ -49,7 +50,7 @@ Below is a short extract of the raw datasets from Eurostat.
 #| echo: FALSE
 #| output: FALSE
 # Loading datasets
-# Country code list: "IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
+# Country code list: "IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
 nama_10r_3gdp_linear_csv <- read_csv("nama_10r_3gdp_linear.csv.gz", 
     na = "NA")
 demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz", 
@@ -76,15 +77,26 @@ demo_r_pjanaggr3_linear_csv |>
 
 ## Description
 
-In order to substract the countries in focus, we have used the metadata provided by Eurostat to filter out the data and variables of interest, using their respective country codes.
-The variables we are interested in are the following:
+The first dataset we downloaded from Eurostat was **demo_r_pjanaggr3,** which contains population data from Europe.
+In our case, we have selected population data from Sweden, Italy, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Germany.
+According to @eurostat2021, the dataset of demography is a set of statistical numbers each country in Europe sends yearly to Eurostat by 31 December of the following calendar year.
+Furthermore, the definition of "population" is, according to @eurostat2021, all persons having their residences in a member state, including all live births and deaths during the year when the statistical numbers are heading to Eurostat.
+Moreover, the demographic data at a regional level are separated into different groups named NUTS, which are defined as nomenclature for territorial units for statistics [@eurostat2021].
+The purpose of the NUTS function is to subdivide the territory of the European Union into 104 regions at NUTS level 1 and break it down by to 281 at NUTS level 2 and 1348 at NUTS level 3 [@eurostat2021].
+In the beginning of this paper, we have focused on the numbers of NUTS 3 level, but the dataset containing population data has been broken down by sex and broad age groups (0-14, 15-64 and 65 or more).
 
--   geo = Tells us which country and sub-region we are looking at
--   time_period = Observed years
--   obs_value = The value of the observation
--   Unit = Currency
+The following dataset we downloaded from Eurostat was the **nama_10r_3gdp dataset**.
+Furthermore, this dataset is also broken down to NUTS level 3 which focus on GDP data from the sub-regions in Sweden, Italy, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Germany.
+According to @eurostat2023, GDP (Gross domsetsic product) at market prices is defined as the final result of the production activity of resident producer units [@eurostat2023].
 
-By filtering out irrelevant data and variables and rearranging the dataset to provide a clearer view, results with the following datasets:
+**In order to substract the countries in focus, we have used the metadata provided by Eurostat to filter out the data and variables of interest, using their respective country codes. The variables we are interested in are the following:**
+
+-   **geo = Tells us which country and sub-region we are looking at**
+-   **time_period = Observed years**
+-   **obs_value = The value of the observation**
+-   **Unit = Currency**
+
+**By filtering out irrelevant data and variables and rearranging the dataset to provide a clearer view, results with the following datasets:**
 
 ```{r}
 #| echo: FALSE
@@ -95,7 +107,7 @@ gdp_filtered <- nama_10r_3gdp_linear_csv |>
     nchar(geo) == 5, 
     unit == "MIO_EUR", 
       TIME_PERIOD %in% c(2000:2020),
-    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
+    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
     ) |> 
   select(
     year = TIME_PERIOD, 
@@ -108,13 +120,14 @@ gdp_filtered <- nama_10r_3gdp_linear_csv |>
 #| echo: FALSE
 # Filtering population demo for nuts3 countries and years
 # Filtering sex = T to only get the total of both genders
+# Filtering age = TOTAL.
 pop <- demo_r_pjanaggr3_linear_csv |> 
     filter(
       nchar(geo) == 5,
       sex == "T",
       age == "TOTAL",
       TIME_PERIOD %in% c(2000:2020), 
-    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG")
+    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
     ) |> 
   select(
     year = TIME_PERIOD, 
@@ -503,18 +516,56 @@ The reason why Bosnia and Herzegovina lacks data from 2000 - 2020 in Eurostat is
 
 ### 1. Literature review
 
-The Gini coefficient is a measurement for inequality, used in regions to measure the inequalities in sub regions of a country @lessmann2017 .
-We have used the weighted Gini coefficient which takes a regions GDP per capita with regards to population, The reasoning behind this is to get the true Gini coefficient, and not omit the population variable, as it is a important variable for explaining a regions inequality.
-By looking at the gini coefficient at a NUTS2 level, we are expecting to see the socio-economic differences, and to understand the reasoning behind the inequity based on factors such as resource allocation.
-By looking at a 20 year span, we are also expecting to be able to predict and forecast future trends.
+Regional inequality shows variation in regional GDP per capita, and according to @lessmann_and_seidel2017, regional inequality occurs when one region experiences different assumptions than other regions.
+Moreover, when the level of economic development is high, there is significant regional inequality [@lessmann_and_seidel2017].
+According to @williamson1965, one crucial difference that leads to regional inequality is the access to natural resources.
+Regions rich in natural resources grow faster than regions in the rest of the country, which results in inequality.
+Furthermore, openness is another critical element of why regional inequality occurs.
+A region with more significant access to the international trade market than other regions with limited access will gain more from international trade if international trade costs decrease [@lessmann_and_seidel2017].
+
+Moreover, openness can also contribute to foreign investors investing in a more attractive region, e.g., access to natural resources.
+In the end, this led to an imbalance in regional equality.
+Additionally, mobility can provide regional inequality through differences in transport costs from one region to another [@lessmann_and_seidel2017].
+The differences in transport costs are caused, e.g. by fuel consumption per kilometre.
+ 
+
+Furthermore, another significant element creating regional inequality is bureaucracy, policy and stability in a country [@lessmann_and_seidel2017].
+Civil war affects the country's balance of regional equality and creates different assumptions.
+An example is regions in a country that experience increasing aid.
+Receiving assistance from foreign aid organisations creates inequality.
+Lastly, @lessmann_and_seidel2017 state that an area where ethnic groups dominate as a minority can result in regional inequity.
+
+Based on the research conducted by @lessmann_and_seidel2017, considering regional inequities is essential since it can influence economic outcomes.
+The research shows many examples of high- and low-income countries experiencing unbalanced regional development that results in income inequality [@lessmann_and_seidel2017].
+
+**The Gini coefficient is a measurement for inequality, used in regions to measure the inequalities in sub regions of a country @lessmann2017 . We have used the weighted Gini coefficient which takes a regions GDP per capita with regards to population, The reasoning behind this is to get the true Gini coefficient, and not omit the population variable, as it is a important variable for explaining a regions inequality. By looking at the gini coefficient at a NUTS2 level, we are expecting to see the socio-economic differences, and to understand the reasoning behind the inequity based on factors such as resource allocation. By looking at a 20 year span, we are also expecting to be able to predict and forecast future trends.**
 
 ### 2. Gini coefficient calculation
 
-In order to calculate the Gini coefficient for NUTS2 regions using NUTS3 data, we first have to group population and GDP per capita of the level 3 data to level 2.
-This has been done by subtracting the common denominator, country codes.
-Grouping makes it possible to utilize the formula by weighing the level 2 regions GDP per capita by population, as seen below.
+To calculate the population-weighted Gini coefficient for GDP for each European NUTS2 level region within Germany, Finland and Romania, we used the data on the GDP and population for the different regions and associated countries.
+The Gini coefficient measures income or wealth inequality within a population [@imfnd].
+In this case, we want to calculate the Gini coefficient for GDP, which is a measure of economic inequality.
+We calculated the Gini coefficient using the following formula:
+
+**In order to calculate the Gini coefficient for NUTS2 regions using NUTS3 data, we first have to group population and GDP per capita of the level 3 data to level 2. This has been done by subtracting the common denominator, country codes. Grouping makes it possible to utilize the formula by weighing the level 2 regions GDP per capita by population, as seen below.**
 
 $GINW_j=\frac{1}{2 \bar{y_j}} \sum_{i}^{n_j}\sum_{l}^{n_j}\frac{p_i}{P_j} \frac{p_l}{P_j} |y_i-y_l|$
+
+We want to calculate the weighted average of the Gini coefficients based on the population of each region or country.
+We do this by calculating a new column called gini_n2 using mutate, and applying the gini.wtd function, which compute a weighted Gini coefficient based on GDP per capita.
+
+The population-weighted Gini coefficient provides a measure of economic inequality across all our regions and associated countries, taking into account their respective populations [@imfnd].
+A Gini coefficient close to 0 indicates a more equal distribution of income or wealth among the population.
+In societies with low Gini coefficients, there is relatively less income or wealth inequality, and resources are more evenly distributed among individuals or households.
+These societies tend to have a larger middle class and fewer people living in poverty or extreme wealth [@imfnd]
+
+A Gini coefficient close to 1 signifies a high level of income or wealth inequality.
+In societies with high Gini coefficients, a significant portion of the income or wealth is concentrated among a small percentage of the population, leading to pronounced disparities.
+These societies may have a large gap between the rich and the poor, with some individuals or households having substantially more resources than others [@imfnd].
+
+The zero values occur as a result of some regions are actually defined as a region, but in reality they are a foreign embassy, army base or offshore energy production with no permanent residence.
+This means they do not have any GDP per capita [@eurostat2021].
+Moreover, we assume that the zero values can also be a result of missing data report from different regions in Germany and Finland.
 
 ```{r}
 #| echo: FALSE
