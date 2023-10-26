@@ -1,6 +1,6 @@
 ---
 title: "assignment_1"
-format: pdf
+format: html
 editor: visual
 bibliography: [MSB104.bib, MSB104_Assignment.bib, MSB104_Assignment1.bib]
 author: Marius Martinussen, Espen Knutsen og Asbjørn Gaard
@@ -588,9 +588,16 @@ merged_data <- merged_data |>
          GDPpcn3 != "NA"
   ) |> 
 group_by(nuts2, year) |> 
-  mutate(gini_n2 = gini.wtd(GDPpcn3, Population)) |> 
+  mutate(gini_n2 = gini.wtd(GDPpcn3, Population), 
+         GDPpcn2 = mean(GDPpcn3), 
+         popn2 = sum(Population),
+         GDPn2 = sum(GDP),
+         numberofregions = n_distinct(geo)
+         ) |> 
+  slice(1) |> 
   ungroup() |> 
-  select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2)
+  select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2, numberofregions, GDPn2, GDPpcn2, popn2) 
+  # number of regions is wrong, want to show number of nuts3 regions in a nuts2 region as a vector
 
 
 ```
@@ -637,3 +644,8 @@ Explained by the span of GDP per capita in sub-regions where the highest GDP per
 
 We have not included the following countries based on a lack of observations on level 3 data.
 Croatia has 140 observations , Serbia has 68 and Bosnia and Herzegovina became a EU candidate in 2022 and because of this lacks any data.
+
+```{r}
+lmgdpgini <- merged_data |> 
+  filter(year == "2010")
+```
