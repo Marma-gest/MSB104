@@ -2,8 +2,8 @@
 title: "assignment_1"
 format: pdf
 editor: visual
-bibliography: [MSB104.bib, MSB104_Assignment.bib]
-author: Marius Martinussen, Espen Knutsen
+bibliography: [MSB104.bib, MSB104_Assignment.bib, MSB104_Assignment1.bib]
+author: Marius Martinussen, Espen Knutsen og Asbjørn Gaard
 ---
 
 ```{r}
@@ -516,27 +516,27 @@ The reason why Bosnia and Herzegovina lacks data from 2000 - 2020 in Eurostat is
 
 ### 1. Literature review
 
-Regional inequality shows variation in regional GDP per capita, and according to @lessmann_and_seidel2017, regional inequality occurs when one region experiences different assumptions than other regions.
-Moreover, when the level of economic development is high, there is significant regional inequality [@lessmann_and_seidel2017].
+Regional inequality shows variation in regional GDP per capita, and according to @lessmann2017, regional inequality occurs when one region experiences different assumptions than other regions.
+Moreover, when the level of economic development is high, there is significant regional inequality [@lessmann2017].
 According to @williamson1965, one crucial difference that leads to regional inequality is the access to natural resources.
 Regions rich in natural resources grow faster than regions in the rest of the country, which results in inequality.
 Furthermore, openness is another critical element of why regional inequality occurs.
-A region with more significant access to the international trade market than other regions with limited access will gain more from international trade if international trade costs decrease [@lessmann_and_seidel2017].
+A region with more significant access to the international trade market than other regions with limited access will gain more from international trade if international trade costs decrease [@lessmann2017].
 
 Moreover, openness can also contribute to foreign investors investing in a more attractive region, e.g., access to natural resources.
 In the end, this led to an imbalance in regional equality.
-Additionally, mobility can provide regional inequality through differences in transport costs from one region to another [@lessmann_and_seidel2017].
+Additionally, mobility can provide regional inequality through differences in transport costs from one region to another [@lessmann2017].
 The differences in transport costs are caused, e.g. by fuel consumption per kilometre.
  
 
-Furthermore, another significant element creating regional inequality is bureaucracy, policy and stability in a country [@lessmann_and_seidel2017].
+Furthermore, another significant element creating regional inequality is bureaucracy, policy and stability in a country [@lessmann2017].
 Civil war affects the country's balance of regional equality and creates different assumptions.
 An example is regions in a country that experience increasing aid.
 Receiving assistance from foreign aid organisations creates inequality.
-Lastly, @lessmann_and_seidel2017 state that an area where ethnic groups dominate as a minority can result in regional inequity.
+Lastly, @lessmann2017 state that an area where ethnic groups dominate as a minority can result in regional inequity.
 
-Based on the research conducted by @lessmann_and_seidel2017, considering regional inequities is essential since it can influence economic outcomes.
-The research shows many examples of high- and low-income countries experiencing unbalanced regional development that results in income inequality [@lessmann_and_seidel2017].
+Based on the research conducted by @lessmann2017, considering regional inequities is essential since it can influence economic outcomes.
+The research shows many examples of high- and low-income countries experiencing unbalanced regional development that results in income inequality [@lessmann2017].
 
 **The Gini coefficient is a measurement for inequality, used in regions to measure the inequalities in sub regions of a country @lessmann2017 . We have used the weighted Gini coefficient which takes a regions GDP per capita with regards to population, The reasoning behind this is to get the true Gini coefficient, and not omit the population variable, as it is a important variable for explaining a regions inequality. By looking at the gini coefficient at a NUTS2 level, we are expecting to see the socio-economic differences, and to understand the reasoning behind the inequity based on factors such as resource allocation. By looking at a 20 year span, we are also expecting to be able to predict and forecast future trends.**
 
