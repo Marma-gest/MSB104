@@ -22,7 +22,7 @@ library(ggplotify)
 library(grid)
 library(dplyr)
 library(gridExtra)
-library(margins)
+
 
 ```
 
@@ -647,6 +647,13 @@ We have not included the following countries based on a lack of observations on 
 Croatia has 140 observations , Serbia has 68 and Bosnia and Herzegovina became a EU candidate in 2022 and because of this lacks any data.
 
 ```{r}
-lmgdpgini <- merged_data |> 
-  filter(year == "2010")
+lmgdpgini <- lm(gini_n2 ~ GDP, subset(merged_data, year == 2010 & nuts2 == "SE"))
+huxreg(lmgdpgini)
+```
+
+```{r}
+lmgdpgini
+```
+
+```{)}
 ```
