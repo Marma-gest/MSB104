@@ -667,8 +667,8 @@ Dette vil føre til en redusert ulikhet pga.
 effekten er ulik, og vi får altså mindre ulikheter.
 
 ```{r}
-lmDE <- lm(gini_n2 ~ I(GDP/100000), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
-lmIT <- lm(gini_n2 ~ I(GDP/100000), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
+lmDE <- lm(gini_n2 ~ log(GDP), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
+lmIT <- lm(gini_n2 ~ log(GDP), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
 huxreg(DE = lmDE, IT = lmIT, statistics = c("r.squared","adj.r.squared", "statistic", "p.value", "deviance"))
 ```
 
@@ -695,13 +695,13 @@ The standard error of the GDP coefficient is 0.063.
 merged_data_filtered <- merged_data %>%
   filter(str_detect(geo, "IT") & year == 2010 & gini_n2 > 0)
 
-ggplot(merged_data_filtered, aes(x = gini_n2, y = GDP/100000)) +
+ggplot(merged_data_filtered, aes(x = log(GDP), y = gini_n2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
   labs(
     title = "Scatter Plot with Regression Line (Year 2010, IT)",
-    x = "Gini Index (n2)",
-    y = "GDP (in 100,000s)"
+    x = "GDP (in millions)",
+    y = "Gini Index (n2)"
   )
 
 ```
@@ -710,13 +710,13 @@ ggplot(merged_data_filtered, aes(x = gini_n2, y = GDP/100000)) +
 merged_data_filtered <- merged_data %>%
   filter(str_detect(geo, "DE") & year == 2010 & gini_n2 > 0)
 
-ggplot(merged_data_filtered, aes(x = gini_n2, y = GDP/100000)) +
+ggplot(merged_data_filtered, aes(x = log(GDP), y = gini_n2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
   labs(
     title = "Scatter Plot with Regression Line (Year 2010, DE)",
-    x = "Gini Index (n2)",
-    y = "GDP (in 100,000s)"
+    x = "GDP (in millions)",
+    y = "Gini Index (n2)"
   )
 
 ```
