@@ -647,6 +647,16 @@ Explained by the span of GDP per capita in sub-regions where the highest GDP per
 We have not included the following countries based on a lack of observations on level 3 data.
 Croatia has 140 observations , Serbia has 68 and Bosnia and Herzegovina became a EU candidate in 2022 and because of this lacks any data.
 
+# Part A: Growth and Inequity
+
+## **Model Estimation:**
+
+**Teori:** En økning i GDP vil føre til en nedgang i Gini coefficient (regional inequity).
+Grunnlaget for denne teorien er at en økning på tusen euro i GDP per capita vil ha en større effekt på de regionene som skiller seg ut.
+Det kommer et punkt hvor en økning i GDP per capita vil ha en større innvirkning på de som har lite GDP per capita, kontra de som har større GDP per capita.
+Dette vil føre til en redusert ulikhet pga.
+effekten er ulik, og vi får altså mindre ulikheter.
+
 ```{r}
 lmgdpginiDE <- lm(gini_n2 ~ I(GDP/100000), subset(merged_data, year == 2010 & nuts0 == "DE"))
 lmgdpginiIT <- lm(gini_n2 ~ I(GDP/100000), subset(merged_data, year == 2010 & nuts0 == "IT"))
