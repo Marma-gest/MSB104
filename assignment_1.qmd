@@ -656,6 +656,7 @@ Croatia has 140 observations , Serbia has 68 and Bosnia and Herzegovina became a
 Lessmann and Seidel discuss that the national development level can be an outcome of regional inequalities.
 Our aim is showcase this with regional development (GDP​) as the independent variable and regional inequality (gini_n2) as the dependent variable.
 The reason why we uses GDP on a national level is because "existing studies have a serious bias toward middle- and high-income countries; therefore, the results cannot be generalized"@lessmann_and_seidel2017.
+
 We will therefore reduce bias by looking at countries entire populations through the GDP of Italy and Germany.
 The reason we choose the selected countries is because they are the largest and have the most observations, which reduces potential bias.
 
