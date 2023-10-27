@@ -651,7 +651,7 @@ Croatia has 140 observations , Serbia has 68 and Bosnia and Herzegovina became a
 
 ## **Model Estimation:**
 
-*In this part we want to estimate a simple linear regression model for the year 2010, with regional development, measured in GDP, as the independent variable and regional inequality, measured in Gini, as the dependent variable.*
+*In this part we want to estimate a simple linear regression model for the year 2010, with regional development, measured in GDP, as the independent variable and regional inequality, measured in Gini, as the dependent variable. This is because we want to see the impact a change in the regional development will have on inequity in a given country.*
 
 Lessmann and Seidel discuss that the national development level can be an outcome of regional inequalities.
 Our aim is showcase this with regional development (GDP​) as the independent variable and regional inequality (gini_n2) as the dependent variable.
