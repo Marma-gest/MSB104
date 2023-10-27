@@ -651,9 +651,12 @@ Croatia has 140 observations , Serbia has 68 and Bosnia and Herzegovina became a
 
 ## **Model Estimation:**
 
+*In this part we want to estimate a simple linear regression model for the year 2010, with regional development, measured in GDP, as the independent variable and regional inequality, measured in Gini, as the dependent variable.*
+
 Lessmann and Seidel discuss that the national development level can be an outcome of regional inequalities.
 Our aim is showcase this with regional development (GDP​) as the independent variable and regional inequality (gini_n2) as the dependent variable.
-The reason why we uses GDP on a national level is because \"existing studies have a serious bias toward middle- and high-income countries; therefore, the results cannot be generalized\"@lessmann_and_seidel2017. We will therefore reduce bias by looking at countries entire populations through the GDP of Italy and Germany.
+The reason why we uses GDP on a national level is because "existing studies have a serious bias toward middle- and high-income countries; therefore, the results cannot be generalized"@lessmann_and_seidel2017.
+We will therefore reduce bias by looking at countries entire populations through the GDP of Italy and Germany.
 The reason we choose the selected countries is because they are the largest and have the most observations, which reduces potential bias.
 
 **Teori:** En økning i GDP vil føre til en nedgang i Gini coefficient (regional inequity).
@@ -667,6 +670,25 @@ lmDE <- lm(gini_n2 ~ I(GDP/100000), subset(merged_data, year == 2010 & nuts0 == 
 lmIT <- lm(gini_n2 ~ I(GDP/100000), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
 huxreg(DE = lmDE, IT = lmIT, statistics = c("r.squared","adj.r.squared", "statistic", "p.value", "deviance"))
 ```
+
+In table X above we see the coefficients, standard errors, and significance levels (indicated by asterisks) for a simple linear regression model for the year 2010.
+The model has GDP as the independent variable and regional Gini as the dependent variable for both Germany (DE) and Italy (IT).
+
+For Germany (DE) the intercept coefficient is 0.155, and it is statistically significant at the 1% level (\*\*\*).
+This means that when GDP is zero, the estimated Gini coefficient for Germany is 0.155.
+The standard error of the intercept is 0.019, indicating the precision of the estimate.
+
+For Italy (IT) the intercept coefficient is 0.049, and it is statistically significant at the 5% level (\*\*).
+When GDP is zero, the estimated Gini coefficient for Italy is 0.049.
+The standard error of the intercept is 0.013.
+
+For Germany (DE) the coefficient for GDP is 0.036, but it is not statistically significant.
+This means that there is no strong evidence to suggest a linear relationship between GDP and the Gini coefficient in Germany in 2010.
+The standard error of the GDP coefficient is relatively large at 0.138, which may contribute to its lack of significance.
+
+For Italy (IT) the coefficient for GDP is 0.007, and it is also not statistically significant.
+Similar to Germany, there is no strong evidence of a linear relationship between GDP and the Gini coefficient in Italy in 2010.
+The standard error of the GDP coefficient is 0.063.
 
 ```{r}
 merged_data_filtered <- merged_data %>%
