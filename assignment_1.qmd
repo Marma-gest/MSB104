@@ -713,7 +713,7 @@ ggplot(merged_data_filtered, aes(x = gini_n2, y = GDP/100000)) +
   geom_point() +
   geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
   labs(
-    title = "Scatter Plot with Regression Line (Year 2010, IT)",
+    title = "Scatter Plot with Regression Line (Year 2010, DE)",
     x = "Gini Index (n2)",
     y = "GDP (in 100,000s)"
   )
