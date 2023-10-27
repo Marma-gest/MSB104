@@ -649,9 +649,10 @@ Croatia has 140 observations , Serbia has 68 and Bosnia and Herzegovina became a
 
 # Part A: Growth and Inequity
 
-## **Model Estimation:**
+## **Model Estimation**
 
-*In this part we want to estimate a simple linear regression model for the year 2010, with regional development, measured in GDP, as the independent variable and regional inequality, measured in Gini, as the dependent variable. This is because we want to see the impact a change in the regional development will have on inequity in a given country.*
+In this part we want to estimate a simple linear regression model for the year 2010, with regional development, measured in GDP, as the independent variable and regional inequality, measured in Gini, as the dependent variable.
+This is because we want to see the impact a change in the regional development will have on inequity in a given country.
 
 Lessmann and Seidel discuss that the national development level can be an outcome of regional inequalities.
 Our aim is showcase this with regional development (GDP​) as the independent variable and regional inequality (gini_n2) as the dependent variable.
@@ -691,6 +692,44 @@ For Italy (IT) the coefficient for GDP is 0.007, and it is also not statisticall
 Similar to Germany, there is no strong evidence of a linear relationship between GDP and the Gini coefficient in Italy in 2010.
 The standard error of the GDP coefficient is 0.063.
 
+## **Model Diagnostics**
+
+R-squared is a measure of how well the independent variable (GDP) explains the variation in the dependent variable (regional Gini).
+For Germany (DE), the R-squared value is 0.002, indicating that only a very small proportion (0.2%) of the variation in regional Gini can be explained by GDP in the model.
+For Italy (IT), the R-squared value is 0.001, also indicating a very weak relationship between GDP and regional Gini.
+In this case, only 0.1% of the variation in regional Gini can be explained by GDP in the model.
+
+Adjusted R-squared is a modified version of R-squared that accounts for the number of independent variables in the model.
+For Germany (DE), the adjusted R-squared value is -0.030.
+A negative adjusted R-squared can occur when the model is a poor fit for the data, and the independent variable(s) do not explain the variation in the dependent variable.
+It suggests that the model doesn't fit the German data well.
+For Italy (IT), the adjusted R-squared value is -0.066, which is also negative.
+This again suggests that the model is not a good fit for the Italian data and that GDP does not explain much of the variation in regional Gini.
+
+The t-statistic measures the significance of the individual coefficients (in this case, the coefficient for GDP) in the linear regression model.
+It assesses whether the coefficient is significantly different from zero, indicating whether the independent variable (GDP) has a statistically significant effect on the dependent variable (regional Gini).
+For Germany (DE), the t-statistic for GDP is 0.067.
+A t-statistic close to zero suggests that the coefficient for GDP is not statistically significant in explaining regional Gini for Germany.
+For Italy (IT), the t-statistic for GDP is 0.011.
+Similarly, this value is close to zero, indicating that the coefficient for GDP is not statistically significant in explaining regional Gini for Italy.
+
+The p-value associated with the t-statistic assesses the probability of obtaining the observed results (or more extreme results) if there were no real relationship between the independent variable and the dependent variable.
+A low p-value (typically below 0.05) suggests statistical significance.
+For both Germany and Italy, the p-values associated with the t-statistics are relatively high.
+For DE, the p-value is 0.797, and for IT, it is 0.919.
+These high p-values indicate that the coefficient for GDP is not statistically significant in either model.
+
+Deviance measures the goodness of fit of the model.
+It represents the difference between the model's likelihood and the likelihood of a saturated model (a model with perfect fit).
+A lower deviance indicates a better fit.
+For Germany (DE), the deviance is 0.189.
+A lower deviance would be desirable, but the value is specific to the dataset and model used.
+For Italy (IT), the deviance is 0.023, which is lower than that for Germany.
+This suggests that the model may fit the Italian data slightly better, but the overall fit is still weak.
+
+In summary, the statistics suggest that the linear regression models for both Germany and Italy in the year 2010, with GDP as the independent variable and regional Gini as the dependent variable, do not provide a good fit for the data.
+The relationship between GDP and regional Gini appears to be very weak and statistically insignificant in these models.
+
 ```{r}
 merged_data_filtered <- merged_data %>%
   filter(str_detect(geo, "IT") & year == 2010 & gini_n2 > 0)
@@ -720,7 +759,3 @@ ggplot(merged_data_filtered, aes(x = log(GDP), y = gini_n2)) +
   )
 
 ```
-
-Velge hvordan vi ønsker å definere GDP.
-
-Navngi modeller.
