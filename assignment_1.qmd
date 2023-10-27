@@ -22,7 +22,8 @@ library(ggplotify)
 library(grid)
 library(dplyr)
 library(gridExtra)
-
+library(ggplot2)
+library(broom)
 
 ```
 
@@ -649,10 +650,38 @@ Croatia has 140 observations , Serbia has 68 and Bosnia and Herzegovina became a
 ```{r}
 lmgdpginiDE <- lm(gini_n2 ~ I(GDP/100000), subset(merged_data, year == 2010 & nuts0 == "DE"))
 lmgdpginiIT <- lm(gini_n2 ~ I(GDP/100000), subset(merged_data, year == 2010 & nuts0 == "IT"))
-huxreg(lmgdpginiDE, lmgdpginiIT)
+huxreg(DE = lmgdpginiDE, IT = lmgdpginiIT) 
 ```
 
-`{)}`
+```{r}
+merged_data_filtered <- merged_data %>%
+  filter(str_detect(geo, "IT") & year == 2010 & gini_n2 != 0)
+
+ggplot(merged_data_filtered, aes(x = gini_n2, y = GDP/100000)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
+  labs(
+    title = "Scatter Plot with Regression Line (Year 2010, IT)",
+    x = "Gini Index (n2)",
+    y = "GDP (in 100,000s)"
+  )
+
+```
+
+```{r}
+merged_data_filtered <- merged_data %>%
+  filter(str_detect(geo, "DE") & year == 2010 & gini_n2 != 0)
+
+ggplot(merged_data_filtered, aes(x = gini_n2, y = GDP/100000)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
+  labs(
+    title = "Scatter Plot with Regression Line (Year 2010, IT)",
+    x = "Gini Index (n2)",
+    y = "GDP (in 100,000s)"
+  )
+
+```
 
 Velge hvordan vi ønsker å definere GDP.
 
