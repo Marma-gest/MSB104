@@ -53,6 +53,7 @@ Below is a short extract of the raw datasets from Eurostat.
 #| output: FALSE
 # Loading datasets
 # Country code list: "IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
+# 
 nama_10r_3gdp_linear_csv <- read_csv("nama_10r_3gdp_linear.csv.gz", 
     na = "NA")
 demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz", 
@@ -60,6 +61,118 @@ demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz",
 roads <- read_csv("roads.gz")
 educ <- read_csv("educ.gz")
 aream2 <- read_csv("aream2.gz")
+
+# Subset of countries from 2000 to 2020
+# Filtering geo = 5 to only get NUTS3 level data
+gdp_filtered <- nama_10r_3gdp_linear_csv |> 
+  filter(
+    nchar(geo) == 5, 
+    unit == "MIO_EUR", 
+      TIME_PERIOD %in% c(2000:2020),
+    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
+    ) |> 
+  select(
+    year = TIME_PERIOD, 
+    geo, GDP = OBS_VALUE
+    ) 
+
+# Filtering population demo for nuts3 countries and years
+# Filtering sex = T to only get the total of both genders
+# Filtering age = TOTAL.
+pop <- demo_r_pjanaggr3_linear_csv |> 
+    filter(
+      nchar(geo) == 5,
+      sex == "T",
+      age == "TOTAL",
+      TIME_PERIOD %in% c(2000:2020), 
+    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
+    ) |> 
+  select(
+    year = TIME_PERIOD, 
+    geo, Population = OBS_VALUE
+    ) 
+
+# Merging the two datasets
+merged_data <- merge(gdp_filtered, pop, by = "geo") |> 
+  select(
+    -year.y,
+    Year = year.x,)
+
+# merging the two datasets from eurostat and removing NA and zero values
+merged_data <- merge(gdp_filtered, pop, by = c("geo","year"), all = TRUE) |> 
+filter(!is.na(Population),
+         Population != 0,
+         GDP != 0, 
+         GDP != "NA"
+)
+# Generating the GDP per capita variable
+merged_data <- merged_data |> 
+  mutate(
+    GDPpcn3 = GDP / Population
+  )
+# Adding GDP variable by deviding gdp on population
+merged_data <- merged_data |> 
+  mutate(GDPpcn3 = (GDP / Population)*1000000)
+
+# Calculating GINI in nuts3 data for nuts2 regions to measure inequity on a nuts2 scale
+merged_data <- merged_data |> 
+ mutate(
+    nuts2 = substr(geo, 1,4),
+    nuts0 = substr(geo, 1,2)
+ )
+
+# Grouping NUTS3 to NUTS2
+# Adding the gini coefficient to the gpd pr capita variable and weighing by population (grouped by nuts2)
+merged_data <- merged_data |> 
+  filter(!is.na(Population),
+         Population != 0,
+         GDPpcn3 != 0, 
+         GDPpcn3 != "NA"
+  ) |> 
+group_by(nuts2, year) |> 
+  mutate(gini_n2 = gini.wtd(GDPpcn3, Population), 
+         GDPpcn2 = mean(GDPpcn3), 
+         popn2 = sum(Population),
+         GDPn2 = sum(GDP),
+         numberofregions = n_distinct(geo)
+         ) |> 
+  slice(1) |> 
+  ungroup() |> 
+  select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2, numberofregions, GDPn2, GDPpcn2, popn2) 
+  # number of regions is wrong, want to show number of nuts3 regions in a nuts2 region as a vector
+
+roads <- roads |> 
+  select(
+    nuts2 = geo, Roadkm = OBS_VALUE, year = TIME_PERIOD
+  ) 
+
+educ <- educ |> 
+  select(
+    nuts2 = geo, age, year = TIME_PERIOD, education = OBS_VALUE, level = isced11
+  ) |> 
+  filter(nuts2 != "NA", age != "NA", year != "NA", education != "NA") |> 
+  filter(str_detect(nuts2, "IT|DE"))
+
+educ <- educ |> 
+    filter(str_detect(nuts2, "IT|DE"), nchar(nuts2) == 4, level == "ED5-8") |> 
+  select(-age) 
+
+aream2 <- aream2 |> 
+  select(
+    nuts2 = geo, year = TIME_PERIOD, distance = OBS_VALUE
+  )
+
+merged_data <- left_join(merged_data, aream2, by = c("nuts2", "year"))
+
+merged_data <- left_join(merged_data, educ, by = c("nuts2", "year"))
+
+roads <- roads |> 
+  filter(str_detect(nuts2, "IT|DE"), nchar(nuts2) == 4)
+
+merged_data <- left_join(merged_data, roads, by = c("nuts2", "year"))
+
+
+
 
 
 ```
@@ -107,44 +220,6 @@ According to @eurostat2023, GDP (Gross domsetsic product) at market prices is de
 
 ```{r}
 #| echo: FALSE
-# Subset of countries from 2000 to 2020
-# Filtering geo = 5 to only get NUTS3 level data
-gdp_filtered <- nama_10r_3gdp_linear_csv |> 
-  filter(
-    nchar(geo) == 5, 
-    unit == "MIO_EUR", 
-      TIME_PERIOD %in% c(2000:2020),
-    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
-    ) |> 
-  select(
-    year = TIME_PERIOD, 
-    geo, GDP = OBS_VALUE
-    ) 
-
-```
-
-```{r}
-#| echo: FALSE
-# Filtering population demo for nuts3 countries and years
-# Filtering sex = T to only get the total of both genders
-# Filtering age = TOTAL.
-pop <- demo_r_pjanaggr3_linear_csv |> 
-    filter(
-      nchar(geo) == 5,
-      sex == "T",
-      age == "TOTAL",
-      TIME_PERIOD %in% c(2000:2020), 
-    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
-    ) |> 
-  select(
-    year = TIME_PERIOD, 
-    geo, Population = OBS_VALUE
-    ) 
-
-```
-
-```{r}
-#| echo: FALSE
 gdp_filtered |> 
   print(
     n = 5,
@@ -155,28 +230,6 @@ pop |>
     n = 5,
     width = 80
   )
-
-```
-
-```{r}
-#| echo: FALSE
-# Merging the two datasets
-merged_data <- merge(gdp_filtered, pop, by = "geo") |> 
-  select(
-    -year.y,
-    Year = year.x,)
-```
-
-```{r}
-#| echo: FALSE
-# merging the two datasets from eurostat and removing NA and zero values
-merged_data <- merge(gdp_filtered, pop, by = c("geo","year"), all = TRUE) |> 
-filter(!is.na(Population),
-         Population != 0,
-         GDP != 0, 
-         GDP != "NA"
-)
-
 
 ```
 
@@ -194,23 +247,7 @@ This is described by Eurostat to be "a measure of economic activity, defined as 
 How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes" @eurostat2023.
 To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth" @eurostat2023.
 
-```{r}
-#| echo: FALSE
-# Adding GDP variable by deviding gdp on population
-merged_data <- merged_data |> 
-  mutate(
-    GDPpcn3 = GDP / Population
-  )
-```
-
 ### 3. Descriptive analysis
-
-```{r}
-#| echo: FALSE
-# Adding GDP variable by deviding gdp on population
-merged_data <- merged_data |> 
-  mutate(GDPpcn3 = (GDP / Population)*1000000)
-```
 
 ### Austria
 
@@ -574,41 +611,6 @@ The zero values occur as a result of some regions are actually defined as a regi
 This means they do not have any GDP per capita [@eurostat2021].
 Moreover, we assume that the zero values can also be a result of missing data report from different regions in Germany and Finland.
 
-```{r}
-#| echo: FALSE
-# Calculating GINI in nuts3 data for nuts2 regions to measure inequity on a nuts2 scale
-merged_data <- merged_data |> 
- mutate(
-    nuts2 = substr(geo, 1,4),
-    nuts0 = substr(geo, 1,2)
- )
-```
-
-```{r}
-#| echo: FALSE
-# Grouping NUTS3 to NUTS2
-# Adding the gini coefficient to the gpd pr capita variable and weighing by population (grouped by nuts2)
-merged_data <- merged_data |> 
-  filter(!is.na(Population),
-         Population != 0,
-         GDPpcn3 != 0, 
-         GDPpcn3 != "NA"
-  ) |> 
-group_by(nuts2, year) |> 
-  mutate(gini_n2 = gini.wtd(GDPpcn3, Population), 
-         GDPpcn2 = mean(GDPpcn3), 
-         popn2 = sum(Population),
-         GDPn2 = sum(GDP),
-         numberofregions = n_distinct(geo)
-         ) |> 
-  slice(1) |> 
-  ungroup() |> 
-  select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2, numberofregions, GDPn2, GDPpcn2, popn2) 
-  # number of regions is wrong, want to show number of nuts3 regions in a nuts2 region as a vector
-
-
-```
-
 ### Data Presentation
 
 ```{r, echo=FALSE}
@@ -769,42 +771,16 @@ ggplot(merged_data_filtered, aes(x = log(GDP), y = gini_n2)) +
 ```
 
 ```{r}
-roads <- roads |> 
-  select(
-    geo, Roadkm = OBS_VALUE, year = TIME_PERIOD
-  ) 
-
-```
-
-```{r}
-educ <- educ |> 
-  select(
-    nuts2 = geo, age, year = TIME_PERIOD, education = OBS_VALUE, level = isced11
-  ) |> 
-  filter(nuts2 != "NA", age != "NA", year != "NA", education != "NA") |> 
-  filter(str_detect(nuts2, "IT|DE"))
-
-```
-
-```{r}
-educ <- educ |> 
-    filter(str_detect(nuts2, "IT|DE"), nchar(nuts2) == 4, level == "ED5-8") |> 
-  select(-age) 
-```
-
-```{r}
-merged_data <- left_join(merged_data, educ, by = c("nuts2", "year"))
-```
-
-```{r}
 testssss <- merged_data |> 
   filter(year == 2010) |> 
   select(gini_n2, education)
 ```
 
 ```{r}
-lmDETest <- lm(log(gini_n2) ~ log(education), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
-lmITTest <- lm(log(gini_n2) ~ log(education), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
+lmDETest <- lm(log(gini_n2) ~ log(education/100), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
+
+lmITTest <- lm(log(gini_n2) ~ log(education/100), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
+
 huxreg(DE = lmDETest, IT = lmITTest, statistics = c("r.squared","adj.r.squared", "statistic", "p.value", "deviance"))
 ```
 
@@ -812,9 +788,9 @@ huxreg(DE = lmDETest, IT = lmITTest, statistics = c("r.squared","adj.r.squared",
 Test_educ <- merged_data %>%
   filter(str_detect(nuts2, "IT") & year == 2010 & gini_n2 > 0)
 
-ggplot(Test_educ, aes(x = log(education), y = gini_n2)) +
+ggplot(Test_educ, aes(x = log(education/100), y = log(gini_n2))) +
   geom_point() +
-  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
+  geom_smooth(method = "lm", formula = y ~ x, se = TRUE) +  # Specify the formula
   labs(
     title = "Scatter Plot with Regression Line (Year 2010, IT)",
     x = "education in %",
