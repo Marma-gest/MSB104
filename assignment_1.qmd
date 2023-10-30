@@ -643,7 +643,7 @@ Lombardia has the biggest inequality in the whole of Italy, with the highest Gin
 ITC4 contains big cities such as Milano, which has two of the biggest football teams in the world, and is known for being the capital of fashion.
 This attracts tourism and a spike in the regions GDP.
 
-###  Belgium (East Flanders: BE23)
+### Belgium (East Flanders: BE23)
 
 Explained by the span of GDP per capita in sub-regions where the highest GDP per capita being 49 964 and the lowest 17 401, while the average spans between \[17 000:21 000\].
 
@@ -800,4 +800,38 @@ merged_data <- left_join(merged_data, educ, by = c("nuts2", "year"))
 testssss <- merged_data |> 
   filter(year == 2010) |> 
   select(gini_n2, education)
+```
+
+```{r}
+lmDETest <- lm(log(gini_n2) ~ log(education), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
+lmITTest <- lm(log(gini_n2) ~ log(education), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
+huxreg(DE = lmDETest, IT = lmITTest, statistics = c("r.squared","adj.r.squared", "statistic", "p.value", "deviance"))
+```
+
+```{r}
+Test_educ <- merged_data %>%
+  filter(str_detect(nuts2, "IT") & year == 2010 & gini_n2 > 0)
+
+ggplot(Test_educ, aes(x = log(education), y = gini_n2)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
+  labs(
+    title = "Scatter Plot with Regression Line (Year 2010, IT)",
+    x = "education in %",
+    y = "Gini Index (n2)"
+  )
+```
+
+```{r}
+Test_educ <- merged_data %>%
+  filter(str_detect(nuts2, "DE") & year == 2010 & gini_n2 > 0)
+
+ggplot(Test_educ, aes(x = log(education), y = gini_n2)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
+  labs(
+    title = "Scatter Plot with Regression Line (Year 2010, IT)",
+    x = "education in %",
+    y = "Gini Index (n2)"
+  )
 ```
