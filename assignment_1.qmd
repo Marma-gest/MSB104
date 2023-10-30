@@ -57,9 +57,7 @@ nama_10r_3gdp_linear_csv <- read_csv("nama_10r_3gdp_linear.csv.gz",
     na = "NA")
 demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz", 
     na = "NA")
-roads = tgs00114_custom_8220181_linear_csv <- read_csv("tgs00114__custom_8220181_linear.csv.gz")
-rm(tgs00114_custom_8220181_linear_csv)
-
+roads <- read_csv("roads.gz")
 educ <- read_csv("educ.gz")
 aream2 <- read_csv("aream2.gz")
 
