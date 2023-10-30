@@ -121,26 +121,6 @@ merged_data <- merged_data |>
     nuts0 = substr(geo, 1,2)
  )
 
-# Grouping NUTS3 to NUTS2
-# Adding the gini coefficient to the gpd pr capita variable and weighing by population (grouped by nuts2)
-merged_data <- merged_data |> 
-  filter(!is.na(Population),
-         Population != 0,
-         GDPpcn3 != 0, 
-         GDPpcn3 != "NA"
-  ) |> 
-group_by(nuts2, year) |> 
-  mutate(gini_n2 = gini.wtd(GDPpcn3, Population), 
-         GDPpcn2 = mean(GDPpcn3), 
-         popn2 = sum(Population),
-         GDPn2 = sum(GDP),
-         numberofregions = n_distinct(geo)
-         ) |> 
-  slice(1) |> 
-  ungroup() |> 
-  select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2, numberofregions, GDPn2, GDPpcn2, popn2) 
-  # number of regions is wrong, want to show number of nuts3 regions in a nuts2 region as a vector
-
 roads <- roads |> 
   select(
     nuts2 = geo, Roadkm = OBS_VALUE, year = TIME_PERIOD
@@ -611,6 +591,29 @@ The zero values occur as a result of some regions are actually defined as a regi
 This means they do not have any GDP per capita [@eurostat2021].
 Moreover, we assume that the zero values can also be a result of missing data report from different regions in Germany and Finland.
 
+```{r}
+#| echo: false
+# Grouping NUTS3 to NUTS2
+# Adding the gini coefficient to the gpd pr capita variable and weighing by population (grouped by nuts2)
+merged_data <- merged_data |> 
+  filter(!is.na(Population),
+         Population != 0,
+         GDPpcn3 != 0, 
+         GDPpcn3 != "NA"
+  ) |> 
+group_by(nuts2, year) |> 
+  mutate(gini_n2 = gini.wtd(GDPpcn3, Population),
+         GDPpcn2 = mean(GDPpcn3), 
+         popn2 = sum(Population),
+         GDPn2 = sum(GDP),
+         numberofregions = n_distinct(geo)
+         ) |> 
+  slice(1) |> 
+  ungroup() |> 
+  select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2, numberofregions, GDPn2, GDPpcn2, popn2) 
+  # number of regions is wrong, want to show number of nuts3 regions in a nuts2 region as a vector
+```
+
 ### Data Presentation
 
 ```{r, echo=FALSE}
@@ -768,46 +771,4 @@ ggplot(merged_data_filtered, aes(x = log(GDP), y = gini_n2)) +
     y = "Gini Index (n2)"
   )
 
-```
-
-```{r}
-testssss <- merged_data |> 
-  filter(year == 2010) |> 
-  select(gini_n2, education)
-```
-
-```{r}
-lmDETest <- lm(log(gini_n2) ~ log(education/100), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
-
-lmITTest <- lm(log(gini_n2) ~ log(education/100), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
-
-huxreg(DE = lmDETest, IT = lmITTest, statistics = c("r.squared","adj.r.squared", "statistic", "p.value", "deviance"))
-```
-
-```{r}
-Test_educ <- merged_data %>%
-  filter(str_detect(nuts2, "IT") & year == 2010 & gini_n2 > 0)
-
-ggplot(Test_educ, aes(x = log(education/100), y = log(gini_n2))) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = y ~ x, se = TRUE) +  # Specify the formula
-  labs(
-    title = "Scatter Plot with Regression Line (Year 2010, IT)",
-    x = "education in %",
-    y = "Gini Index (n2)"
-  )
-```
-
-```{r}
-Test_educ <- merged_data %>%
-  filter(str_detect(nuts2, "DE") & year == 2010 & gini_n2 > 0)
-
-ggplot(Test_educ, aes(x = log(education), y = gini_n2)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
-  labs(
-    title = "Scatter Plot with Regression Line (Year 2010, IT)",
-    x = "education in %",
-    y = "Gini Index (n2)"
-  )
 ```
