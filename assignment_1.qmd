@@ -57,6 +57,13 @@ nama_10r_3gdp_linear_csv <- read_csv("nama_10r_3gdp_linear.csv.gz",
     na = "NA")
 demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz", 
     na = "NA")
+roads = tgs00114_custom_8220181_linear_csv <- read_csv("tgs00114__custom_8220181_linear.csv.gz")
+rm(tgs00114_custom_8220181_linear_csv)
+
+educ <- read_csv("educ.gz")
+aream2 <- read_csv("aream2.gz")
+
+
 ```
 
 ```{r}
@@ -638,7 +645,7 @@ Lombardia has the biggest inequality in the whole of Italy, with the highest Gin
 ITC4 contains big cities such as Milano, which has two of the biggest football teams in the world, and is known for being the capital of fashion.
 This attracts tourism and a spike in the regions GDP.
 
-### Belgium (East Flanders: BE23)
+###  Belgium (East Flanders: BE23)
 
 Explained by the span of GDP per capita in sub-regions where the highest GDP per capita being 49 964 and the lowest 17 401, while the average spans between \[17 000:21 000\].
 
@@ -679,50 +686,59 @@ huxreg(DE = lmDE, IT = lmIT, statistics = c("r.squared","adj.r.squared", "statis
 In table X above we see the coefficients, standard errors, and significance levels (indicated by asterisks) for a simple linear regression model for the year 2010.
 The model has GDP as the independent variable and regional Gini as the dependent variable for both Germany (DE) and Italy (IT).
 
-The intercept represents the predicted value of the dependent variable (regional Gini) when the independent variable (log(GDP)) is zero.
-In the case of DE, the intercept is 0.208, and in the case of IT, it's 0.004.
-This value is often not meaningful in this context since log(GDP) cannot be zero.
-The standard error in parentheses (0.131 for DE and 0.109 for IT) measures the uncertainty or variability of the intercept estimate.
+For Germany (DE) the intercept coefficient is 0.155, and it is statistically significant at the 1% level (\*\*\*).
+This means that when GDP is zero, the estimated Gini coefficient for Germany is 0.155.
+The standard error of the intercept is 0.019, indicating the precision of the estimate.
 
-log(GDP) is the coefficient for the independent variable.
-It represents the change in the dependent variable (regional Gini) associated with a one-unit change in the independent variable.
-In the case of DE, a one-unit change in log(GDP) is associated with a decrease of 0.006 in regional Gini, while in the case of IT, it's associated with an increase of 0.005.
-The standard error (0.015 for DE and 0.012 for IT) measures the uncertainty or variability of this coefficient estimate.
+For Italy (IT) the intercept coefficient is 0.049, and it is statistically significant at the 5% level (\*\*).
+When GDP is zero, the estimated Gini coefficient for Italy is 0.049.
+The standard error of the intercept is 0.013.
 
-The standard errors associated with the coefficients provide an estimate of the uncertainty or variability in the coefficient estimates.
-Smaller standard errors indicate more precise estimates.
+For Germany (DE) the coefficient for GDP is 0.036, but it is not statistically significant.
+This means that there is no strong evidence to suggest a linear relationship between GDP and the Gini coefficient in Germany in 2010.
+The standard error of the GDP coefficient is relatively large at 0.138, which may contribute to its lack of significance.
+
+For Italy (IT) the coefficient for GDP is 0.007, and it is also not statistically significant.
+Similar to Germany, there is no strong evidence of a linear relationship between GDP and the Gini coefficient in Italy in 2010.
+The standard error of the GDP coefficient is 0.063.
 
 ## **Model Diagnostics**
 
-For Germany (DE) the R-squared is 0.004, which is quite low.
-R-squared measures the proportion of the variance in the dependent variable (regional Gini) that can be explained by the independent variable (GDP).
-In this case, only 0.4% of the variation in regional Gini can be explained by GDP.
-For Italy (IT) the R-squared is 0.012, which is still relatively low.
-It means that in the case of Italy, 1.2% of the variation in regional Gini can be explained by GDP.
+R-squared is a measure of how well the independent variable (GDP) explains the variation in the dependent variable (regional Gini).
+For Germany (DE), the R-squared value is 0.002, indicating that only a very small proportion (0.2%) of the variation in regional Gini can be explained by GDP in the model.
+For Italy (IT), the R-squared value is 0.001, also indicating a very weak relationship between GDP and regional Gini.
+In this case, only 0.1% of the variation in regional Gini can be explained by GDP in the model.
 
-For Germany (DE) the adjusted R-squared is -0.028.
-Adjusted R-squared is similar to R-squared but takes into account the number of independent variables in the model.
-A negative adjusted R-squared is unusual and may indicate that the model is a poor fit for the data.
-For Italy (IT) the adjusted R-squared is -0.054, also negative, suggesting a poor fit for the data.
+Adjusted R-squared is a modified version of R-squared that accounts for the number of independent variables in the model.
+For Germany (DE), the adjusted R-squared value is -0.030.
+A negative adjusted R-squared can occur when the model is a poor fit for the data, and the independent variable(s) do not explain the variation in the dependent variable.
+It suggests that the model doesn't fit the German data well.
+For Italy (IT), the adjusted R-squared value is -0.066, which is also negative.
+This again suggests that the model is not a good fit for the Italian data and that GDP does not explain much of the variation in regional Gini.
 
-For Germany (DE) the t-statistic is 0.140.
-The t-statistic measures the significance of the independent variable (GDP).
-A value of 0.140 is relatively low, indicating that the relationship between GDP and regional Gini is not statistically significant in Germany.
-For Italy (IT) the t-statistic is 0.177, also indicating a lack of statistical significance in the relationship between GDP and regional Gini in Italy.
+The t-statistic measures the significance of the individual coefficients (in this case, the coefficient for GDP) in the linear regression model.
+It assesses whether the coefficient is significantly different from zero, indicating whether the independent variable (GDP) has a statistically significant effect on the dependent variable (regional Gini).
+For Germany (DE), the t-statistic for GDP is 0.067.
+A t-statistic close to zero suggests that the coefficient for GDP is not statistically significant in explaining regional Gini for Germany.
+For Italy (IT), the t-statistic for GDP is 0.011.
+Similarly, this value is close to zero, indicating that the coefficient for GDP is not statistically significant in explaining regional Gini for Italy.
 
-For Germany (DE) the p-value is 0.711.
-The p-value associated with the t-statistic is used to test the null hypothesis that the coefficient for GDP is equal to zero.
-A high p-value (0.711) suggests that there is not enough evidence to reject the null hypothesis, indicating that GDP may not have a significant impact on regional Gini in Germany.
-For Italy (IT) the p-value is 0.680, which is also high, indicating a lack of statistical significance.
+The p-value associated with the t-statistic assesses the probability of obtaining the observed results (or more extreme results) if there were no real relationship between the independent variable and the dependent variable.
+A low p-value (typically below 0.05) suggests statistical significance.
+For both Germany and Italy, the p-values associated with the t-statistics are relatively high.
+For DE, the p-value is 0.797, and for IT, it is 0.919.
+These high p-values indicate that the coefficient for GDP is not statistically significant in either model.
 
-For Germany (DE) the deviance is 0.189.
-Deviance is a measure of how well the model fits the data, with lower values indicating a better fit.
-However, the absolute value of deviance doesn't have a specific interpretation, and its significance would depend on the context and the comparison with other models.
-For Italy (IT) the deviance is 0.023, which is lower than the deviance for Germany, but its significance would still depend on the context and comparison.
+Deviance measures the goodness of fit of the model.
+It represents the difference between the model's likelihood and the likelihood of a saturated model (a model with perfect fit).
+A lower deviance indicates a better fit.
+For Germany (DE), the deviance is 0.189.
+A lower deviance would be desirable, but the value is specific to the dataset and model used.
+For Italy (IT), the deviance is 0.023, which is lower than that for Germany.
+This suggests that the model may fit the Italian data slightly better, but the overall fit is still weak.
 
-In summary, based on the provided statistics, it appears that the relationship between GDP and regional Gini is weak and not statistically significant for both Germany and Italy in the year 2010.
-The models do not explain much of the variation in regional Gini, as indicated by the low R-squared values, and the t-statistics and p-values suggest that the coefficients for GDP are not significantly different from zero.
-The negative adjusted R-squared values also indicate poor model fits, which may suggest that other factors not included in the models are influencing regional Gini.
+In summary, the statistics suggest that the linear regression models for both Germany and Italy in the year 2010, with GDP as the independent variable and regional Gini as the dependent variable, do not provide a good fit for the data.
+The relationship between GDP and regional Gini appears to be very weak and statistically insignificant in these models.
 
 ```{r}
 merged_data_filtered <- merged_data %>%
@@ -752,4 +768,38 @@ ggplot(merged_data_filtered, aes(x = log(GDP), y = gini_n2)) +
     y = "Gini Index (n2)"
   )
 
+```
+
+```{r}
+roads <- roads |> 
+  select(
+    geo, Roadkm = OBS_VALUE, year = TIME_PERIOD
+  ) 
+
+```
+
+```{r}
+educ <- educ |> 
+  select(
+    nuts2 = geo, age, year = TIME_PERIOD, education = OBS_VALUE, level = isced11
+  ) |> 
+  filter(nuts2 != "NA", age != "NA", year != "NA", education != "NA") |> 
+  filter(str_detect(nuts2, "IT|DE"))
+
+```
+
+```{r}
+educ <- educ |> 
+    filter(str_detect(nuts2, "IT|DE"), nchar(nuts2) == 4, level == "ED5-8") |> 
+  select(-age) 
+```
+
+```{r}
+merged_data <- left_join(merged_data, educ, by = c("nuts2", "year"))
+```
+
+```{r}
+testssss <- merged_data |> 
+  filter(year == 2010) |> 
+  select(gini_n2, education)
 ```
