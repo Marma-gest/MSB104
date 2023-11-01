@@ -129,7 +129,7 @@ roads <- roads |>
   filter(
     !is.na(Roadkm),
     Roadkm != 0
-  )
+  ) 
 
 educ <- educ |> 
   select(
@@ -149,7 +149,7 @@ aream2 <- aream2 |>
     year2 = 2010
   ) |> 
    select(
-    nuts2 = geo, year = year2, distance = OBS_VALUE
+    nuts2 = geo, year = year2, area = OBS_VALUE
   ) 
 
 educ <- educ |> 
@@ -805,7 +805,7 @@ merged_data <- left_join(merged_data, roads, by = c("nuts2", "year"))
 merged2010 <- merged_data |> 
   filter(year == 2010) |> 
   select(nuts2, year, everything()) |> 
-  select(nuts2, year, GDPpcn2, gini_n2, education, distance, Roadkm) |> 
+  select(nuts2, year, GDPpcn2, gini_n2, education, area, Roadkm) |> 
   filter(str_detect(nuts2, "IT|DE"), nchar(nuts2) == 4) |> 
   filter(
     Roadkm != "NA",
@@ -813,8 +813,10 @@ merged2010 <- merged_data |>
   ) |> 
   mutate(
     nuts0 = substr(nuts2, 1,2)
+  ) |> 
+    mutate(
+    roadratio = Roadkm/area
   )
-  
 
 ```
 
@@ -826,6 +828,14 @@ summary(is.na(merged2010))
 lmtest <- lm(gini_n2 ~ log(GDPpcn2) + log(education), subset(merged2010, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
 
 lmtest2 <- lm(gini_n2 ~ log(GDPpcn2) + log(education), subset(merged2010, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
+
+huxreg(DE = lmtest, IT = lmtest2, statistics = c("r.squared","adj.r.squared", "statistic", "p.value", "deviance"))
+```
+
+```{r}
+lmtest <- lm(gini_n2 ~ log(GDPpcn2) + log(education) + roadratio , subset(merged2010, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
+
+lmtest2 <- lm(gini_n2 ~ log(GDPpcn2) + log(education) + roadratio, subset(merged2010, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
 
 huxreg(DE = lmtest, IT = lmtest2, statistics = c("r.squared","adj.r.squared", "statistic", "p.value", "deviance"))
 ```
