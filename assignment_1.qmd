@@ -139,10 +139,10 @@ educ <- educ |>
   
 
 educ <- educ |> 
-  select(-age) |> 
   mutate(
     education = education/100
-  )
+  ) |> 
+  filter(level == "ED5-8") 
 
 aream2 <- aream2 |>
     mutate(
@@ -152,6 +152,23 @@ aream2 <- aream2 |>
     nuts2 = geo, year = year2, distance = OBS_VALUE
   ) 
 
+educ <- educ |> 
+  filter(
+    !age %in% "Y30-34"
+  ) |> 
+  mutate(
+     nuts2 = substr(nuts2, 1,4),
+  ) |> 
+  group_by(nuts2) |> 
+  mutate(
+    sumeduc = sum(education, na.rm = TRUE)
+  ) |> 
+    mutate(
+    sumeduc2 = sum(education, na.rm = TRUE) / 100
+  ) |> 
+    slice(1) |> 
+    ungroup() |> 
+  select(-age)
 
 
 
