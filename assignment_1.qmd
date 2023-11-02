@@ -755,10 +755,36 @@ The statistic value (statistic) and p-value (p.value) are typically used to test
 For Germany, the t-statistic is 9.183, and the associated p-value is 0.005, indicating that the model is statistically significant at the 0.05 significance level.
 For Italy, the t-statistic is 1.485, and the associated p-value is 0.242, suggesting that the model is not statistically significant at the 0.05 significance level.
 
+### **Classical assumptions OLS**
+
+There are underlying assumptions in statistical analysis like ordinary least squares regression (OLS).
+OLS yields the best estimates when these conventional presumptions hold true.
+OLS regression is based on six traditional assumptions.
+Our models are unbiased if the first four conditions are met.
+Below is a list of all six presumptions:
+
+1.  Linearity: There must be a linear relationship between the dependent variable (regional GINI) and independent variable (GDP per capita).
+    We can read from the two scatterplots below, FIG1 and FIG2, that the relationship for both Germany and Italy seems to be linear, with only some few outliers.
+
+2.  Sample variation: We can also see from @fig-scatterplot-RL-DE and @fig-scatterplot-RL-IT that there is variation in the independent variable (GDP per capita).
+
+3.  Random sampling: We have chosen randomly a representative sample of the population of interest.
+    Also, the data is downloaded from Eurostat, which is a trustworthy source for random sampling.
+    Additionally, we have also removed NA values.
+
+4.  Exogeneity: In our case the explanatory variable (GDP per capita) should not be influenced by other variables in the model, meaning it is exogenous.
+
+5.  Homoskedasticity: In our case the error term does not seem to have the same variance for each value of the independent variable, as seen in the two scatter plots in the appendix.
+
+6.  Normality: Because our Error term is not equal to zero, the population error term is not normally distributed in our datasets.
+
 ## Visualization
 
 ```{r}
 #| echo: FALSE
+#| label: fig-scatterplot-RL-DE
+#| cap-location: bottom
+#| fig-cap: "Scatter Plot with Regression Line (Year 2010, DE)"
 # Visualizing the linear regression of the gini coefficient by GDP per capita for Germany
 merged_data_filtered <- merged_data %>%
   filter(str_detect(geo, "DE") & year == 2010 & gini_n2 > 0)
@@ -767,7 +793,6 @@ ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  
   labs(
-    title = "Scatter Plot with Regression Line (Year 2010, DE)",
     x = "GDP per capita nuts2",
     y = "Gini Index (n2)"
   )
@@ -776,6 +801,9 @@ ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
 
 ```{r}
 #| echo: FALSE
+#| label: fig-scatterplot-RL-IT
+#| cap-location: bottom
+#| fig-cap: "Scatter Plot with Regression Line (Year 2010, IT)"
 # Visualizing the linear regression of the gini coefficient by GDP per capita for Italy
 merged_data_filtered <- merged_data %>%
   filter(str_detect(geo, "IT") & year == 2010 & gini_n2 > 0)
@@ -784,7 +812,6 @@ ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
   labs(
-    title = "Scatter Plot with Regression Line (Year 2010, IT)",
     x = "GDP per capita nuts2",
     y = "Gini Index (n2)"
   )
@@ -879,13 +906,11 @@ huxreg("Model 1 DE" = lm1, "Model 1 IT" = lm2, "Model 2 DE" = lmarea, "Model 2 I
 
 The provided multiple regression models aim to explain regional inequality, with three different models.
 
-•	Model 1; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education when it comes to inequality for the country\'s DE (Germany), and IT (Italy).
+• Model 1; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education when it comes to inequality for the country's DE (Germany), and IT (Italy).
 
+• Model 2; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education and area when it comes to inequality for the country's DE (Germany), and IT (Italy).
 
-•	Model 2; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education and area when it comes to inequality for the country\'s DE (Germany), and IT (Italy).
-
-
-•	Model 3; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education + area + Road(km) when it comes to inequality for the country\'s DE (Germany), and IT (Italy).
+• Model 3; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education + area + Road(km) when it comes to inequality for the country's DE (Germany), and IT (Italy).
 
 ### 3. **Model Interpretation**
 
@@ -895,3 +920,19 @@ It is theoretically justified as higher GDP per capita regions tend to have lowe
 -   Provide an interpretation of the estimated coefficients, discussing their magnitude, direction, and statistical significance.
 
 -   Reflect on the overall fit of the model and the contribution of each variable to explaining variations in regional inequality.
+
+# Appendix
+
+```{r}
+#| echo: FALSE
+residuals_DE <- resid(lmDE)
+
+plot(lmDE$fitted.values, residuals_DE, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted (Germany)")
+```
+
+```{r}
+#| echo: FALSE
+residuals_IT <- resid(lmIT)
+
+plot(lmIT$fitted.values, residuals_IT, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted (Italy)")
+```
