@@ -711,7 +711,7 @@ effekten er ulik, og vi får altså mindre ulikheter.
 #| fig-cap: "Linear regression model year 2010 for Germany and Italy"
 lmDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
 lmIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
-huxreg(DE = lmDE, IT = lmIT, statistics = c("r.squared","adj.r.squared", "statistic", "p.value", "deviance"))
+huxreg(DE = lmDE, IT = lmIT, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
 ```
 
 In table X above we see the coefficients, standard errors, and significance levels (indicated by asterisks) for a simple linear regression model for the year 2010.
