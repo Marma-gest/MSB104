@@ -721,23 +721,25 @@ huxreg(DE = lmDE, IT = lmIT, statistics = c("r.squared","adj.r.squared", "statis
 ```
 
 In table X above we see the coefficients, standard errors, and significance levels (indicated by asterisks) for a simple linear regression model for the year 2010.
-The model has GDP as the independent variable and regional Gini as the dependent variable for both Germany (DE) and Italy (IT).
+The model has GDP per capita as the independent variable and regional Gini as the dependent variable for both Germany (DE) and Italy (IT).
 
-For Germany (DE) the intercept coefficient is 0.155, and it is statistically significant at the 1% level (\*\*\*).
-This means that when GDP is zero, the estimated Gini coefficient for Germany is 0.155.
-The standard error of the intercept is 0.019, indicating the precision of the estimate.
+For Germany (DE), the intercept coefficient is -2.129\*\*, which indicates a high level of statistical significance at the 1% level.
+This means that when GDP per capita is zero, the estimated Gini coefficient for Germany is -2.129.
+The standard error of the intercept is 0.755, indicating the precision of the estimate.
 
-For Italy (IT) the intercept coefficient is 0.049, and it is statistically significant at the 5% level (\*\*).
-When GDP is zero, the estimated Gini coefficient for Italy is 0.049.
-The standard error of the intercept is 0.013.
+For Italy (IT), the intercept coefficient is -0.478 and is not significant.
+This means that when GDP per capita is zero, the estimated Gini coefficient for Italy is 0.478.
+The standard error of the intercept is 0.433.
 
-For Germany (DE) the coefficient for GDP is 0.036, but it is not statistically significant.
-This means that there is no strong evidence to suggest a linear relationship between GDP and the Gini coefficient in Germany in 2010.
-The standard error of the GDP coefficient is relatively large at 0.138, which may contribute to its lack of significance.
+For Germany (DE), the coefficient for log(GDPpcn2) is 0.222\*\*.
+This implies a high level of statistical significance at the 1% level.
+In other words, there is strong evidence of a positive linear relationship between the natural logarithm of GDP per capita and the Gini coefficient in Germany in 2010.
+The standard error associated with the coefficient is 0.073, which indicates the precision of this relationship.
 
-For Italy (IT) the coefficient for GDP is 0.007, and it is also not statistically significant.
-Similar to Germany, there is no strong evidence of a linear relationship between GDP and the Gini coefficient in Italy in 2010.
-The standard error of the GDP coefficient is 0.063.
+For Italy (IT), the coefficient for log(GDPpcn2) is 0.052.
+The absence of asterisks suggests that this coefficient is not statistically significant at commonly used significance levels.
+This implies that there is no strong statistical evidence of a linear relationship between the natural logarithm of GDP per capita and the Gini coefficient in Italy in 2010.
+The standard error of the coefficient is 0.043, providing a measure of the precision of this relationship.
 
 ## **Model Diagnostics**
 
