@@ -814,32 +814,7 @@ If a region is large, the probability for centralization could be bigger, based 
 This is the basis of why we chose to add the highway infrastructure variable, as a higher level of infrastructure might decrease the likelihood for centralization as mobility increases.
   
 
-Nevn noe om variablene vi har funnet (education og roadratio).
-Hva vi forventer av disse variablene og forholdet mellom de.
-
-Større areal tyder på større ulikheter på grunn av større sannsynlighet for sentralisering og diversity.
-
-Vi ser først på education har en påvirkning på ulikhetene i regionen, deretter legger vi til areal.
-Teorien vår er at større areal fører til større ulikheter.
-Videre legger vi til motorvei som vi tror vil ha en dempende effekt på ulikheter på grunn av bedre infrastruktur og raskere fremkomst muligheter / økt produktivitet.
-
 ### 2. **Multiple Linear Regression Model**
-
-Justify our variables
-
--   Document and justify your model specification, elaborating on the theoretical or empirical basis for expecting the selected variables to influence regional inequality.
-
--   Multicolinarity?
-    Bias?
-    OLS
-
--   Homoscedacity
-
-### 3. **Model Interpretation**
-
--   Provide an interpretation of the estimated coefficients, discussing their magnitude, direction, and statistical significance.
-
--   Reflect on the overall fit of the model and the contribution of each variable to explaining variations in regional inequality.
 
 ```{r}
 #| echo: FALSE
@@ -901,3 +876,22 @@ lm4 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area) + log(Roadkm), subset(m
 
 huxreg("Model 1 DE" = lm1, "Model 1 IT" = lm2, "Model 2 DE" = lmarea, "Model 2 IT" = lmarea2, "Model 3 DE" = lm3, "Model 3 IT" = lm4, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
 ```
+
+The provided multiple regression models aim to explain regional inequality, with three different models.
+
+•	Model 1; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education when it comes to inequality for the country\'s DE (Germany), and IT (Italy).
+
+
+•	Model 2; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education and area when it comes to inequality for the country\'s DE (Germany), and IT (Italy).
+
+
+•	Model 3; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education + area + Road(km) when it comes to inequality for the country\'s DE (Germany), and IT (Italy).
+
+### 3. **Model Interpretation**
+
+log(GDPpcn2): This variable measures the economic development of a region.
+It is theoretically justified as higher GDP per capita regions tend to have lower levels of regional inequality, where from the multiple regression shows that if GDP per capita increase 1000 euro, leads to a higher level of inequality (gini_n2); 0.203\*\* for GE and 0.054 for IT.
+
+-   Provide an interpretation of the estimated coefficients, discussing their magnitude, direction, and statistical significance.
+
+-   Reflect on the overall fit of the model and the contribution of each variable to explaining variations in regional inequality.
