@@ -51,6 +51,7 @@ Below is a short extract of the raw datasets from Eurostat.
 ```{r, show_col_types = FALSE}
 #| echo: FALSE
 #| output: FALSE
+#| label: Datasets and variable mutations
 # Loading datasets
 # Country code list: "IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
 # 
@@ -121,6 +122,7 @@ merged_data <- merged_data |>
     nuts0 = substr(geo, 1,2)
  )
 
+# Cleaning the road dataset by removing irrelevant data and NA values
 roads <- roads |> 
   select(
     nuts2 = geo, Roadkm = OBS_VALUE, year = TIME_PERIOD
@@ -130,20 +132,21 @@ roads <- roads |>
     !is.na(Roadkm),
     Roadkm != 0
   ) 
-
+# Cleaning education dataset renaming variables
 educ <- educ |> 
   select(
     nuts2 = geo, age, year = TIME_PERIOD, education = OBS_VALUE, level = isced11
   ) |> 
   filter(nuts2 != "NA", age != "NA", year != "NA", education != "NA")
   
-
+# We are only looking for data for College education (ED5-8) and we devide education by 100 to get the percentages on percentage form.
 educ <- educ |> 
   mutate(
     education = education/100
   ) |> 
   filter(level == "ED5-8") 
 
+# Aream2 refers to the dataset containing area data for each nuts3 region measured in squared kilometres
 aream2 <- aream2 |>
     mutate(
     year2 = 2010
@@ -151,7 +154,7 @@ aream2 <- aream2 |>
    select(
     nuts2 = geo, year = year2, area = OBS_VALUE
   ) 
-
+# We noticed the dataset contained age groups, and two of those groups contained much of the same data: age 25-34 and 30-34. This created issues as some of these observations would be counted twice. We therefore decied to remove the group 30-34.
 educ <- educ |> 
   filter(
     !age %in% "Y30-34"
@@ -162,9 +165,6 @@ educ <- educ |>
   group_by(nuts2) |> 
   mutate(
     sumeduc = sum(education, na.rm = TRUE)
-  ) |> 
-    mutate(
-    sumeduc2 = sum(education, na.rm = TRUE) / 100
   ) |> 
     slice(1) |> 
     ungroup() |> 
@@ -251,6 +251,7 @@ To measure the growth rate of GDP over time "in volume, GDP in current prices is
 
 ```{r}
 #| echo: FALSE
+#| label: GDP plot for Austria
 merged_data |> 
   filter(str_detect(geo, "AT")) |> 
   ggplot(mapping = aes(
@@ -291,6 +292,7 @@ When the median is lower than the mean, this means that the data set has more va
 
 ```{r}
 #| echo: FALSE
+#| label: GDP plot for Belgium
 merged_data |> 
   filter(str_detect(geo, "BE")) |> 
   ggplot(mapping = aes(
@@ -326,6 +328,7 @@ When the median is lower than the mean, this means that the data set has more va
 
 ```{r}
 #| echo: FALSE
+#| label: GDP plot for Bulgaria
 merged_data |> 
   filter(str_detect(geo, "BG")) |> 
   ggplot(mapping = aes(
@@ -365,6 +368,7 @@ The reason why we divide Italy into north and south is because it makes our ggpl
 
 ```{r}
 #| echo: FALSE
+#| label: GDP plot for North Italy
 # We are deviding italy into two parts, north and south
 merged_data |>
   filter(str_detect(geo, "ITC|ITH")) |> 
@@ -400,6 +404,7 @@ When the median is higher than the mean, this means that the data set has more v
 
 ```{r}
 #| echo: FALSE
+#| label: GDP plot for South Italy
 merged_data |> 
   filter(str_detect(geo, "ITF|ITI|ITG")) |> 
   ggplot(mapping = aes(
@@ -434,6 +439,7 @@ When the median is lower than the mean, this means that the data set has more va
 
 ```{r}
 #| echo: FALSE
+#| label: GDP plot for Sweden
 merged_data |> 
   filter(str_detect(geo, "SE")) |> 
   ggplot(mapping = aes(
@@ -475,6 +481,7 @@ When the median is higher than the mean, this means that the data set has more v
 
 ```{r}
 #| echo: FALSE
+#| label: GDP plot for Croatia
 merged_data |> 
   filter(str_detect(geo, "HR")) |> 
   ggplot(mapping = aes(
@@ -514,6 +521,7 @@ When the median is lower than the mean, this means that the data set has more va
 
 ```{r}
 #| echo: FALSE
+#| label: GDP plot for Serbia
 merged_data |> 
   filter(str_detect(geo, "RS")) |> 
   ggplot(mapping = aes(
@@ -611,6 +619,7 @@ Moreover, we assume that the zero values can also be a result of missing data re
 
 ```{r}
 #| echo: false
+#| label: Gini coefficient
 # Grouping NUTS3 to NUTS2
 # Adding the gini coefficient to the gpd pr capita variable and weighing by population (grouped by nuts2)
 merged_data <- merged_data |> 
@@ -677,7 +686,7 @@ Croatia has 140 observations , Serbia has 68 and Bosnia and Herzegovina became a
 
 # Assignment 2 Part A: Growth and Inequity
 
-## **Model Estimation**
+## **1. Model Estimation**
 
 In this part we want to estimate a simple linear regression model for the year 2010, with regional development, measured in GDP per capita, as the independent variable and regional inequality, measured in Gini, as the dependent variable.
 This is because we want to see the impact a change in the regional development will have on inequity in a given country.
@@ -763,12 +772,13 @@ The relationship between GDP and regional Gini appears to be very weak and stati
 
 ```{r}
 #| echo: FALSE
+# Visualizing the linear regression of the gini coefficient by GDP per capita for Germany
 merged_data_filtered <- merged_data %>%
   filter(str_detect(geo, "DE") & year == 2010 & gini_n2 > 0)
 
 ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  
   labs(
     title = "Scatter Plot with Regression Line (Year 2010, DE)",
     x = "GDP per capita nuts2",
@@ -779,6 +789,7 @@ ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
 
 ```{r}
 #| echo: FALSE
+# Visualizing the linear regression of the gini coefficient by GDP per capita for Italy
 merged_data_filtered <- merged_data %>%
   filter(str_detect(geo, "IT") & year == 2010 & gini_n2 > 0)
 
@@ -808,10 +819,25 @@ Videre legger vi til motorvei som vi tror vil ha en dempende effekt på ulikhete
 
 ### 2. **Multiple Linear Regression Model**
 
+Justify our variables
+
+-   Document and justify your model specification, elaborating on the theoretical or empirical basis for expecting the selected variables to influence regional inequality.
+
+-   Multicolinarity?
+    Bias?
+    OLS
+
+-   Homoscedacity
+
 ### 3. **Model Interpretation**
+
+-   Provide an interpretation of the estimated coefficients, discussing their magnitude, direction, and statistical significance.
+
+-   Reflect on the overall fit of the model and the contribution of each variable to explaining variations in regional inequality.
 
 ```{r}
 #| echo: FALSE
+# Adding the new variables to the main dataset
 merged_data <- left_join(merged_data, aream2, by = c("nuts2", "year"))
 
 merged_data <- left_join(merged_data, educ, by = c("nuts2", "year"))
@@ -822,6 +848,8 @@ merged_data <- left_join(merged_data, roads, by = c("nuts2", "year"))
 
 ```{r}
 #| echo: FALSE
+#| label: Dataset for 2010 variables
+# Creating a new dataset that only contains Germany and Italy for the year 2010.
 merged2010 <- merged_data |> 
   filter(year == 2010) |> 
   select(nuts2, year, everything()) |> 
@@ -845,18 +873,25 @@ merged2010 <- merged_data |>
 
 ```{r}
 #| echo: FALSE
+#| label: Multiple regression models
+
+# In lm1 and lm2 we look at how the GDP per capita of each nuts 2 region as well as education may explain the gini coefficient. We have used. a log transformation on the GDP because both gini and education is measured in percentages, and without doing so the GDP data is significantly skewed
+
 lm1 <- lm(gini_n2 ~ log(GDPpcn2) + education, subset(merged2010, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
 lm2 <- lm(gini_n2 ~ log(GDPpcn2) + education, subset(merged2010, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
 
+# lmarea looks at the above, but adds the area variable. This is also log transformed as we are interested in the changes in percentage
 
-lmeduc <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area), subset(merged2010, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
+lmarea <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area), subset(merged2010, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
 
-lmeduc2 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area), subset(merged2010, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
+lmarea2 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area), subset(merged2010, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
+
+# lm3 and lm4 also includes roads (amount of highway in kilometres in a region). These models takes all explanatory variables in to account.
 
 lm3 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area) + log(Roadkm), subset(merged2010, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
 
 lm4 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area) + log(Roadkm), subset(merged2010, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
 
 
-huxreg("Model 1 DE" = lm1, "Model 1 IT" = lm2, "Model 2 DE" = lmeduc, "Model 2 IT" = lmeduc2, "Model 3 DE" = lm3, "Model 3 IT" = lm4, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
+huxreg("Model 1 DE" = lm1, "Model 1 IT" = lm2, "Model 2 DE" = lmarea, "Model 2 IT" = lmarea2, "Model 3 DE" = lm3, "Model 3 IT" = lm4, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
 ```
