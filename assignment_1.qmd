@@ -944,12 +944,18 @@ The impact of other independent variables, such as education, log(area), and log
 
 # Appendix
 
+## Residuals:
+
+### Residuals vs. Fitted (Germany)
+
 ```{r}
 #| echo: FALSE
 residuals_DE <- resid(lmDE)
 
 plot(lmDE$fitted.values, residuals_DE, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted (Germany)")
 ```
+
+### Residuals vs. Fitted (Italy)
 
 ```{r}
 #| echo: FALSE
