@@ -743,41 +743,17 @@ The standard error of the coefficient is 0.043, providing a measure of the preci
 
 ## **Model Diagnostics**
 
-R-squared is a measure of how well the independent variable (GDP) explains the variation in the dependent variable (regional Gini).
-For Germany (DE), the R-squared value is 0.002, indicating that only a very small proportion (0.2%) of the variation in regional Gini can be explained by GDP in the model.
-For Italy (IT), the R-squared value is 0.001, also indicating a very weak relationship between GDP and regional Gini.
-In this case, only 0.1% of the variation in regional Gini can be explained by GDP in the model.
+R-squared (r.squared) is a measure of how well the independent variable(s) explain the variation in the dependent variable.
+For Germany, the R-squared is 0.229, indicating that approximately 22.9% of the variation in the Gini coefficient can be explained by variations in log(GDPpcn2).
+For Italy, the R-squared is 0.090, suggesting that about 9.0% of the variation in the Gini coefficient can be explained by variations in log(GDPpcn2).
 
-Adjusted R-squared is a modified version of R-squared that accounts for the number of independent variables in the model.
-For Germany (DE), the adjusted R-squared value is -0.030.
-A negative adjusted R-squared can occur when the model is a poor fit for the data, and the independent variable(s) do not explain the variation in the dependent variable.
-It suggests that the model doesn't fit the German data well.
-For Italy (IT), the adjusted R-squared value is -0.066, which is also negative.
-This again suggests that the model is not a good fit for the Italian data and that GDP does not explain much of the variation in regional Gini.
+Adjusted R-squared (adj.r.squared) is a modified version of R-squared that accounts for the number of independent variables.
+It penalizes the inclusion of unnecessary variables.
+For both Germany and Italy, the adjusted R-squared is lower than the R-squared, indicating that some variables may not be contributing significantly to the model.
 
-The t-statistic measures the significance of the individual coefficients (in this case, the coefficient for GDP) in the linear regression model.
-It assesses whether the coefficient is significantly different from zero, indicating whether the independent variable (GDP) has a statistically significant effect on the dependent variable (regional Gini).
-For Germany (DE), the t-statistic for GDP is 0.067.
-A t-statistic close to zero suggests that the coefficient for GDP is not statistically significant in explaining regional Gini for Germany.
-For Italy (IT), the t-statistic for GDP is 0.011.
-Similarly, this value is close to zero, indicating that the coefficient for GDP is not statistically significant in explaining regional Gini for Italy.
-
-The p-value associated with the t-statistic assesses the probability of obtaining the observed results (or more extreme results) if there were no real relationship between the independent variable and the dependent variable.
-A low p-value (typically below 0.05) suggests statistical significance.
-For both Germany and Italy, the p-values associated with the t-statistics are relatively high.
-For DE, the p-value is 0.797, and for IT, it is 0.919.
-These high p-values indicate that the coefficient for GDP is not statistically significant in either model.
-
-Deviance measures the goodness of fit of the model.
-It represents the difference between the model's likelihood and the likelihood of a saturated model (a model with perfect fit).
-A lower deviance indicates a better fit.
-For Germany (DE), the deviance is 0.189.
-A lower deviance would be desirable, but the value is specific to the dataset and model used.
-For Italy (IT), the deviance is 0.023, which is lower than that for Germany.
-This suggests that the model may fit the Italian data slightly better, but the overall fit is still weak.
-
-In summary, the statistics suggest that the linear regression models for both Germany and Italy in the year 2010, with GDP as the independent variable and regional Gini as the dependent variable, do not provide a good fit for the data.
-The relationship between GDP and regional Gini appears to be very weak and statistically insignificant in these models.
+The statistic value (statistic) and p-value (p.value) are typically used to test the overall significance of the regression model.
+For Germany, the t-statistic is 9.183, and the associated p-value is 0.005, indicating that the model is statistically significant at the 0.05 significance level.
+For Italy, the t-statistic is 1.485, and the associated p-value is 0.242, suggesting that the model is not statistically significant at the 0.05 significance level.
 
 ## Visualization
 
@@ -826,7 +802,7 @@ The area data is measured in squared kilometers and the road data is the total a
 
 If a region has a big difference in the level of education among subregions, we believe this will increase the regional inequality.
 Human capital is one of the most important determinants of differences in reginal development within countries \@Gennaioli et al. 2013.
-\"Human capital creates positive externalities, which can also spill over reginal boundaries\" \@Lessmann.
+"Human capital creates positive externalities, which can also spill over reginal boundaries" \@Lessmann.
 Unfortunately, this data is not available for Germany and Italy.
 We therefore fall back upon the average quality of human capital within Germany and Italy, as measured by the education level ED5-8 to look if a percentage of higher education increase inequality in a region.
 
