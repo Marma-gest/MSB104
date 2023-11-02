@@ -919,7 +919,28 @@ It is theoretically justified as higher GDP per capita regions tend to have lowe
 
 -   Provide an interpretation of the estimated coefficients, discussing their magnitude, direction, and statistical significance.
 
--   Reflect on the overall fit of the model and the contribution of each variable to explaining variations in regional inequality.
+In Model 1, the R-squared values are 0.222 for Germany and 0.122 for Italy.
+In Model 2, they increase to 0.309 for Germany and 0.338 for Italy.
+In Model 3, they remain relatively consistent at 0.313 for Germany and 0.340 for Italy.
+
+The adjusted R-squared values follow a similar pattern, indicating that Model 2 has the highest explanatory power for both Germany and Italy.
+However, the increase in R-squared between Model 1 and Model 2 suggests that Model 2 provides a better fit compared to Model 1.
+
+The coefficients associated with each independent variable (log(GDPpcn2), education, log(area), and log(Roadkm)) indicate the direction and strength of their influence on regional inequality.
+For log(GDPpcn2), positive coefficients indicate that an increase in GDP per capita is associated with higher regional inequality.
+In Model 2 and Model 3, log(GDPpcn2) is statistically significant at the 0.01 significance level for both Germany and Italy.
+For education, negative coefficients suggest that higher education levels are associated with lower regional inequality.
+However, in all models, education is not statistically significant.
+For log(area), positive coefficients imply that larger regions tend to have higher regional inequality.
+In Model 2 and Model 3, log(area) is statistically significant at the 0.05 significance level for both Germany and Italy.
+For log(Roadkm), the coefficients are generally small, and in Model 2 and Model 3, they are not statistically significant.
+
+The F-statistic value and p-value indicate that Model 2 is statistically significant at the 0.01 significance level for both Germany and Italy, while Model 1 is statistically significant for Germany but not for Italy.
+Model 3 is statistically significant at the 0.05 significance level for Germany but not for Italy.
+
+In summary, Model 2 appears to have the best overall fit, as indicated by the highest R-squared and adjusted R-squared values for both Germany and Italy.
+The primary contributor to explaining variations in regional inequality appears to be log(GDPpcn2), as it is consistently statistically significant at the 0.01 significance level in Model 2 and Model 3.
+The impact of other independent variables, such as education, log(area), and log(Roadkm, is less clear, as they are generally not statistically significant in the models. The specific implications of these findings would depend on the context of your analysis and the objectives of your research. It's important to consider the practical significance of these results and conduct further analysis if needed.
 
 # Appendix
 
