@@ -134,6 +134,7 @@ roads <- roads |>
   ) 
 # Cleaning education dataset renaming variables
 educ <- educ |> 
+  filter(sex == "T") |> 
   select(
     nuts2 = geo, age, year = TIME_PERIOD, education = OBS_VALUE, level = isced11
   ) |> 
@@ -694,11 +695,12 @@ This is because we want to see the impact a change in the regional development w
 Lessmann and Seidel discuss that the national development level can be an outcome of regional inequalities.
 Our aim is showcase this with regional development (GDP per capita​) as the independent variable and regional inequality (gini_n2) as the dependent variable.
 
-\"Existing studies have shown a serious bias towards middle -- and high -income countries entire population\" @lessmann_and_seidel2017. We therefore use the level of economic development measured as log by the GDP pr capita measured in euros in million\`s.
+"Existing studies have shown a serious bias towards middle -- and high -income countries entire population" @lessmann_and_seidel2017.
+We therefore use the level of economic development measured as log by the GDP pr capita measured in euros in million\`s.
 The reason why we use GDP per capita on a regional level is because the of GDP pr capita and GDP has a different meaning.
 GDP measure a country as a hole, where the GDP per capita is measuring the productivity of the population.
 
-We will reduce bias by looking at country\'s entire populations through the GDP per capita of Italy and Germany.
+We will reduce bias by looking at country's entire populations through the GDP per capita of Italy and Germany.
 The reason we choose the selected countries is because they are the largest and have the most observations, which reduces potential bias.
 
 Theory:
@@ -814,6 +816,20 @@ ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
 ## Part B: Exploring Other Determinants of Inequity
 
 ### **1. Data Acquisition**
+
+To further understand the inequality on a regional level it is necessary to look for other variables that can contribute to explaining the Gini coefficient.
+Variables that may help explain this is the educational level of the population, the area of the region as well as the amount of highway infrastructure that a region has.
+The education data gathered is measured in the percentage of the population that has completed a higher education level (ED5-8) from the age of 20 to 65.
+The area data is measured in squared kilometers and the road data is the total amount of highway infrastructure that a region has.
+
+If a region has a big difference in the level of education among subregions, we believe this will increase the regional inequality.
+This is based on the assumption that a subregion with higher educated citizens will typically earn more than subregions with lesser educated citizens, thus increasing the difference in GDP per capita on the regional level.
+Another assumption that can explain the increased expectancy, is that higher educated citizens tend to have a higher probability of centralizing towards city centers, contrary to less educated citizens.
+
+The centralization assumption is also true for the area of the regions.
+If a region is large, the probability for centralization could be bigger, based on factors such as job markets, mobility and distance between cities or areas.
+This is the basis of why we chose to add the highway infrastructure variable, as a higher level of infrastructure might decrease the likelihood for centralization as mobility increases.
+ 
 
 Nevn noe om variablene vi har funnet (education og roadratio).
 Hva vi forventer av disse variablene og forholdet mellom de.
