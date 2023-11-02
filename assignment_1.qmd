@@ -733,12 +733,12 @@ The standard error of the intercept is 0.433.
 
 For Germany (DE), the coefficient for log(GDPpcn2) is 0.222\*\*.
 This implies a high level of statistical significance at the 1% level.
-In other words, there is strong evidence of a positive linear relationship between the natural logarithm of GDP per capita and the Gini coefficient in Germany in 2010.
+In other words, there is strong evidence of a positive linear relationship between the GDP per capita and the Gini coefficient in Germany in 2010.
 The standard error associated with the coefficient is 0.073, which indicates the precision of this relationship.
 
 For Italy (IT), the coefficient for log(GDPpcn2) is 0.052.
 The absence of asterisks suggests that this coefficient is not statistically significant at commonly used significance levels.
-This implies that there is no strong statistical evidence of a linear relationship between the natural logarithm of GDP per capita and the Gini coefficient in Italy in 2010.
+This implies that there is no strong statistical evidence of a linear relationship between the GDP per capita and the Gini coefficient in Italy in 2010.
 The standard error of the coefficient is 0.043, providing a measure of the precision of this relationship.
 
 ## **Model Diagnostics**
@@ -825,13 +825,18 @@ The education data gathered is measured in the percentage of the population that
 The area data is measured in squared kilometers and the road data is the total amount of highway infrastructure that a region has.
 
 If a region has a big difference in the level of education among subregions, we believe this will increase the regional inequality.
-This is based on the assumption that a subregion with higher educated citizens will typically earn more than subregions with lesser educated citizens, thus increasing the difference in GDP per capita on the regional level.
+Human capital is one of the most important determinants of differences in reginal development within countries \@Gennaioli et al. 2013.
+\"Human capital creates positive externalities, which can also spill over reginal boundaries\" \@Lessmann.
+Unfortunately, this data is not available for Germany and Italy.
+We therefore fall back upon the average quality of human capital within Germany and Italy, as measured by the education level ED5-8 to look if a percentage of higher education increase inequality in a region.
+
+We believe that if a region has a big difference in the level of education among subregions, this will increase the regional inequality based on the assumption that a subregion with higher educated citizens will typically earn more than subregions with lesser educated citizens, thus increasing the difference in GDP per capita on the regional level.
 Another assumption that can explain the increased expectancy, is that higher educated citizens tend to have a higher probability of centralizing towards city centers, contrary to less educated citizens.
 
 The centralization assumption is also true for the area of the regions.
 If a region is large, the probability for centralization could be bigger, based on factors such as job markets, mobility and distance between cities or areas.
 This is the basis of why we chose to add the highway infrastructure variable, as a higher level of infrastructure might decrease the likelihood for centralization as mobility increases.
- 
+  
 
 Nevn noe om variablene vi har funnet (education og roadratio).
 Hva vi forventer av disse variablene og forholdet mellom de.
