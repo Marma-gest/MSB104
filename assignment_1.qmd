@@ -693,16 +693,20 @@ This is because we want to see the impact a change in the regional development w
 
 Lessmann and Seidel discuss that the national development level can be an outcome of regional inequalities.
 Our aim is showcase this with regional development (GDP per capita​) as the independent variable and regional inequality (gini_n2) as the dependent variable.
-The reason why we uses GDP per capita on a regional level is because.
 
-We will therefore reduce bias by looking at countries entire populations through the GDP of Italy and Germany.
+\"Existing studies have shown a serious bias towards middle -- and high -income countries entire population\" @lessmann_and_seidel2017. We therefore use the level of economic development measured as log by the GDP pr capita measured in euros in million\`s.
+The reason why we use GDP per capita on a regional level is because the of GDP pr capita and GDP has a different meaning.
+GDP measure a country as a hole, where the GDP per capita is measuring the productivity of the population.
+
+We will reduce bias by looking at country\'s entire populations through the GDP per capita of Italy and Germany.
 The reason we choose the selected countries is because they are the largest and have the most observations, which reduces potential bias.
 
-**Teori:** En økning i GDP per capita vil føre til en nedgang i Gini coefficient (regional inequity).
-Grunnlaget for denne teorien er at en økning på tusen euro i GDP per capita vil ha en større effekt på de regionene som skiller seg ut.
-Det kommer et punkt hvor en økning i GDP per capita vil ha en større innvirkning på de som har lite GDP per capita, kontra de som har større GDP per capita.
-Dette vil føre til en redusert ulikhet pga.
-effekten er ulik, og vi får altså mindre ulikheter.
+Theory:
+
+An increase in GDP per capita will lead to a decrease in the Gini coefficient (regional inequity).
+The basis for this theory is that an increase of one thousand euros in GDP per capita will have a greater effect on the regions that stand out.
+There comes a point where an increase in GDP per capita will have a greater impact on those with a small GDP per capita, versus those with a larger GDP per capita.
+The reason for this is because the effect of the increase in GDP per capita hits those with larger GDP per capita different than those with a smaller GDP per capita.
 
 ```{r}
 #| label: table_simple_lm_DE_IT
