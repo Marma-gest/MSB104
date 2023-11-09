@@ -252,9 +252,7 @@ To measure the growth rate of GDP over time "in volume, GDP in current prices is
 
 ```{r}
 #| echo: FALSE
-#| label: fig-GDPAustria
-#| cap-location: bottom
-#| fig-cap: "GDP plot Austria"
+#| label: GDP plot for Austria
 merged_data |> 
   filter(str_detect(geo, "AT")) |> 
   ggplot(mapping = aes(
@@ -270,9 +268,7 @@ merged_data |>
 
 ```{r}
 #| echo: FALSE
-#| tbl-cap: Summary_Austria
 # Generates descriptive statistics for variables in plot for AT
-
 merged_data |> 
   filter(str_detect(geo, "AT")) |> 
   select(-1,-year) |> 
@@ -297,9 +293,7 @@ When the median is lower than the mean, this means that the data set has more va
 
 ```{r}
 #| echo: FALSE
-#| label: fig-GDPBelgium
-#| cap-location: bottom
-#| fig-cap: "GDP plot Belgium"
+#| label: GDP plot for Belgium
 merged_data |> 
   filter(str_detect(geo, "BE")) |> 
   ggplot(mapping = aes(
@@ -335,9 +329,7 @@ When the median is lower than the mean, this means that the data set has more va
 
 ```{r}
 #| echo: FALSE
-#| label: fig-GDPBulgaria
-#| cap-location: bottom
-#| fig-cap: "GDP plot Bulgaria"
+#| label: GDP plot for Bulgaria
 merged_data |> 
   filter(str_detect(geo, "BG")) |> 
   ggplot(mapping = aes(
@@ -377,9 +369,8 @@ The reason why we divide Italy into north and south is because it makes our ggpl
 
 ```{r}
 #| echo: FALSE
-#| label: fig-GDPNorthItaly
-#| cap-location: bottom
-#| fig-cap: "GDP plot North Italy"
+#| label: GDP plot for North Italy
+# We are deviding italy into two parts, north and south
 merged_data |>
   filter(str_detect(geo, "ITC|ITH")) |> 
   ggplot(mapping = aes(
@@ -414,9 +405,7 @@ When the median is higher than the mean, this means that the data set has more v
 
 ```{r}
 #| echo: FALSE
-#| label: fig-GDPSouthItaly
-#| cap-location: bottom
-#| fig-cap: "GDP plot South Italy"
+#| label: GDP plot for South Italy
 merged_data |> 
   filter(str_detect(geo, "ITF|ITI|ITG")) |> 
   ggplot(mapping = aes(
@@ -451,9 +440,7 @@ When the median is lower than the mean, this means that the data set has more va
 
 ```{r}
 #| echo: FALSE
-#| label: fig-GDPSweden
-#| cap-location: bottom
-#| fig-cap: "GDP plot Sweden"
+#| label: GDP plot for Sweden
 merged_data |> 
   filter(str_detect(geo, "SE")) |> 
   ggplot(mapping = aes(
@@ -495,9 +482,7 @@ When the median is higher than the mean, this means that the data set has more v
 
 ```{r}
 #| echo: FALSE
-#| label: fig-GDPCroatia
-#| cap-location: bottom
-#| fig-cap: "GDP plot Croatia"
+#| label: GDP plot for Croatia
 merged_data |> 
   filter(str_detect(geo, "HR")) |> 
   ggplot(mapping = aes(
@@ -537,9 +522,7 @@ When the median is lower than the mean, this means that the data set has more va
 
 ```{r}
 #| echo: FALSE
-#| label: fig-GDPSerbia
-#| cap-location: bottom
-#| fig-cap: "GDP plot Serbia"
+#| label: GDP plot for Serbia
 merged_data |> 
   filter(str_detect(geo, "RS")) |> 
   ggplot(mapping = aes(
@@ -584,7 +567,8 @@ The reason why Bosnia and Herzegovina lacks data from 2000 - 2020 in Eurostat is
 
 ### 1. Literature review
 
-Regional inequality shows variation in regional GDP per capita, and according to @lessmann2017, regional inequality occurs when one region experiences different assumptions than other regions. Moreover, when the level of economic development is high, there is significant regional inequality \[@lessmann2017\].
+Regional inequality shows variation in regional GDP per capita, and according to @lessmann2017, regional inequality occurs when one region experiences different assumptions than other regions.
+Moreover, when the level of economic development is high, there is significant regional inequality [@lessmann2017].
 According to @williamson1965, one crucial difference that leads to regional inequality is the access to natural resources.
 Regions rich in natural resources grow faster than regions in the rest of the country, which results in inequality.
 Furthermore, openness is another critical element of why regional inequality occurs.
@@ -660,7 +644,7 @@ group_by(nuts2, year) |>
 
 ### Data Presentation
 
-```{r}
+```{r, echo=FALSE}
 #| fig.height = 15, fig.width = 12
 # Added fig arguments in chunk in order to control the size of the facet wraps and colourgraded the gini coefficient intervals
 merged_data |> 
@@ -709,16 +693,9 @@ In this part we want to estimate a simple linear regression model for the year 2
 This is because we want to see the impact a change in the regional development will have on inequity in a given country.
 
 Lessmann and Seidel discuss that the national development level can be an outcome of regional inequalities.
-Our aim is to showcase this with regional development (GDP per capita​) as the independent variable and regional inequality (gini_n2) as the dependent variable.
+Our aim is showcase this with regional development (GDP per capita​) as the independent variable and regional inequality (gini_n2) as the dependent variable.
 
-Our aim is to explain the regional inequalities with regional development as the explanatory variable.
-This brings forward the following expression:
-
-$$
-Gini = ß_0 + ß_1GDPpcn2
-$$
-
-*"Existing studies have shown a serious bias towards middle -- and high -income countries entire population"* [@lessmann2017].
+*"Existing studies have shown a serious bias towards middle -- and high -income countries entire population"* @lessmann_and_seidel2017.
 We therefore use the level of economic development measured as log by the GDP pr capita measured in euros in million\`s.
 The reason why we use GDP per capita on a regional level is because the of GDP pr capita and GDP has a different meaning.
 GDP measure a country as a hole, where the GDP per capita is measuring the productivity of the population.
@@ -726,7 +703,7 @@ GDP measure a country as a hole, where the GDP per capita is measuring the produ
 We will reduce bias by looking at country's entire populations through the GDP per capita of Italy and Germany.
 The reason we choose the selected countries is because they are the largest and have the most observations, which reduces potential bias.
 
-*Theory:*
+Theory:
 
 An increase in GDP per capita will lead to a decrease in the Gini coefficient (regional inequity).
 The basis for this theory is that an increase of ten thousand euros (one percent of one million) in GDP per capita will have a greater effect on the regions that stand out.
@@ -737,7 +714,6 @@ The reason for this is because the effect of the increase in GDP per capita hits
 #| echo: false
 #| cap-location: bottom
 #| tbl-cap: "Linear regression model year 2010 for Germany and Italy"
-# Estimating linear regression models for Germany and Italy with Gini and GDP per capita.
 lmDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
 lmIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
 huxreg(DE = lmDE, IT = lmIT, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
@@ -957,42 +933,6 @@ Model 3 is statistically significant at the 0.05 significance level for Germany 
 In summary, Model 2 appears to have the best overall fit, as indicated by the highest R-squared and adjusted R-squared values for both Germany and Italy.
 The primary contributor to explaining variations in regional inequality appears to be log(GDPpcn2), as it is consistently statistically significant at the 0.01 significance level in Model 2 and Model 3.
 The impact of other independent variables, such as education, log(area), and log(Roadkm, is less clear, as they are generally not statistically significant in the models. The specific implications of these findings would depend on the context of your analysis and the objectives of your research. It's important to consider the practical significance of these results and conduct further analysis if needed.
-
-# Assignment 3
-
-## Part A: Testing development effects across subsets
-
-### 1. Subset analysis
-
-### 2. Subset analysis discussion
-
-## Part B: Exploring alternative functional forms
-
-### 1. Functional form exploration
-
-### 2. Estimation and visualization
-
-### 3. Results interpretation
-
-## Part C: Heteroskedasticity testing and causality discussion 
-
-### 1. Heteroskedasticity testing
-
-### 2. Causality discussion 
-
-## Part D: Panel estimates
-
-### 1. Panel estimation task
-
-### 2. Panel estimation analysis
-
-### 3. Panel estimation discussion
-
-## References
-
-```{r}
-
-```
 
 # Appendix
 
