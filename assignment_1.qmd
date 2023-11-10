@@ -988,7 +988,14 @@ Quadratic term is more interesting, log squared.
 
 ### 1. Subset analysis
 
+-   Segment your data into meaningful subsets based on your assigned countries.
+
+-   Estimate the effect of regional development on inequality within each subset and test if the effects significantly differ.
+
 ### 2. Subset analysis discussion
+
+-   Interpret and discuss the results, focusing on differences in development effects across subsets.
+    Explain any observed variations.
 
 ## Part B: Exploring alternative functional forms
 
@@ -1073,15 +1080,28 @@ merged_data |>
 
 ### 1. Functional form exploration
 
+-   Explore alternative functional forms (logarithmic, quadratic, cubic) and select two that may provide a better fit.
+
+-   Justify your choices with theoretical or empirical reasoning.
+
 ### 2. Estimation and visualization
 
+-   Estimate and visualize the models, clearly annotating and interpreting the results.
+
 ### 3. Results interpretation
+
+-   Discuss the coefficients, implications, and the fit of the alternative models compared to the original linear model.
 
 ## Part C: Heteroskedasticity testing and causality discussion
 
 ### 1. Heteroskedasticity testing
 
+-   Test for heteroskedasticity in the alternative and original models.
+    Interpret and discuss the results and implications.
+
 ### 2. Causality discussion
+
+-   Reflect on the causal interpretation of your models and suggest strategies to address any issues identified.
 
 ## Part D: Panel estimates
 
@@ -1089,9 +1109,19 @@ Should we divide our data into three subsets; one with all countries, one with t
 
 ### 1. Panel estimation task
 
+-   Using the entire dataset, estimate the effect of regional development on regional inequality through panel estimation techniques.
+
+-   Present estimates considering different fixed effects (country, year, and NUTS 2 level), both separately and jointly.
+
 ### 2. Panel estimation analysis
 
+-   Interpret the panel estimation results, emphasizing the implications of the fixed effects included.
+
+-   Compare and contrast the panel estimates with the cross-sectional estimates obtained earlier, discussing the advantages and limitations of each approach.
+
 ### 3. Panel estimation discussion
+
+-   Critically evaluate the panel estimation findings, considering potential biases, inconsistencies, or limitations in the methodology.
 
 ## References
 
@@ -1120,3 +1150,4 @@ residuals_IT <- resid(lmIT)
 
 plot(lmIT$fitted.values, residuals_IT, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted (Italy)")
 ```
+
