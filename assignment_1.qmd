@@ -1107,6 +1107,30 @@ merged_data |>
 
 Should we divide our data into three subsets; one with all countries, one with tourists countries and one with all except tourist countries?
 
+```{r}
+merged_data$Germany <- ifelse(merged_data$nuts0 == "DE", 1,0)
+merged_data$Other <- ifelse(merged_data$nuts0 == "DE", 0,1)
+
+merged_data$Italy <- ifelse(merged_data$nuts0 == "IT", 1,0)
+merged_data$Other <- ifelse(merged_data$nuts0 == "IT", 0,1)
+
+merged_data$Italy <- ifelse(merged_data$nuts0 == "SE", 1,0)
+merged_data$Other <- ifelse(merged_data$nuts0 == "SE", 0,1)
+```
+
+```{r}
+merged_data <- merged_data |> 
+  mutate(dummy_IT = as.numeric(nuts0 == "IT"),
+         dummy_SE = as.numeric(nuts0 == "SE"),
+         dummy_DE = as.numeric(nuts0 == "DE"))
+```
+
+```{r}
+lmpanelIT = lm(gini_n2 ~ logGDPpcn2, filter(merged_data, dummy_IT == 1))
+lmpanel = lm(gini_n2 ~ logGDPpcn2, filter(merged_data, dummy_IT == 0))
+huxreg(lmpanelIT, lmpanel, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
+```
+
 ### 1. Panel estimation task
 
 -   Using the entire dataset, estimate the effect of regional development on regional inequality through panel estimation techniques.
@@ -1150,4 +1174,3 @@ residuals_IT <- resid(lmIT)
 
 plot(lmIT$fitted.values, residuals_IT, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted (Italy)")
 ```
-
