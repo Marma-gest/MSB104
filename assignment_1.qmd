@@ -992,7 +992,107 @@ Quadratic term is more interesting, log squared.
 
 ## Part B: Exploring alternative functional forms
 
-Should we have one formula where everything is normal, one where everything is log, and one where everything is quadraded?
+Quadratic model: A quadratic relationship implies a non linear U-shaped or inverted u-shaped relationship between development and inequality.
+
+$$
+Inequality_i = ß_0 + ß_1logDevelopment_i + ß_2(logDevelopment)^2
+$$
+
+We believe that the regional development in a quadratic model will have a concave shape as we believe that an increase in GDP per capita will have a increased effect on inequality but a decreased effect as the number increases.
+
+Logarithmic model:
+
+$$
+Inequality_i = ß_0 + ß_1 log(Development_i) + ε_i
+$$
+
+```{r}
+lmquadDE <- lm(gini_n2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+
+lmquadIT <- lm(gini_n2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+
+lmquadSE <- lm(gini_n2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
+
+huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
+```
+
+```{r}
+ggplot(lmquadDE, mapping = aes(
+  x = "log(GDPpcn2",
+  y = gini_n2
+)) + geom_point()
+```
+
+```{r}
+plot_data <- data.frame(
+  Observed = subset(merged_data, nuts0 == "DE" & gini_n2 > 0)$gini_n2,
+  Predicted = predict(lmquadDE, newdata = subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+)
+
+# Create a scatter plot
+plot(plot_data$Predicted, plot_data$Observed, 
+     xlab = "Predicted Values", ylab = "Observed Values",
+     main = "Scatter Plot of Observed vs Predicted Values")
+
+# Add a line representing the perfect fit (y = x)
+abline(a = 0, b = 1, col = "red")
+
+# Add a regression line
+abline(lmquadDE, col = "blue")
+
+# Add a legend
+legend("topleft", legend = c("Perfect Fit", "Regression Line"),
+       col = c("red", "blue"), lty = 1)
+
+
+
+
+
+
+```
+
+```         
+```
+
+```{r}
+merged_data <- merged_data |> 
+  mutate(
+    logGDPpcn2 = log(GDPpcn2)
+  )
+```
+
+```{r}
+merged_data |> 
+  filter(numberofregions > 1, nuts0 == "DE") |> 
+  ggplot(
+    aes(
+      x = logGDPpcn2,
+      y = gini_n2
+    )
+  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1)
+```
+
+```{r}
+merged_data |> 
+  filter(numberofregions > 1, nuts0 == "IT") |> 
+  ggplot(
+    aes(
+      x = logGDPpcn2,
+      y = gini_n2
+    )
+  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1)
+```
+
+```{r}
+merged_data |> 
+  filter(numberofregions > 1, nuts0 == "SE") |> 
+  ggplot(
+    aes(
+      x = logGDPpcn2,
+      y = gini_n2
+    )
+  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1)
+```
 
 ### 1. Functional form exploration
 
