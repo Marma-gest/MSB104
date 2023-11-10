@@ -963,11 +963,36 @@ The impact of other independent variables, such as education, log(area), and log
 
 ## Part A: Testing development effects across subsets
 
+What do you want us to do in part A?
+Should we just compare Germany and Italy using the estimates from assignment 2?
+
+Something that measures the country specific effects.
+Germany: small municipalities.
+
+Create a dummy variable for each country, fixed effect, this is Germany, this is Italy, two distinct lines because they are two different groups.
+Can do this in a cross section or panel.
+In panel we are also adding time estimate.
+2000-2020.
+Have 20 times more estimation.
+For every state, nuts2, we now have 20 observation in time.
+Can see if the effect is the same over time.
+
+They have different coefficients, why?
+They are different countries.
+This is what we want to check.
+
+If we see the u-form, we need to look at the quadratic.
+Square of the log GDP.
+
+Quadratic term is more interesting, log squared.
+
 ### 1. Subset analysis
 
 ### 2. Subset analysis discussion
 
 ## Part B: Exploring alternative functional forms
+
+Should we have one formula where everything is normal, one where everything is log, and one where everything is quadraded?
 
 ### 1. Functional form exploration
 
@@ -982,6 +1007,8 @@ The impact of other independent variables, such as education, log(area), and log
 ### 2. Causality discussion
 
 ## Part D: Panel estimates
+
+Should we divide our data into three subsets; one with all countries, one with tourists countries and one with all except tourist countries?
 
 ### 1. Panel estimation task
 
