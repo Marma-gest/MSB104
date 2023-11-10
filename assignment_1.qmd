@@ -1007,6 +1007,7 @@ Inequality_i = ß_0 + ß_1 log(Development_i) + ε_i
 $$
 
 ```{r}
+#| echo: false
 lmquadDE <- lm(gini_n2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
 
 lmquadIT <- lm(gini_n2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
@@ -1017,44 +1018,6 @@ huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE
 ```
 
 ```{r}
-ggplot(lmquadDE, mapping = aes(
-  x = "log(GDPpcn2",
-  y = gini_n2
-)) + geom_point()
-```
-
-```{r}
-plot_data <- data.frame(
-  Observed = subset(merged_data, nuts0 == "DE" & gini_n2 > 0)$gini_n2,
-  Predicted = predict(lmquadDE, newdata = subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
-)
-
-# Create a scatter plot
-plot(plot_data$Predicted, plot_data$Observed, 
-     xlab = "Predicted Values", ylab = "Observed Values",
-     main = "Scatter Plot of Observed vs Predicted Values")
-
-# Add a line representing the perfect fit (y = x)
-abline(a = 0, b = 1, col = "red")
-
-# Add a regression line
-abline(lmquadDE, col = "blue")
-
-# Add a legend
-legend("topleft", legend = c("Perfect Fit", "Regression Line"),
-       col = c("red", "blue"), lty = 1)
-
-
-
-
-
-
-```
-
-```         
-```
-
-```{r}
 merged_data <- merged_data |> 
   mutate(
     logGDPpcn2 = log(GDPpcn2)
@@ -1062,6 +1025,11 @@ merged_data <- merged_data |>
 ```
 
 ```{r}
+#| echo: false
+#| label: fig-logGDPpcn2DE
+#| cap-location: bottom
+#| fig-cap: "Scatter Plot with Regression Line showing the relationship between the gini coefficient and GDP per capita"
+# 
 merged_data |> 
   filter(numberofregions > 1, nuts0 == "DE") |> 
   ggplot(
@@ -1069,10 +1037,14 @@ merged_data |>
       x = logGDPpcn2,
       y = gini_n2
     )
-  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1)
+  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1) 
 ```
 
 ```{r}
+#| echo: false
+#| label: fig-logGDPpcn2IT
+#| cap-location: bottom
+#| fig-cap: "Scatter Plot with Regression Line showing the relationship between the gini coefficient and GDP per capita"
 merged_data |> 
   filter(numberofregions > 1, nuts0 == "IT") |> 
   ggplot(
@@ -1080,10 +1052,15 @@ merged_data |>
       x = logGDPpcn2,
       y = gini_n2
     )
-  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1)
+  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1) 
 ```
 
 ```{r}
+#| echo: false
+#| label: fig-logGDPpcn2SE
+#| cap-location: bottom
+#| fig-cap: "Scatter Plot with Regression Line showing the relationship between the gini coefficient and GDP per capita"
+#| 
 merged_data |> 
   filter(numberofregions > 1, nuts0 == "SE") |> 
   ggplot(
