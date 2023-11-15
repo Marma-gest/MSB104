@@ -24,7 +24,8 @@ library(dplyr)
 library(gridExtra)
 library(ggplot2)
 library(broom)
-
+library(lmtest)
+library(plm)
 ```
 
 ## Part A: Sub-national GDP and GDP per capita
@@ -741,7 +742,10 @@ The reason for this is because the effect of the increase in GDP per capita hits
 # Estimating linear regression models for Germany and Italy with Gini and GDP per capita.
 lmDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
 lmIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
-huxreg(DE = lmDE, IT = lmIT, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
+
+lmSE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "SE" & gini_n2 > 0))
+
+huxreg(DE = lmDE, IT = lmIT, SE = lmSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
 ```
 
 In the table above we see the coefficients, standard errors, and significance levels (indicated by asterisks) for a simple linear regression model for the year 2010.
@@ -994,8 +998,7 @@ Quadratic term is more interesting, log squared.
 
 ### 2. Subset analysis discussion
 
--   Interpret and discuss the results, focusing on differences in development effects across subsets.
-    Explain any observed variations.
+-   Interpret and discuss the results, focusing on differences in development effects across subsets. Explain any observed variations.
 
 ## Part B: Exploring alternative functional forms
 
@@ -1094,10 +1097,27 @@ merged_data |>
 
 ## Part C: Heteroskedasticity testing and causality discussion
 
+```{r}
+lmDE2 <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+lmIT2 <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+
+lmSE2 <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
+```
+
+```{r}
+bptest(lmDE2)$p.value
+bptest(lmIT2)$p.value
+bptest(lmSE2)$p.value
+#Quadratic models
+
+bptest(lmquadDE)$p.value
+bptest(lmquadIT)$p.value
+bptest(lmquadSE)$p.value
+```
+
 ### 1. Heteroskedasticity testing
 
--   Test for heteroskedasticity in the alternative and original models.
-    Interpret and discuss the results and implications.
+-   Test for heteroskedasticity in the alternative and original models. Interpret and discuss the results and implications.
 
 ### 2. Causality discussion
 
@@ -1105,20 +1125,11 @@ merged_data |>
 
 ## Part D: Panel estimates
 
-Should we divide our data into three subsets; one with all countries, one with tourists countries and one with all except tourist countries?
+Sho,1)uld we divide our data into three subsets; one with all countries, one with tourists countries and one with all except tourist countries?
 
 ```{r}
-merged_data$Germany <- ifelse(merged_data$nuts0 == "DE", 1,0)
-merged_data$Other <- ifelse(merged_data$nuts0 == "DE", 0,1)
-
-merged_data$Italy <- ifelse(merged_data$nuts0 == "IT", 1,0)
-merged_data$Other <- ifelse(merged_data$nuts0 == "IT", 0,1)
-
-merged_data$Italy <- ifelse(merged_data$nuts0 == "SE", 1,0)
-merged_data$Other <- ifelse(merged_data$nuts0 == "SE", 0,1)
-```
-
-```{r}
+#| echo: false
+# Making dummy variables for DE, IT and SE.
 merged_data <- merged_data |> 
   mutate(dummy_IT = as.numeric(nuts0 == "IT"),
          dummy_SE = as.numeric(nuts0 == "SE"),
@@ -1133,6 +1144,21 @@ huxreg(lmpanelIT, lmpanel, statistics = c("r.squared","adj.r.squared", "statisti
 
 ### 1. Panel estimation task
 
+```{r}
+pdataIT <- pdata.frame(merged_data, index = "dummy_IT", row.names=TRUE)
+pdataDE <- pdata.frame(merged_data, index = "dummy_DE", row.names=TRUE)
+pdataSE <- pdata.frame(merged_data, index = "dummy_SE", row.names=TRUE)
+
+```
+
+```{r}
+testmodelDE <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pdataDE, model = "pooling")
+testmodelIT <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pdataIT, model = "pooling")
+testmodelSE <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pdataSE, model = "pooling")
+huxreg(testmodelDE, testmodelIT, testmodelSE)
+
+```
+
 -   Using the entire dataset, estimate the effect of regional development on regional inequality through panel estimation techniques.
 
 -   Present estimates considering different fixed effects (country, year, and NUTS 2 level), both separately and jointly.
@@ -1142,6 +1168,22 @@ huxreg(lmpanelIT, lmpanel, statistics = c("r.squared","adj.r.squared", "statisti
 -   Interpret the panel estimation results, emphasizing the implications of the fixed effects included.
 
 -   Compare and contrast the panel estimates with the cross-sectional estimates obtained earlier, discussing the advantages and limitations of each approach.
+
+By using panel data estimates, we can remove constants that might effect our estimates, by using time data as these effects will become obsolete as they do not change over time.
+This gives us a better estimate on our variables.
+This means that specific time constant factors and fixed effects are accounted for.
+
+Nuts2 fixed effects = dummy for constant for observations belonging to the nuts2 region
+
+panel estimate for fixed effects
+
+Add number of regions to panel estimates
+
+Interaction effect: gdp \* number of regions
+
+Year FE and country FE (FE = fixed effect)
+
+one estimate for each: year FE, country FE and nuts2 FE, and one for all
 
 ### 3. Panel estimation discussion
 
