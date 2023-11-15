@@ -1142,6 +1142,62 @@ lmpanel = lm(gini_n2 ~ logGDPpcn2, filter(merged_data, dummy_IT == 0))
 huxreg(lmpanelIT, lmpanel, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
 ```
 
+```{r}
+# filtering merged data 
+pmerged <- merged_data |> 
+  filter(!is.na(Population),
+         Population != 0,
+         GDPpcn3 != 0, 
+         GDPpcn3 != "NA"
+  ) |> 
+group_by(nuts2, year) |> 
+  slice(1) |> 
+  ungroup() |> 
+  select(nuts0, nuts2, geo, year, gini_n2, GDPpcn2, logGDPpcn2, numberofregions) |> 
+  filter(nuts0 == c("DE", "IT", "SE"))
+```
+
+```{r}
+# Creating panel frame of main dataset
+panelmerged <- pdata.frame(pmerged, index = c("nuts2", "year"))
+```
+
+```{r}
+# plm estimations
+
+plm1 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = panelmerged, index = c("nuts0"), model = "within") %>%
+  coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
+
+
+plm2 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = panelmerged, index = c("year"), model = "within") %>%
+  coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
+
+plm3 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = panelmerged, index = c("nuts2"), model = "within") %>%
+  coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
+
+plm4 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = panelmerged, index = c("nuts2", "nuts0", "year"), model = "within") %>%
+  coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
+huxreg(plm4, statistics = NULL)
+
+```
+
+```{r}
+#pdim(pdata.frame(panelmerged, index = c("nuts2", "year")))
+# ROT
+pmerged <- pdata.frame(merged_data, index = c("nuts2", "year")) %>% plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = ., index = c("nuts2", "nuts0", "year"), model = "within") %>%
+    coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
+
+panelmerged <- pdata.frame(pmerged, index = "nuts2") #%>% plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = ., index = c("nuts2", "nuts0", "year"), model = "within") 
+summary(panelmerged)
+
+plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = mergedcountries, index = c("nuts2", "year"), model = "within") %>%
+    coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
+```
+
+```{r}
+summary(plm2)
+```
+
 ### 1. Panel estimation task
 
 ```{r}
@@ -1152,10 +1208,15 @@ pdataSE <- pdata.frame(merged_data, index = "dummy_SE", row.names=TRUE)
 ```
 
 ```{r}
-testmodelDE <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pdataDE, model = "pooling")
-testmodelIT <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pdataIT, model = "pooling")
-testmodelSE <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pdataSE, model = "pooling")
-huxreg(testmodelDE, testmodelIT, testmodelSE)
+#merged_dataSEDEIT <- merged_data |> 
+ # filter(nuts0 == c("DE","SE","IT")) 
+
+#duplicated_rows <- merged_dataSEDEIT[duplicated(merged_dataSEDEIT[, c("nuts0", "year")]), ]
+```
+
+```{r}
+dummyvar <- lm(gini_n2 ~ GDPpcn2 + log(GDPpcn2) + factor(year) + factor(nuts0), data = merged_data)
+summary(dummyvar)
 
 ```
 
