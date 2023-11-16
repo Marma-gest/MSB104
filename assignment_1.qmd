@@ -1105,6 +1105,20 @@ lmSE2 <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "SE" & gini_n2 
 ```
 
 ```{r}
+lmlogDE <- lm(log(gini_n2)^2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+
+lmlogIT <- lm(log(gini_n2)^2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+
+lmlogSE <- lm(log(gini_n2)^2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
+
+bptest(lmlogDE)
+bptest(lmlogIT)
+bptest(lmlogSE)
+plot(lmlogDE)
+plot(lmquadDE)
+```
+
+```{r}
 bptest(lmDE2)$p.value
 bptest(lmIT2)$p.value
 bptest(lmSE2)$p.value
