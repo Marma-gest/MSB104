@@ -1143,19 +1143,19 @@ group_by(nuts2, year) |>
 ```
 
 ```{r}
-plm1 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts0"), model = "within") %>%
+plm1 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts0"), model = "within",effect = "twoway") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 
 
-plm2 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("year"), model = "within") %>%
+plm2 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("year"), model = "within",effect = "twoway") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 
 
-plm3 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2"), model = "within") %>%
+plm3 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2"), model = "within",effect = "twoway") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 
 
-plm4 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2", "year", "nuts0"), model = "within") %>%
+plm4 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c( "year","nuts2"), model = "within",effect = "twoway") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 huxreg(plm1, plm2, plm3, plm4, statistics = NULL)
 ```
