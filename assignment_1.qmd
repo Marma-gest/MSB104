@@ -1143,14 +1143,6 @@ group_by(nuts2, year) |>
 ```
 
 ```{r}
-#Vi bruker ikke denne grunnet pmerged funker til dette?
-# Creating panel frame of main dataset
-#panelmerged <- pdata.frame(pmerged, index = c("nuts2", "year"))
-
- 
-```
-
-```{r}
 plm1 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts0"), model = "within") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 
@@ -1166,27 +1158,6 @@ plm3 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2")
 plm4 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2", "year", "nuts0"), model = "within") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 huxreg(plm1, plm2, plm3, plm4, statistics = NULL)
-```
-
-```{r}
-#pdim(pdata.frame(panelmerged, index = c("nuts2", "year")))
-# ROT
-plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged , index = c("nuts2", "year"), model = "within") %>%
-    coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
-
-
-
-
-```
-
-```{r}
-plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2", "year"), model = "within") 
-summary(pmerged)
-```
-
-```{r}
-plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2", "year"), model = "within") %>%
-    coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 ```
 
 ### 1. Panel estimation task
