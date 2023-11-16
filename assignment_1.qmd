@@ -992,33 +992,6 @@ Quadratic term is more interesting, log squared.
 
 ### 1. Subset analysis
 
-```{r}
-# Fit the three models
-partaDE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
-partaIT <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
-partaSE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
-
-# Combine the datasets and create a grouping variable
-combined_data <- rbind(transform(partaDE$model, Group = "DE"),
-                      transform(partaIT$model, Group = "IT"),
-                      transform(partaSE$model, Group = "SE"))
-
-# Fit a model with interaction terms to estimate the effect of GDPpcn2
-model <- lm(gini_n2 ~ GDPpcn2 * Group, data = combined_data)
-
-# Test the hypothesis that the effects of GDPpcn2 are the same across groups
-hypothesis <- c("GDPpcn2:GroupDE - GDPpcn2:GroupIT = 0",
-                "GDPpcn2:GroupDE - GDPpcn2:GroupSE = 0",
-                "GDPpcn2:GroupIT - GDPpcn2:GroupSE = 0")
-
-# Remove any spaces in variable names
-names(hypothesis) <- gsub(" ", "", names(hypothesis))
-
-# Use a simpler way to perform the hypothesis test
-test_result <- linearHypothesis(model, hypothesis)
-print(test_result)
-```
-
 -   Segment your data into meaningful subsets based on your assigned countries.
 
 -   Estimate the effect of regional development on inequality within each subset and test if the effects significantly differ.
@@ -1043,6 +1016,25 @@ It's commonly used when there's diminishing marginal returns.
 $$
 Inequality_i = ß_0 + ß_1 log(Development_i) + ε_i
 $$
+
+```{r}
+merged_data <- merged_data |> 
+  mutate(
+    logGDPpcn2 = log(GDPpcn2),
+    logGDPpcn2quad = logGDPpcn2^2
+  )
+```
+
+```{r}
+#| echo: false
+lmquadDE <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+
+lmquadIT <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+
+lmquadSE <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
+
+huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
+```
 
 ```{r}
 #| echo: false
@@ -1086,12 +1078,6 @@ Comparisons:
 -   Compare the coefficients and R-squared values across the models to assess their relative performance.
 -   Consider the economic or practical significance of the coefficients. Are the changes in the dependent variable practically significant for the observed changes in log(GDPpcn2).
 
-```{r}
-merged_data <- merged_data |> 
-  mutate(
-    logGDPpcn2 = log(GDPpcn2)
-  )
-```
 
 ```{r}
 #| echo: false
