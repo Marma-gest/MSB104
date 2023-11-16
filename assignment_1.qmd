@@ -1128,21 +1128,6 @@ bptest(lmquadSE)$p.value
 Sho,1)uld we divide our data into three subsets; one with all countries, one with tourists countries and one with all except tourist countries?
 
 ```{r}
-#| echo: false
-# Making dummy variables for DE, IT and SE.
-merged_data <- merged_data |> 
-  mutate(dummy_IT = as.numeric(nuts0 == "IT"),
-         dummy_SE = as.numeric(nuts0 == "SE"),
-         dummy_DE = as.numeric(nuts0 == "DE"))
-```
-
-```{r}
-lmpanelIT = lm(gini_n2 ~ logGDPpcn2, filter(merged_data, dummy_IT == 1))
-lmpanel = lm(gini_n2 ~ logGDPpcn2, filter(merged_data, dummy_IT == 0))
-huxreg(lmpanelIT, lmpanel, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
-```
-
-```{r}
 # filtering merged data 
 pmerged <- merged_data |> 
   filter(!is.na(Population),
@@ -1158,64 +1143,56 @@ group_by(nuts2, year) |>
 ```
 
 ```{r}
+#Vi bruker ikke denne grunnet pmerged funker til dette?
 # Creating panel frame of main dataset
-panelmerged <- pdata.frame(pmerged, index = c("nuts2", "year"))
+#panelmerged <- pdata.frame(pmerged, index = c("nuts2", "year"))
+
+ 
 ```
 
 ```{r}
-# plm estimations
-
-plm1 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = panelmerged, index = c("nuts0"), model = "within") %>%
+plm1 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts0"), model = "within") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 
 
-plm2 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = panelmerged, index = c("year"), model = "within") %>%
+plm2 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("year"), model = "within") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 
-plm3 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = panelmerged, index = c("nuts2"), model = "within") %>%
+
+plm3 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2"), model = "within") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 
-plm4 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = panelmerged, index = c("nuts2", "nuts0", "year"), model = "within") %>%
-  coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
-huxreg(plm4, statistics = NULL)
 
+plm4 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2", "year", "nuts0"), model = "within") %>%
+  coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
+huxreg(plm1, plm2, plm3, plm4, statistics = NULL)
 ```
 
 ```{r}
 #pdim(pdata.frame(panelmerged, index = c("nuts2", "year")))
 # ROT
-pmerged <- pdata.frame(merged_data, index = c("nuts2", "year")) %>% plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = ., index = c("nuts2", "nuts0", "year"), model = "within") %>%
+plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged , index = c("nuts2", "year"), model = "within") %>%
     coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 
-panelmerged <- pdata.frame(pmerged, index = "nuts2") #%>% plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = ., index = c("nuts2", "nuts0", "year"), model = "within") 
-summary(panelmerged)
 
-plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = mergedcountries, index = c("nuts2", "year"), model = "within") %>%
-    coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
+
+
 ```
 
 ```{r}
-summary(plm2)
+plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2", "year"), model = "within") 
+summary(pmerged)
+```
+
+```{r}
+plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2", "year"), model = "within") %>%
+    coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 ```
 
 ### 1. Panel estimation task
 
 ```{r}
-pdataIT <- pdata.frame(merged_data, index = "dummy_IT", row.names=TRUE)
-pdataDE <- pdata.frame(merged_data, index = "dummy_DE", row.names=TRUE)
-pdataSE <- pdata.frame(merged_data, index = "dummy_SE", row.names=TRUE)
-
-```
-
-```{r}
-#merged_dataSEDEIT <- merged_data |> 
- # filter(nuts0 == c("DE","SE","IT")) 
-
-#duplicated_rows <- merged_dataSEDEIT[duplicated(merged_dataSEDEIT[, c("nuts0", "year")]), ]
-```
-
-```{r}
-dummyvar <- lm(gini_n2 ~ GDPpcn2 + log(GDPpcn2) + factor(year) + factor(nuts0), data = merged_data)
+dummyvar <- lm(gini_n2 ~ GDPpcn2 + log(GDPpcn2) + factor(year) + factor(nuts0), data = pmerged)
 summary(dummyvar)
 
 ```
