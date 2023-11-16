@@ -1010,7 +1010,8 @@ $$
 
 We believe that the regional development in a quadratic model will have a concave shape as we believe that an increase in GDP per capita will have a increased effect on inequality but a decreased effect as the number increases.
 
-Logarithmic model:
+Logarithmic Model: This form is appropriate when the relationship between y and x is expected to nonlinear and the effect of x on y diminishes or increases at a decreasing rate.
+It's commonly used when there's diminishing marginal returns.
 
 $$
 Inequality_i = ß_0 + ß_1 log(Development_i) + ε_i
@@ -1026,6 +1027,38 @@ lmquadSE <- lm(gini_n2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "SE" & g
 
 huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
 ```
+
+Model 1 DE (Germany):
+
+-   Intercept: The intercept is -1.018, indicating the estimated value of the dependent variable when the logarithm of GDP per capita (log(GDPpcn2)) is zero. However, in practical terms, this might not have a meaningful interpretation as log(GDPpcn2) is not likely to be zero.
+
+```{=html}
+<!-- -->
+```
+-   log(GDPpcn2): The coefficient for log(GDPpcn2) is 0.114. This implies that, holding other variables constant, a one-unit increase in (GDPpcn2) is associated with a 0.114 increase in the dependent variable.
+-    R-squared: The R-squared value is 0.122, suggesting that the model explains approximately 12.2% of the variance in the dependent variable.
+-   p-value: The p-value for the overall model is less than 0.001, indicating that the model is statistically significant.
+
+Model 1 IT (Italy):
+
+-   The interpretation is similar to the German model. The intercept, coefficient for log(GDPpcn2) , and R-squared are specific to Italy.
+-   The intercept is -0.473, and the coefficient for log(GDPpcn2) is 0.052.
+
+Model 1 SE (Sweden):
+
+-   Similarly, the interpretation is consistent with the German and Italian models.
+-   The intercept is -0.289, and the coefficient for log(GDPpcn2) is 0.030.
+
+General Observations:
+
+-   The positive coefficients for log(GDPpcn2) across all models suggest that, on average, an increase in the logarithm of GDP per capita is associated with an increase in the dependent variable.
+-   The R-squared values indicate that the models explain a modest percentage of the variance in the dependent variable.
+-   The p-values are less than 0.001 for all models, indicating that the models are statistically significant.
+
+Comparisons:
+
+-   Compare the coefficients and R-squared values across the models to assess their relative performance.
+-    Consider the economic or practical significance of the coefficients. Are the changes in the dependent variable practically significant for the observed changes in log(GDPpcn2).
 
 ```{r}
 merged_data <- merged_data |> 
