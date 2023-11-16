@@ -992,6 +992,33 @@ Quadratic term is more interesting, log squared.
 
 ### 1. Subset analysis
 
+```{r}
+# Fit the three models
+partaDE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+partaIT <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+partaSE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
+
+# Combine the datasets and create a grouping variable
+combined_data <- rbind(transform(partaDE$model, Group = "DE"),
+                      transform(partaIT$model, Group = "IT"),
+                      transform(partaSE$model, Group = "SE"))
+
+# Fit a model with interaction terms to estimate the effect of GDPpcn2
+model <- lm(gini_n2 ~ GDPpcn2 * Group, data = combined_data)
+
+# Test the hypothesis that the effects of GDPpcn2 are the same across groups
+hypothesis <- c("GDPpcn2:GroupDE - GDPpcn2:GroupIT = 0",
+                "GDPpcn2:GroupDE - GDPpcn2:GroupSE = 0",
+                "GDPpcn2:GroupIT - GDPpcn2:GroupSE = 0")
+
+# Remove any spaces in variable names
+names(hypothesis) <- gsub(" ", "", names(hypothesis))
+
+# Use a simpler way to perform the hypothesis test
+test_result <- linearHypothesis(model, hypothesis)
+print(test_result)
+```
+
 -   Segment your data into meaningful subsets based on your assigned countries.
 
 -   Estimate the effect of regional development on inequality within each subset and test if the effects significantly differ.
@@ -1032,11 +1059,10 @@ Model 1 DE (Germany):
 
 -   Intercept: The intercept is -1.018, indicating the estimated value of the dependent variable when the logarithm of GDP per capita (log(GDPpcn2)) is zero. However, in practical terms, this might not have a meaningful interpretation as log(GDPpcn2) is not likely to be zero.
 
-```{=html}
 <!-- -->
-```
+
 -   log(GDPpcn2): The coefficient for log(GDPpcn2) is 0.114. This implies that, holding other variables constant, a one-unit increase in (GDPpcn2) is associated with a 0.114 increase in the dependent variable.
--    R-squared: The R-squared value is 0.122, suggesting that the model explains approximately 12.2% of the variance in the dependent variable.
+-   R-squared: The R-squared value is 0.122, suggesting that the model explains approximately 12.2% of the variance in the dependent variable.
 -   p-value: The p-value for the overall model is less than 0.001, indicating that the model is statistically significant.
 
 Model 1 IT (Italy):
@@ -1058,7 +1084,7 @@ General Observations:
 Comparisons:
 
 -   Compare the coefficients and R-squared values across the models to assess their relative performance.
--    Consider the economic or practical significance of the coefficients. Are the changes in the dependent variable practically significant for the observed changes in log(GDPpcn2).
+-   Consider the economic or practical significance of the coefficients. Are the changes in the dependent variable practically significant for the observed changes in log(GDPpcn2).
 
 ```{r}
 merged_data <- merged_data |> 
