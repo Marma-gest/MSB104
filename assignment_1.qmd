@@ -961,6 +961,8 @@ The impact of other independent variables, such as education, log(area), and log
 
 # Assignment 3
 
+Introduction, mention sweden, italy, germany.
+
 ## Part A: Testing development effects across subsets
 
 ### 1. Subset analysis
@@ -983,10 +985,10 @@ huxreg(DE = partaDE, IT = partaIT, SE = partaSE, statistics = c("r.squared","adj
 In examining the impact of regional development on inequality across Germany (DE), Italy (IT), and Sweden (SE), we see notable differences.
 In Germany (DE) the intercept is 0.039 (p \< 0.01), indicating a positive effect on inequality.
 The GDPpcn2 coefficient is 0.000 (p \< 0.01), signifying a statistically significant yet minimal impact on inequality.
-In Italy (IT), the intercept is -0.011 meaning it is not statistically significant.
+In Italy (IT), the intercept is -0.011 and it is not statistically significant.
 The GDPpcn2 coefficient, at 0.000 (p \< 0.01), highlights a negligible association with inequality.
-Sweden (SE), the intercept of -0.009 (p \< 0.01) suggests a negative impact.
-The GDPpcn2 coefficient, at 0.000 (p \< 0.01), mirrors Germany's minimal effect on inequality.
+The GDPpcn2 coefficient for Sweden is negative (-0.009) which suggest that an increase in GDP per capita reduces inequality.
+The coefficient, at 0.000 (p \< 0.01), mirrors Germany's minimal effect on inequality.
 
 Germany exhibits a positive baseline effect, while Italy and Sweden lean towards negative baselines.
 Development effects, though statistically significant, are uniformly marginal across subsets.
@@ -1002,6 +1004,8 @@ In contrast, Italy and Sweden might have regions experiencing less impact or eve
 ### 1. Functional form exploration
 
 *We have selected the alternative functional forms logarithmic and quadratic select because they may provide a better fit. Why?*
+
+After testing we concluded that the logarithmic and quadratic models were the best fit for our estimations.
 
 Logarithmic Model: This form is appropriate when the relationship between y and x is expected to nonlinear and the effect of x on y diminishes or increases at a decreasing rate.
 It's commonly used when there's diminishing marginal returns.
@@ -1038,7 +1042,8 @@ We believe that the regional development in a quadratic model will have a concav
 merged_data <- merged_data |> 
   mutate(
     logGDPpcn2 = log(GDPpcn2),
-    logGDPpcn2quad = logGDPpcn2^2
+    logGDPpcn2quad = logGDPpcn2^2,
+    logGDPpcn2cubic = logGDPpcn2^3
   )
 ```
 
@@ -1067,7 +1072,7 @@ huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE
 #| label: fig-logGDPpcn2DE
 #| cap-location: bottom
 #| fig-cap: "Scatter Plot with Regression Line showing the relationship between the gini coefficient and GDP per capita"
-# 
+
 merged_data |> 
   filter(numberofregions > 1, nuts0 == "DE") |> 
   ggplot(
@@ -1077,6 +1082,8 @@ merged_data |>
     )
   ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1) 
 ```
+
+What the plot shows is a convex non linear model, which suggest that ... The coefficient of the explanatory variable increases as the X increases...theory.
 
 ```{r}
 #| echo: false
@@ -1131,31 +1138,27 @@ These alternative models present enhanced explanatory power, capturing potential
 ## Part C: Heteroskedasticity testing and causality discussion
 
 ```{r}
-lmDE2 <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
-lmIT2 <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
-lmSE2 <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 ```
 
 ```{r}
-lmlogDE <- lm(log(gini_n2)^2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+#lmDE2 <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+#lmIT2 <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
-lmlogIT <- lm(log(gini_n2)^2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
-
-lmlogSE <- lm(log(gini_n2)^2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
-
-bptest(lmlogDE)
-bptest(lmlogIT)
-bptest(lmlogSE)
-plot(lmlogDE)
-plot(lmquadDE)
+#lmSE2 <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 ```
 
 ```{r}
-bptest(lmDE2)$p.value
-bptest(lmIT2)$p.value
-bptest(lmSE2)$p.value
+#| echo: false
+# Original models
+bptest(partaDE)$p.value
+bptest(partaIT)$p.value
+bptest(partaSE)$p.value
 #Quadratic models
+
+bptest(lmlogDE)$p.value
+bptest(lmlogIT)$p.value
+bptest(lmlogSE)$p.value
 
 bptest(lmquadDE)$p.value
 bptest(lmquadIT)$p.value
@@ -1166,9 +1169,11 @@ bptest(lmquadSE)$p.value
 
 -   Test for heteroskedasticity in the alternative and original models. Interpret and discuss the results and implications.
 
+The results of the test shows that the log models contain no heteroskedasticity ...
+
 ### 2. Causality discussion
 
--   Reflect on the causal interpretation of your models and suggest strategies to address any issues identified.
+-   Reflect on the causal interpretation of your models and suggest strategies to address any issues identified. (use coeff test with robust standard errors?)
 
 ## Part D: Panel estimates
 
