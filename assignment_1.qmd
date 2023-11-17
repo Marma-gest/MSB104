@@ -843,7 +843,6 @@ ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
     x = "GDP per capita nuts2",
     y = "Gini Index (n2)"
   )
-
 ```
 
 ## Part B: Exploring Other Determinants of Inequity
@@ -878,7 +877,6 @@ merged_data <- left_join(merged_data, aream2, by = c("nuts2", "year"))
 
 merged_data <- left_join(merged_data, educ, by = c("nuts2", "year"))
 
-
 merged_data <- left_join(merged_data, roads, by = c("nuts2", "year"))
 ```
 
@@ -904,7 +902,6 @@ merged2010 <- merged_data |>
   select(
     nuts0, nuts2, everything()
   )
-
 ```
 
 ```{r}
@@ -927,7 +924,6 @@ lmarea2 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area), subset(merged2010,
 lm3 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area) + log(Roadkm), subset(merged2010, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
 
 lm4 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area) + log(Roadkm), subset(merged2010, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
-
 
 huxreg("Model 1 DE" = lm1, "Model 1 IT" = lm2, "Model 2 DE" = lmarea, "Model 2 IT" = lmarea2, "Model 3 DE" = lm3, "Model 3 IT" = lm4, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
 ```
@@ -967,29 +963,6 @@ The impact of other independent variables, such as education, log(area), and log
 
 ## Part A: Testing development effects across subsets
 
-What do you want us to do in part A?
-Should we just compare Germany and Italy using the estimates from assignment 2?
-
-Something that measures the country specific effects.
-Germany: small municipalities.
-
-Create a dummy variable for each country, fixed effect, this is Germany, this is Italy, two distinct lines because they are two different groups.
-Can do this in a cross section or panel.
-In panel we are also adding time estimate.
-2000-2020.
-Have 20 times more estimation.
-For every state, nuts2, we now have 20 observation in time.
-Can see if the effect is the same over time.
-
-They have different coefficients, why?
-They are different countries.
-This is what we want to check.
-
-If we see the u-form, we need to look at the quadratic.
-Square of the log GDP.
-
-Quadratic term is more interesting, log squared.
-
 ### 1. Subset analysis
 
 ```{r}
@@ -1000,16 +973,29 @@ partaDE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "DE" & gini
 partaIT <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 partaSE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg(partaDE, partaIT, partaSE, statistics = NULL)
+huxreg(DE = partaDE, IT = partaIT, SE = partaSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"), 
+       stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+       note = "Note): {stars} T statistics in brackets.")
 ```
-
--   Segment your data into meaningful subsets based on your assigned countries.
-
--   Estimate the effect of regional development on inequality within each subset and test if the effects significantly differ.
 
 ### 2. Subset analysis discussion
 
--   Interpret and discuss the results, focusing on differences in development effects across subsets. Explain any observed variations.
+In examining the impact of regional development on inequality across Germany (DE), Italy (IT), and Sweden (SE), we see notable differences.
+In Germany (DE) the intercept is 0.039 (p \< 0.01), indicating a positive effect on inequality.
+The GDPpcn2 coefficient is 0.000 (p \< 0.01), signifying a statistically significant yet minimal impact on inequality.
+In Italy (IT), the intercept is -0.011 meaning it is not statistically significant.
+The GDPpcn2 coefficient, at 0.000 (p \< 0.01), highlights a negligible association with inequality.
+Sweden (SE), the intercept of -0.009 (p \< 0.01) suggests a negative impact.
+The GDPpcn2 coefficient, at 0.000 (p \< 0.01), mirrors Germany's minimal effect on inequality.
+
+Germany exhibits a positive baseline effect, while Italy and Sweden lean towards negative baselines.
+Development effects, though statistically significant, are uniformly marginal across subsets.
+The reason for this might be that Germany, Italy, and Sweden may have different economic structures.
+For instance, Germany might have a more export-oriented or manufacturing-heavy economy compared to Italy and Sweden.
+The nature of economic activities can impact the relationship between regional development and inequality.
+Also, the level of regional disparities within each country could be a factor.
+Germany may have regions that benefit more from development, leading to a positive baseline effect.
+In contrast, Italy and Sweden might have regions experiencing less impact or even negative effects.
 
 ## Part B: Exploring alternative functional forms
 
@@ -1060,36 +1046,7 @@ lmquadSE <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 
 huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
 ```
 
-Model 1 DE (Germany):
-
--   Intercept: The intercept is -1.018, indicating the estimated value of the dependent variable when the logarithm of GDP per capita (log(GDPpcn2)) is zero. However, in practical terms, this might not have a meaningful interpretation as log(GDPpcn2) is not likely to be zero.
-
-<!-- -->
-
--   log(GDPpcn2): The coefficient for log(GDPpcn2) is 0.114. This implies that, holding other variables constant, a one-unit increase in (GDPpcn2) is associated with a 0.114 increase in the dependent variable.
--   R-squared: The R-squared value is 0.122, suggesting that the model explains approximately 12.2% of the variance in the dependent variable.
--   p-value: The p-value for the overall model is less than 0.001, indicating that the model is statistically significant.
-
-Model 1 IT (Italy):
-
--   The interpretation is similar to the German model. The intercept, coefficient for log(GDPpcn2) , and R-squared are specific to Italy.
--   The intercept is -0.473, and the coefficient for log(GDPpcn2) is 0.052.
-
-Model 1 SE (Sweden):
-
--   Similarly, the interpretation is consistent with the German and Italian models.
--   The intercept is -0.289, and the coefficient for log(GDPpcn2) is 0.030.
-
-General Observations:
-
--   The positive coefficients for log(GDPpcn2) across all models suggest that, on average, an increase in the logarithm of GDP per capita is associated with an increase in the dependent variable.
--   The R-squared values indicate that the models explain a modest percentage of the variance in the dependent variable.
--   The p-values are less than 0.001 for all models, indicating that the models are statistically significant.
-
-Comparisons:
-
--   Compare the coefficients and R-squared values across the models to assess their relative performance.
--   Consider the economic or practical significance of the coefficients. Are the changes in the dependent variable practically significant for the observed changes in log(GDPpcn2).
+...
 
 ```{r}
 #| echo: false
