@@ -1085,6 +1085,12 @@ merged_data |>
 
 What the plot shows is a convex non linear model, which suggest that ... The coefficient of the explanatory variable increases as the X increases...theory.
 
+Using a quadratic logarithmic model enables us to look at the non linear relationship between the two variables.
+As seen in the figure, as the X-axis increases, so does the coefficient of GDPpcn2.
+This suggests that the increase in GDP per capita will have a growing impact on inequality.
+While the coefficient is positive, a positive increase in GINI reflects a higher level of inequality.
+This means that as the GDP per capita in Germany increases, the effect on the level of inequality grows increasingly.
+
 ```{r}
 #| echo: false
 #| label: fig-logGDPpcn2IT
