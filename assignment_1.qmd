@@ -1138,21 +1138,16 @@ The R-squared values of 12,7%, 13,7% and 12,9% for Germany, Italy and Sweden res
 
 In the logarithmic alternative model, **seen in table X**, the relationship between regional development and inequality is captured in a log-linear fashion.
 The coefficients for Germany, Italy, and Sweden reveal significant associations.
-Notably, the logarithmic model improves the fit, as indicated by the increased adjusted R-squared values, particularly in Germany and Italy.
+Notably, the logarithmic model does not improve the fit, as indicated by the decreased adjusted R-squared values.
 
 The quadratic alternative model, **seen in table X,** introduces a quadratic term to accommodate potential curvature in the relationship.
 Coefficients for all countries show statistical significance, and the model significantly improves the fit, as evidenced by higher adjusted R-squared values across all subsets.
 
-Both alternative models, the logarithmic and quadratic, offer improvements over the original linear model.
-The logarithmic model provides a nuanced, potentially nonlinear perspective on the relationship between regional development and inequality, particularly enhancing fit in Germany and Italy.
-On the other hand, the quadratic model introduces a curvature component, suggesting a more complex interplay between regional development and inequality.
-These alternative models present enhanced explanatory power, capturing potential nonlinearities in the intricate relationship between regional development and inequality across Germany, Italy, and Sweden.
+Only the alternative quadratic model offer improvements over the original linear model.
+The quadratic model introduces a curvature component, suggesting a more complex interplay between regional development and inequality.
+The alternative model present enhanced explanatory power, capturing potential nonlinearities in the intricate relationship between regional development and inequality across Germany, Italy, and Sweden.
 
 ## Part C: Heteroskedasticity testing and causality discussion
-
-```{r}
-
-```
 
 ```{r}
 #lmDE2 <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
@@ -1180,13 +1175,20 @@ bptest(lmquadSE)$p.value
 
 ### 1. Heteroskedasticity testing
 
--   Test for heteroskedasticity in the alternative and original models. Interpret and discuss the results and implications.
+In the original model, the extremely low p-value suggests evidence of heteroskedasticity for both Germany (DE) and Italy (IT).
+For Sweden (SE), the high p-value suggests no strong evidence of heteroskedasticity.
 
-The results of the test shows that the log models contain no heteroskedasticity ...
+The same picture can be observed for the alternative models (logarithmic and quadratic), were both Germany (DE) and Italy (IT) have extremely low p-values suggesting evidence of heteroskedasticity, while Sweden (SE) has a high p-value suggesting no strong evidence of heteroskedasticity.
 
 ### 2. Causality discussion
 
--   Reflect on the causal interpretation of your models and suggest strategies to address any issues identified. (use coeff test with robust standard errors?)
+The presence of heteroskedasticity implies that the variance of the error terms is not constant across observations.
+For models exhibiting heteroskedasticity (DE, IT), the standard errors of coefficient estimates may be biased, affecting the reliability of hypothesis tests.
+The models for Sweden (SE) do not show strong evidence of heteroskedasticity.
+
+To address heteroskedasticity, one strategy is to use robust standard errors or transform variables to achieve homoskedasticity.
+Additionally, exploring other functional forms or including relevant predictors may help address the issue.
+Reflecting on the causal interpretation, it's essential to acknowledge that heteroskedasticity doesn't necessarily invalidate causal relationships but emphasizes the importance of addressing statistical assumptions for more reliable inference.
 
 ## Part D: Panel estimates
 
@@ -1315,3 +1317,4 @@ residuals_IT <- resid(lmIT)
 
 plot(lmIT$fitted.values, residuals_IT, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted (Italy)")
 ```
+
