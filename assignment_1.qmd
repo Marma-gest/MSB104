@@ -961,7 +961,8 @@ The impact of other independent variables, such as education, log(area), and log
 
 # Assignment 3
 
-Introduction, mention sweden, italy, germany.
+In Assignment 3, which involves explaining alternative functional forms and implementing panel estimates to analyze the relationship between regional development and inequality, we will focus on the countries Sweden, Germany, and Italy.
+These three countries have been selected due to their status as the three largest in our dataset, containing the largest amount of available data.
 
 ## Part A: Testing development effects across subsets
 
