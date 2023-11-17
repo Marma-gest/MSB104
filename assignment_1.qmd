@@ -999,6 +999,10 @@ In contrast, Italy and Sweden might have regions experiencing less impact or eve
 
 ## Part B: Exploring alternative functional forms
 
+### 1. Functional form exploration
+
+*We have selected the alternative functional forms logarithmic and quadratic select because they may provide a better fit. Why?*
+
 Logarithmic Model: This form is appropriate when the relationship between y and x is expected to nonlinear and the effect of x on y diminishes or increases at a decreasing rate.
 It's commonly used when there's diminishing marginal returns.
 
@@ -1007,15 +1011,17 @@ Inequality_i = ß_0 + ß_1 log(Development_i) + ε_i
 $$
 
 ```{r}
-#| echo: false
+#| echo: FALSE
+#| tbl-cap: The effect of log regional development on inequality
 lmlogDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
 
 lmlogIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
 lmlogSE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, "Model 1 SE" = lmlogSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
-
+huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, "Model 1 SE" = lmlogSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"), 
+       stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+       note = "Note): {stars} T statistics in brackets.")
 ```
 
 Quadratic model: A quadratic relationship implies a non linear U-shaped or inverted u-shaped relationship between development and inequality.
@@ -1027,7 +1033,8 @@ $$
 We believe that the regional development in a quadratic model will have a concave shape as we believe that an increase in GDP per capita will have a increased effect on inequality but a decreased effect as the number increases.
 
 ```{r}
-#Mutated a new variable logGDPpcn2quad = logGDPpcn2^2
+#| echo: false
+# Mutated a new variable logGDPpcn2quad = logGDPpcn2^2
 merged_data <- merged_data |> 
   mutate(
     logGDPpcn2 = log(GDPpcn2),
@@ -1036,17 +1043,24 @@ merged_data <- merged_data |>
 ```
 
 ```{r}
-#| echo: false
+#| echo: FALSE
+#| tbl-cap: The effect of log squared regional development on inequality
 lmquadDE <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
 
 lmquadIT <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
 lmquadSE <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
+huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"), 
+       stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+       note = "Note): {stars} T statistics in brackets.")
 ```
 
 ...
+
+### 2. Estimation and visualization
+
+-   Estimate and visualize the models, clearly annotating and interpreting the results.
 
 ```{r}
 #| echo: false
@@ -1094,16 +1108,6 @@ merged_data |>
     )
   ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1)
 ```
-
-### 1. Functional form exploration
-
--   Explore alternative functional forms (logarithmic, quadratic, cubic) and select two that may provide a better fit.
-
--   Justify your choices with theoretical or empirical reasoning.
-
-### 2. Estimation and visualization
-
--   Estimate and visualize the models, clearly annotating and interpreting the results.
 
 ### 3. Results interpretation
 
