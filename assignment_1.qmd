@@ -1013,14 +1013,6 @@ huxreg(partaDE, partaIT, partaSE, statistics = NULL)
 
 ## Part B: Exploring alternative functional forms
 
-Quadratic model: A quadratic relationship implies a non linear U-shaped or inverted u-shaped relationship between development and inequality.
-
-$$
-Inequality_i = ß_0 + ß_1logDevelopment_i + ß_2(logDevelopment)^2
-$$
-
-We believe that the regional development in a quadratic model will have a concave shape as we believe that an increase in GDP per capita will have a increased effect on inequality but a decreased effect as the number increases.
-
 Logarithmic Model: This form is appropriate when the relationship between y and x is expected to nonlinear and the effect of x on y diminishes or increases at a decreasing rate.
 It's commonly used when there's diminishing marginal returns.
 
@@ -1029,6 +1021,27 @@ Inequality_i = ß_0 + ß_1 log(Development_i) + ε_i
 $$
 
 ```{r}
+#| echo: false
+lmlogDE <- lm(gini_n2 ~ logGDPpcn2, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+
+lmlogIT <- lm(gini_n2 ~ logGDPpcn2, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+
+lmlogSE <- lm(gini_n2 ~ logGDPpcn2, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
+
+huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, "Model 1 SE" = lmlogSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
+
+```
+
+Quadratic model: A quadratic relationship implies a non linear U-shaped or inverted u-shaped relationship between development and inequality.
+
+$$
+Inequality_i = ß_0 + ß_1logDevelopment_i + ß_2(logDevelopment)^2
+$$
+
+We believe that the regional development in a quadratic model will have a concave shape as we believe that an increase in GDP per capita will have a increased effect on inequality but a decreased effect as the number increases.
+
+```{r}
+#Mutated a new variable logGDPpcn2quad = logGDPpcn2^2
 merged_data <- merged_data |> 
   mutate(
     logGDPpcn2 = log(GDPpcn2),
@@ -1043,17 +1056,6 @@ lmquadDE <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 
 lmquadIT <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
 lmquadSE <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
-
-huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
-```
-
-```{r}
-#| echo: false
-lmquadDE <- lm(gini_n2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
-
-lmquadIT <- lm(gini_n2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
-
-lmquadSE <- lm(gini_n2 ~ (log(GDPpcn2))^2, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
 huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
 ```
