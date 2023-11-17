@@ -976,7 +976,7 @@ partaDE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "DE" & gini
 partaIT <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 partaSE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg(DE = partaDE, IT = partaIT, SE = partaSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg(DE = partaDE, IT = partaIT, SE = partaSE, statistics = c("nobs", "r.squared","adj.r.squared", "statistic", "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -1004,12 +1004,14 @@ In contrast, Italy and Sweden might have regions experiencing less impact or eve
 
 ### 1. Functional form exploration
 
-*We have selected the alternative functional forms logarithmic and quadratic select because they may provide a better fit. Why?*
+By exploring different functional forms, we are able to determine the best functional form for our estimates by looking at descriptive statistics to justify our selections.
+We found no significant difference by including a cubic function, and thus, concluded to utilize a logarithmic function as well as a quadratic model.
 
-After testing we concluded that the logarithmic and quadratic models were the best fit for our estimations.
+#### Using a logarithmic model
 
-Logarithmic Model: This form is appropriate when the relationship between y and x is expected to nonlinear and the effect of x on y diminishes or increases at a decreasing rate.
-It's commonly used when there's diminishing marginal returns.
+Using a logarithmic model creates a asymptotic behaviour for the regression line.
+The non linear relationship between regional inequality and regional development will either go towards full inequality, or towards zero inequality, but will never completely reach the maximum or minimum (1 or 0).
+In order to calculate this, we use the following formula:
 
 $$
 Inequality_i = ß_0 + ß_1 log(Development_i) + ε_i
@@ -1024,12 +1026,15 @@ lmlogIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "IT" & gini_n
 
 lmlogSE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, "Model 1 SE" = lmlogSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, "Model 1 SE" = lmlogSE, statistics = c("nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
 
-Quadratic model: A quadratic relationship implies a non linear U-shaped or inverted u-shaped relationship between development and inequality.
+#### Using a quadratic model
+
+Using a quadratic model shows the non linear relationship between regional inequality and regional development with either a U-shaped line, or a inverted u-shaped line.
+In order to calculate this, we use the following formula:
 
 $$
 Inequality_i = ß_0 + ß_1logDevelopment_i + ß_2(logDevelopment)^2
@@ -1057,7 +1062,7 @@ lmquadIT <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 
 
 lmquadSE <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -1317,4 +1322,3 @@ residuals_IT <- resid(lmIT)
 
 plot(lmIT$fitted.values, residuals_IT, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted (Italy)")
 ```
-
