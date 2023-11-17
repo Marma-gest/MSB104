@@ -1022,11 +1022,11 @@ $$
 
 ```{r}
 #| echo: false
-lmlogDE <- lm(gini_n2 ~ logGDPpcn2, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+lmlogDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
 
-lmlogIT <- lm(gini_n2 ~ logGDPpcn2, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+lmlogIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
-lmlogSE <- lm(gini_n2 ~ logGDPpcn2, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
+lmlogSE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
 huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, "Model 1 SE" = lmlogSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
 
