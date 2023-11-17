@@ -992,6 +992,17 @@ Quadratic term is more interesting, log squared.
 
 ### 1. Subset analysis
 
+```{r}
+#| echo: FALSE
+#| tbl-cap: The effect of regional development on inequality
+# Fit the three models
+partaDE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+partaIT <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+partaSE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
+
+huxreg(partaDE, partaIT, partaSE, statistics = NULL)
+```
+
 -   Segment your data into meaningful subsets based on your assigned countries.
 
 -   Estimate the effect of regional development on inequality within each subset and test if the effects significantly differ.
@@ -1077,7 +1088,6 @@ Comparisons:
 
 -   Compare the coefficients and R-squared values across the models to assess their relative performance.
 -   Consider the economic or practical significance of the coefficients. Are the changes in the dependent variable practically significant for the observed changes in log(GDPpcn2).
-
 
 ```{r}
 #| echo: false
