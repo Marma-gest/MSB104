@@ -1192,6 +1192,31 @@ plm4 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c( "year",
 huxreg(plm1, plm2, plm3, plm4, statistics = NULL)
 ```
 
+GDPpcn2:
+
+Models 2 and 3 has significant effect, indicating the influence of time and regional fixed effects on the relationship.
+Model 1 has a significant negative effect suggests increased regional development reduces regional inequality (p \< 0.001).
+Model 4 has a significant positive effect suggests that, considering both country and time fixed effects, increased regional development increases regional inequality (p \< 0.001).
+
+log(GDPpcn2):
+
+Model 1 has a significant positive effect indicates a positive association between the logarithm of GDP per capita and regional inequality (p \< 0.001).
+Model 2 has a significant negative effect suggests a negative association when considering only time fixed effects (p \< 0.05).
+Model 3 has a significant negative effect suggests a negative association when considering only regional fixed effects (p \< 0.01).
+Model 4 has a significant negative effect indicates a negative association when considering both country and time fixed effects (p \< 0.001).
+
+Comparison of Fixed Effects Models:
+
+Model 1 contains Country Fixed Effects.
+There are a positive GDPpcn2 coefficient suggests increased regional development reduces regional inequality.
+There are a negative log(GDPpcn2) coefficient suggests an increase in GDP per capita positively correlates with regional inequality.
+
+Models 2 and 3 contains Time and Regional Fixed Effects.
+There are no significant effect of GDPpcn2, where there are a negative log(GDPpcn2) coefficients suggest a negative association with regional inequality.
+
+Model 4 contains both Country and Time Fixed Effects.
+There are a Positive GDPpcn2 coefficient suggests increased regional development increases regional inequality where there are a negative log(GDPpcn2) coefficient suggests a negative association with regional inequality.
+
 ### 1. Panel estimation task
 
 ```{r}
