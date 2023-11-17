@@ -1087,10 +1087,10 @@ merged_data |>
 What the plot shows is a convex non linear model, which suggest that ... The coefficient of the explanatory variable increases as the X increases...theory.
 
 Using a quadratic logarithmic model enables us to look at the non linear relationship between the two variables.
-As seen in the figure, as the X-axis increases, so does the coefficient of GDPpcn2.
-This suggests that the increase in GDP per capita will have a growing impact on inequality.
+As seen in the figure, as the X-axis increases, so does the coefficient of regional development.
+This suggests that the increase in regional development will have a growing impact on inequality.
 While the coefficient is positive, a positive increase in GINI reflects a higher level of inequality.
-This means that as the GDP per capita in Germany increases, the effect on the level of inequality grows increasingly.
+This means that as the regional development in Germany increases, the effect it has on the level of inequality grows increasingly.
 
 ```{r}
 #| echo: false
@@ -1107,6 +1107,10 @@ merged_data |>
   ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1) 
 ```
 
+The relationship between regional inequality and regional development in Italy illustrates a different relationship than Germany.
+The non linearity of the model is greatly visualized as the convex shape means that the initial growth in regional development will have a decreased effect on inequality.
+However, as this increases, so does the impact that regional development has on inequality, similar to Germany, but at a higher rate.
+
 ```{r}
 #| echo: false
 #| label: fig-logGDPpcn2SE
@@ -1122,6 +1126,8 @@ merged_data |>
     )
   ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1)
 ```
+
+Sweden has a similar relationship between regional inequality and regional development as Italy, but at a slightly lower level, suggesting that regional inequality is lower in Sweden than in Italy, without regards to the regional development.
 
 ### 3. Results interpretation
 
