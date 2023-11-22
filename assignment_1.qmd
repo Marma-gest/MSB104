@@ -1268,12 +1268,6 @@ Adjusted R-squared values are negative in Models (1) and (2), which is unusual a
 The statistical tests (statistic) indicate overall model significance.
 Model (4) has the highest statistic, suggesting that the predictors collectively have a significant effect on the dependent variable.
 
-## References
-
-```{r}
-
-```
-
 # Appendix
 
 ## Residuals:
