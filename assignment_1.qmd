@@ -1267,8 +1267,6 @@ The negative coefficient for GDPpcn2 in Model (1) is also noteworthy.
 Adjusted R-squared values are negative in Models (1) and (2), which is unusual and suggests potential overfitting or model misspecification.
 The statistical tests (statistic) indicate overall model significance.
 Model (4) has the highest statistic, suggesting that the predictors collectively have a significant effect on the dependent variable.
-The negative adjusted R-squared values in Models (1) and (2) are concerning.
-This could be a result of model overfitting or the inclusion of irrelevant predictors.
 
 ## References
 
