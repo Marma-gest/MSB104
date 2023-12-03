@@ -35,19 +35,15 @@ library(plm)
 By using Eurostat, we have downloaded data containing GDP and population for each country in the EU from year 1990 to 2023.
 However, we are only interested in the following countries from 2000 to 2020:
 
-### Countries of interest
-
--   Italy
--   Sweden
--   Belgium
 -   Austria
--   Croatia
--   Serbia
+-   Belgium
 -   Bosnia and Herzegovina
 -   Bulgaria
+-   Croatia
 -   Germany
-
-Below is a short extract of the raw datasets from Eurostat.
+-   Italy
+-   Serbia
+-   Sweden
 
 ```{r, show_col_types = FALSE}
 #| echo: FALSE
@@ -177,24 +173,6 @@ educ <- educ |>
 
 ```
 
-```{r}
-#| echo: FALSE
-nama_10r_3gdp_linear_csv |> 
-    print(
-    n = 5,
-    width = 80
-  )
-
-demo_r_pjanaggr3_linear_csv |> 
-  print(
-    n = 5,
-    width = 80
-  )
-
-```
-
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
-
 ## Description
 
 The first dataset we downloaded from Eurostat was **demo_r_pjanaggr3,** which contains population data from Europe.
@@ -208,30 +186,6 @@ In the beginning of this paper, we have focused on the numbers of NUTS 3 level, 
 The following dataset we downloaded from Eurostat was the **nama_10r_3gdp dataset**.
 Furthermore, this dataset is also broken down to NUTS level 3 which focus on GDP data from the sub-regions in Sweden, Italy, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Germany.
 According to @eurostat2023, GDP (Gross domsetsic product) at market prices is defined as the final result of the production activity of resident producer units [@eurostat2023].
-
-**In order to substract the countries in focus, we have used the metadata provided by Eurostat to filter out the data and variables of interest, using their respective country codes. The variables we are interested in are the following:**
-
--   **geo = Tells us which country and sub-region we are looking at**
--   **time_period = Observed years**
--   **obs_value = The value of the observation**
--   **Unit = Currency**
-
-**By filtering out irrelevant data and variables and rearranging the dataset to provide a clearer view, results with the following datasets:**
-
-```{r}
-#| echo: FALSE
-gdp_filtered |> 
-  print(
-    n = 5,
-    width = 80
-  )
-pop |> 
-  print(
-    n = 5,
-    width = 80
-  )
-
-```
 
 ### 2. GDP per capita calculation
 
@@ -369,6 +323,54 @@ capita, with a standard deviation of 2283.
 This standard deviation measures how much spread or variance there is in the values in the data set.
 Furthermore, the dataset has an average of 3826 GDP per capita, with a median of 3378 GDP per capita.
 When the median is lower than the mean, this means that the data set has more values closer to the minimum value in the data set.
+
+```{r}
+#| echo: false
+# Since Germany contains many regions, we have deceided to present them in two new values.
+# DEz1North and DEz2SOUTH are the two values where we have devided Germany in South and North. 
+# Created a combined value consisting of the Northern and Southern part of Germany.
+DEz1NORTH <- c("DE30", "DE40", "DE50", "DE60", "DE80", "DE91", "DE92", "DE93", "DE94", "DEA1", "DEA2", "DEA3", "DEA4", "DEA5", "DEE0", "DEF0", "DEG0") 
+DEz2SOUTH <- c("DE11", "DE12", "DE13", "DE14", "DE21", "DE22", "DE23", "DE24", "DE25", "DE26", "DE27", "DE71", "DE72", "DE73", "DEB1", "DEB2", "DEB3", "DEC0", "DED2", "DED4", "DED5")
+DE <- c(DEz1NORTH, DEz2SOUTH)
+```
+
+```{r}
+#| echo: FALSE
+#| label: fig-GDPDENORTH
+#| cap-location: bottom
+#| fig-cap: "GDP plot North Germany"
+merged_data |>
+  filter(str_detect(geo, "DE30|DE40|DE50|DE60|DE80|DE91|DE92|DE93|DE94|DEA1| DEA2|DEA3|DEA4|DEA5|DEE0|DEF0|DEG0")) |> 
+  ggplot(mapping = aes(
+  x = year, 
+  y = GDPpcn3, 
+  colour = nuts2
+)) + 
+  geom_line() +
+    labs(title = "North Germany",
+       x = "Year",
+       y = "GDP per capita") 
+```
+
+## GERMANY
+
+```{r}
+
+# UNFINISHED SOUTH
+#erged_data |>
+ # filter(str_detect(geo, "DE11", "DE12", "DE13", "DE14", "DE21", "DE22", "DE23", "DE24", "DE25", "DE26", "DE27", "DE71", "DE72", "DE73", "DEB1", "DEB2", "DEB3", "DEC0", "DED2", "DED4", "DED5")) |> 
+ # ggplot(mapping = aes(
+  #x = year, 
+  #y = GDPpcn3, 
+  #colour = nuts2
+#)) + 
+#  geom_line() +
+ #   labs(title = "South Germany",
+  #     x = "Year",
+   #    y = "GDP per capita") 
+
+
+```
 
 Italy
 
@@ -783,7 +785,7 @@ The statistic value (statistic) and p-value (p.value) are typically used to test
 For Germany, the t-statistic is 9.183, and the associated p-value is 0.005, indicating that the model is statistically significant at the 0.05 significance level.
 For Italy, the t-statistic is 1.485, and the associated p-value is 0.242, suggesting that the model is not statistically significant at the 0.05 significance level.
 
-### **Classical assumptions OLS**
+### **Classical assumptions OLS for MLR**
 
 There are underlying assumptions in statistical analysis like ordinary least squares regression (OLS).
 OLS yields the best estimates when these conventional presumptions hold true.
@@ -796,15 +798,24 @@ Below is a list of all six presumptions:
 
 2.  Sample variation: We can also see from @fig-scatterplot-RL-DE and @fig-scatterplot-RL-IT that there is variation in the independent variable (GDP per capita).
 
-3.  Random sampling: We have chosen randomly a representative sample of the population of interest.
-    Also, the data is downloaded from Eurostat, which is a trustworthy source for random sampling.
-    Additionally, we have also removed NA values.
+3.  Random sampling: There is no random sampling of the population as we are looking at the entire population.
 
-4.  Exogeneity: In our case the explanatory variable (GDP per capita) should not be influenced by other variables in the model, meaning it is exogenous.
+4.  Exogeneity: As inequality is closely related to the development of a country as undeveloped countries typically have higher levels of inequality, there is likely concerns of endogenity.
+    This means that there is likely a correlation between the dependent and independent variable.
 
 5.  Homoskedasticity: In our case the error term does not seem to have the same variance for each value of the independent variable, as seen in the two scatter plots in the appendix.
 
 6.  Normality: Because our Error term is not equal to zero, the population error term is not normally distributed in our datasets.
+
+```{r}
+#| echo: false
+# Test for heteroskedasticity 
+# The test statistic is 4.0861 and the corresponding p-value is x Since the p-value is not less than 0.05, we fail to reject the null hypothesis. We do not have sufficient evidence to say that heteroscedasticity is present in the regression model.
+
+bptest(partaDE)$p.value
+bptest(partaIT)$p.value
+bptest(partaSE)$p.value
+```
 
 ## Visualization
 
@@ -819,7 +830,7 @@ merged_data_filtered <- merged_data %>%
 
 ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  
+  geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1) +  
   labs(
     x = "GDP per capita nuts2",
     y = "Gini Index (n2)"
@@ -838,7 +849,7 @@ merged_data_filtered <- merged_data %>%
 
 ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +  # Specify the formula
+  geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1) +  # Specify the formula
   labs(
     x = "GDP per capita nuts2",
     y = "Gini Index (n2)"
