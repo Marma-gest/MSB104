@@ -339,11 +339,12 @@ When the median is lower than the mean, this means that the data set has more va
 
 ## Germany
 
-In order to achieve a presentable figure showing GDP per year for the German sub-regions, we decided to divide the data into Northern and Southern Germany.
-This prevented the data from becoming overly clustered and improved our ability to interpret the graphs.
-The first figure presents data for Northern Germany, and the second figure presents data for Southern Germany.
+In order to achieve a presentable figure, our analysis focuses on the NUTS2 level for Germany rather than NUTS3 due to the larger scale and has been split into North- and South Germany.
+This allows for a more comprehensive examination of regional variations, and captures a broader perspective on regional dynamics and economic disparities.
 
-## North Germany
+The zero values present in the data occur as a result of regions that are actually defined as a region, but in reality are a foreign embassy, army base or offshore energy production with no permanent residence.
+This means they do not have any GDP per capita [@eurostat2021].
+Moreover, we assume that the zero values can also be a result of missing data report from different regions in Germany.
 
 ```{r}
 #| label: fig-regional_gdp_per_year_NG
@@ -367,8 +368,6 @@ merged_data |>
        y = "GDP per capita") 
 ```
 
-## South Germany
-
 ```{r}
 #| label: fig-regional_gdp_per_year_SG
 #| echo: false
@@ -390,8 +389,6 @@ merged_data |>
 
 
 ```
-
-Bekgrunnelse for valg av nuts2 nivå på Tyskland!!!!!
 
 In @fig-regional_gdp_per_year_NG we see that there is a relatively similar trend in GDP growth per year from 2000 to 2020, with the exception of one outlier.
 This is the top graph which has a much higher GDP per capita than the other regions.
@@ -422,9 +419,7 @@ We can also observe that there is a slope in both figures from 2007 to 2009.
 This is most likely caused by the Financial Crisis (2007-2008), which caused the GDP per capita to decline.
 There is also a slope in both figures in 2019, which is most likely due to Covid-19.
 
-Tolkning Tyskland; **The zero values occur as a result of some regions are actually defined as a region, but in reality they are a foreign embassy, army base or offshore energy production with no permanent residence. This means they do not have any GDP per capita [@eurostat2021]. Moreover, we assume that the zero values can also be a result of missing data report from different regions in Germany.**
-
-Italy
+## Italy
 
 The reason why we divide Italy into north and south is because it makes our ggplot more clear.
 
@@ -456,8 +451,6 @@ merged_data |>
   select(-1,-year) |> 
   st("GDPpcn3", add.median = TRUE)
 ```
-
-Outliers: ITC4C (milano) og til dels ITH10 (boltzano)
 
 In summary of the data set, Northern Italy has a minimum value and a maximum value of 19,555 and 55,890 gdp respectively.
 capita, with a standard deviation of 5107.
@@ -663,26 +656,39 @@ The research shows many examples of high- and low-income countries experiencing 
 
 ### 2. Gini coefficient calculation
 
-**The Gini coefficient is a measurement for inequality, used in regions to measure the inequalities in sub regions of a country @lessmann2017 . We have used the weighted Gini coefficient which takes a regions GDP per capita with regards to population, The reasoning behind this is to get the true Gini coefficient, and not omit the population variable, as it is a important variable for explaining a regions inequality. By looking at the gini coefficient at a NUTS2 level, we are expecting to see the socio-economic differences, and to understand the reasoning behind the inequity based on factors such as resource allocation. By looking at a 20 year span, we are also expecting to be able to predict and forecast future trends.**
-
-To calculate the population-weighted Gini coefficient for GDP for each European NUTS2 level region within Austria, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Germany, Italy, Serbia, Sweden, we used the data on the GDP and population for the different regions and associated countries.
-The Gini coefficient measures income or wealth inequality within a population [@imfnd].
-In this case, we want to calculate the Gini coefficient for GDP, which is a measure of economic inequality.
-We calculated the Gini coefficient using the following formula:
+The Gini coefficient is a measure of economic inequality within a population, and it is used to assess the distribution of income or wealth among individuals or households.
+The formula below is used for the population-weighted Gini coefficient for GDP at the NUTS2 level in various European regions.
 
 $GINW_j=\frac{1}{2 \bar{y_j}} \sum_{i}^{n_j}\sum_{l}^{n_j}\frac{p_i}{P_j} \frac{p_l}{P_j} |y_i-y_l|$
 
-We want to calculate the weighted average of the Gini coefficients based on the population of each region or country.
-We do this by calculating a new column called gini_n2 using mutate, and applying the gini.wtd function, which compute a weighted Gini coefficient based on GDP per capita.
+The Gini coefficient is calculated by summing the absolute differences in GDP per capita between all pairs of sub-regions, weighted by the products of their populations and the total population.
+The components of the formula consist of the following:
 
-The population-weighted Gini coefficient provides a measure of economic inequality across all our regions and associated countries, taking into account their respective populations [@imfnd].
-A Gini coefficient close to 0 indicates a more equal distribution of income or wealth among the population.
-In societies with low Gini coefficients, there is relatively less income or wealth inequality, and resources are more evenly distributed among individuals or households.
-These societies tend to have a larger middle class and fewer people living in poverty or extreme wealth [@imfnd]
+-   $GINIW_j$: Represents the population-weighted Gini coefficient for a specific region or country (indexed by ($j$).
 
-A Gini coefficient close to 1 signifies a high level of income or wealth inequality.
-In societies with high Gini coefficients, a significant portion of the income or wealth is concentrated among a small percentage of the population, leading to pronounced disparities.
-These societies may have a large gap between the rich and the poor, with some individuals or households having substantially more resources than others [@imfnd].
+-   $y̅j$: This is the avarage GDP per capita in the region or country $j$.
+
+-   $n_j$: The number of observations (sub-regions) in the region $j$.
+
+-   $i,l$: Indices for individual observations (sub-regions) within the region or country $j$.
+
+-   $p_i, p_l$: The poppulations of sub-regions $i$ and $l$ within the region or country $j$.
+
+-   $P_j$: The total population of the region or country $j$.
+
+-   $y_i, y_l$: The GDP per capita of sub-regions $i$ and $l$ within the region or country $j$.
+
+    The Gini coefficient is calculated by summing the absolute differences in GDP per caita between pairs of sub-regions $(i, l)$, weighted by the products of their populations $(P_j)$.
+    The result is normalized by twice the avarage GDP per capita $(2y̅_j)$.
+
+A Gini coefficient close to 0 suggests a more equal distribution of income or wealth among the population.
+Societies with low Gini coefficients generally exhibit less economic inequality, with resources more evenly distributed and a larger middle class.
+Conversely, a Gini coefficient close to 1 indicates high income or wealth inequality.
+In societies with high Gini coefficients, a significant portion of income or wealth is concentrated among a small percentage of the population, leading to pronounced disparities
+
+The focus in this case is on a weighted Gini coefficient that considers both GDP per capita and population.
+This approach aims to capture the true Gini coefficient, considering the significance of the population variable in explaining regional inequality.
+The analysis is conducted at a NUTS2 level for various European regions, including countries such as Austria, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Germany, Italy, Serbia, and Sweden.
 
 ```{r}
 #| echo: false
@@ -788,6 +794,7 @@ The reason for this is because the effect of the increase in GDP per capita hits
 #| cap-location: bottom
 #| tbl-cap: "Linear regression model year 2010 for Germany and Italy"
 # Estimating linear regression models for Germany and Italy with Gini and GDP per capita.
+# By using the formula we observed skewed data and mitigated the issue by log transforming the independant variable. 
 lmDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
 lmIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
 
@@ -849,19 +856,25 @@ Below is a list of all six presumptions:
 4.  Exogeneity: As inequality is closely related to the development of a country as undeveloped countries typically have higher levels of inequality, there is likely concerns of endogenity.
     This means that there is likely a correlation between the dependent and independent variable.
 
-5.  Homoskedasticity: In our case the error term does not seem to have the same variance for each value of the independent variable, as seen in the two scatter plots in the appendix.
+5.  Homoskedasticity: To fulfill the OLS assumptions, variance in the observations needs to be equal, known as homoskedasticity.
+    There are many tests for heteroskedasticity.
+    In each case, the null hypothesis is homoskedasticity and the alternative is heteroskedasticity.
+    If the variance in the observations are not equal, heteroskedasticity could be present.
+    This may result in incorrect standard errors that are computed for the least squares estimators, and could lead to incorrect conclusions.
+    In order to check for heteroskedasticity, we utilize the Breusch-Pagan test.
 
-6.  Normality: Because our Error term is not equal to zero, the population error term is not normally distributed in our datasets.
+6.  Normality: In the context of ordinary least squares (OLS) assumptions, the normality criteria demands that the error term adheres to a normal distribution with an expected value of zero.
+    This implies that the discrepancies between observed and predicted values, known as residuals, should have a mean of zero, ensuring a homoskedasticity error term.
+    However, it is imperative to note that the failure of the error term to equal zero implies a departure from normality in the population error term within the dataset, thus rendering the normality assumption unfulfilled.
 
 ```{r}
-#| include: FALSE
 #| echo: false
 # Test for heteroskedasticity 
 # The test statistic is 4.0861 and the corresponding p-value is x Since the p-value is not less than 0.05, we fail to reject the null hypothesis. We do not have sufficient evidence to say that heteroscedasticity is present in the regression model.
 
-#bptest(partaDE)$p.value
-#bptest(partaIT)$p.value
-#bptest(partaSE)$p.value
+bptest(partaDE)$p.value
+bptest(partaIT)$p.value
+bptest(partaSE)$p.value
 ```
 
 ## Visualization
@@ -884,6 +897,13 @@ ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
   )
 
 ```
+
+In Figure 1, we plot X against Y and illustrate the estimated relationship with a blue line
+
+As seen above, the inequality (y-axis) starts off with a slight decrease as the GDP per capita (x-axis) increases.
+However, inequality seem to increase.
+Suggesting that a slight increase in GDP per capita will reduce inequality, but increase as it regional development increases.
+Looking at the graph, we can see that a 0.2% increase from 10.2 to 10.4 increases the inequality about
 
 ```{r}
 #| echo: FALSE
