@@ -883,7 +883,7 @@ bptest(partaSE)$p.value
 #| echo: FALSE
 #| label: fig-scatterplot-RL-DE
 #| cap-location: bottom
-#| fig-cap: "Scatter Plot with Regression Line (Year 2010, DE)"
+#| fig-cap: "Regression model for the year 2010 for Germany with GDP per capita (x) and regional inequality (Gini/y)."
 # Visualizing the linear regression of the gini coefficient by GDP per capita for Germany
 merged_data_filtered <- merged_data %>%
   filter(str_detect(geo, "DE") & year == 2010 & gini_n2 > 0)
@@ -898,18 +898,15 @@ ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
 
 ```
 
-In Figure 1, we plot X against Y and illustrate the estimated relationship with a blue line
-
-As seen above, the inequality (y-axis) starts off with a slight decrease as the GDP per capita (x-axis) increases.
+In @fig-scatterplot-RL-DE, we plot GDP per capita on nuts 2 level (x) against Gini (y) and illustrate the estimated relationship with a blue line.
+The inequality (y-axis) starts off with a slight decrease as the GDP per capita (x-axis) increases.
 However, inequality seem to increase.
-Suggesting that a slight increase in GDP per capita will reduce inequality, but increase as it regional development increases.
-Looking at the graph, we can see that a 0.2% increase from 10.2 to 10.4 increases the inequality about
 
 ```{r}
 #| echo: FALSE
 #| label: fig-scatterplot-RL-IT
 #| cap-location: bottom
-#| fig-cap: "Scatter Plot with Regression Line (Year 2010, IT)"
+#| fig-cap: "Regression model for the year 2010 for Italy with GDP per capita (x) and regional inequality (Gini/y)."
 # Visualizing the linear regression of the gini coefficient by GDP per capita for Italy
 merged_data_filtered <- merged_data %>%
   filter(str_detect(geo, "IT") & year == 2010 & gini_n2 > 0)
@@ -922,6 +919,11 @@ ggplot(merged_data_filtered, aes(x = log(GDPpcn2), y = gini_n2)) +
     y = "Gini Index (n2)"
   )
 ```
+
+In @fig-scatterplot-RL-IT, we plot GDP per capita on nuts 2 level (x) against Gini (y) and illustrate the estimated relationship with a blue line.
+Italy has a bigger decrease in inequality compared to Germany.
+The inequality (y-axis) starts off with a decrease as the GDP per capita (x-axis) increases.
+However, at some point it increases again meaning an increasing GDP per capita result in bigger regional inequality.
 
 ## Part B: Exploring Other Determinants of Inequity
 
