@@ -872,9 +872,9 @@ Below is a list of all six presumptions:
 # Test for heteroskedasticity 
 # The test statistic is 4.0861 and the corresponding p-value is x Since the p-value is not less than 0.05, we fail to reject the null hypothesis. We do not have sufficient evidence to say that heteroscedasticity is present in the regression model.
 
-bptest(partaDE)$p.value
-bptest(partaIT)$p.value
-bptest(partaSE)$p.value
+#bptest(partaDE)$p.value
+#bptest(partaIT)$p.value
+#bptest(partaSE)$p.value
 ```
 
 ## Visualization
@@ -1090,7 +1090,7 @@ We found no significant difference by including a cubic function, and thus, conc
 
 #### Using a logarithmic model
 
-Using a logarithmic model creates a asymptotic behaviour for the regression line.
+Using a logarithmic model creates a asymptotic behavior for the regression line.
 The non linear relationship between regional inequality and regional development will either go towards full inequality, or towards zero inequality, but will never completely reach the maximum or minimum (1 or 0).
 In order to calculate this, we use the following formula:
 
@@ -1154,7 +1154,7 @@ huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE
 #| echo: false
 #| label: fig-logGDPpcn2DE
 #| cap-location: bottom
-#| fig-cap: "Scatter Plot with Regression Line showing the relationship between the gini coefficient and GDP per capita"
+#| fig-cap: "Scatter Plot for Germany with a regression line showing the relationship between the gini coefficient and GDP per capita."
 
 merged_data |> 
   filter(numberofregions > 1, nuts0 == "DE") |> 
@@ -1176,7 +1176,7 @@ This means that as the regional development in Germany increases, the effect it 
 #| echo: false
 #| label: fig-logGDPpcn2IT
 #| cap-location: bottom
-#| fig-cap: "Scatter Plot with Regression Line showing the relationship between the gini coefficient and GDP per capita"
+#| fig-cap: "Scatter Plot for Italy with a regression line showing the relationship between the gini coefficient and GDP per capita."
 merged_data |> 
   filter(numberofregions > 1, nuts0 == "IT") |> 
   ggplot(
@@ -1195,7 +1195,7 @@ However, as this increases, so does the impact that regional development has on 
 #| echo: false
 #| label: fig-logGDPpcn2SE
 #| cap-location: bottom
-#| fig-cap: "Scatter Plot with Regression Line showing the relationship between the gini coefficient and GDP per capita"
+#| fig-cap: "Scatter Plot for Sweden with a regression line showing the relationship between the gini coefficient and GDP per capita."
 #| 
 merged_data |> 
   filter(numberofregions > 1, nuts0 == "SE") |> 
@@ -1236,17 +1236,23 @@ The alternative model present enhanced explanatory power, capturing potential no
 # Testing for heteroskedasticity in the original models, logarithmic models and quadratic models.
 
 # Original models
-bptest(partaDE)$p.value
-bptest(partaIT)$p.value
-bptest(partaSE)$p.value
-#logarithmic models
-bptest(lmlogDE)$p.value
-bptest(lmlogIT)$p.value
-bptest(lmlogSE)$p.value
-#Quadratic models
-bptest(lmquadDE)$p.value
-bptest(lmquadIT)$p.value
-bptest(lmquadSE)$p.value
+bp_pvalues <- c(
+  bpDE = bptest(partaDE)$p.value,
+  bpIT = bptest(partaIT)$p.value,
+  bpSE = bptest(partaSE)$p.value,
+  #logarithmic models
+  bplogDE = bptest(lmlogDE)$p.value,
+  bplogIT = bptest(lmlogIT)$p.value,
+  bplogSE = bptest(lmlogSE)$p.value,
+  #Quadratic models
+  bpquadDE = bptest(lmquadDE)$p.value,
+  bpquadIT = bptest(lmquadIT)$p.value,
+  bpquadSE = bptest(lmquadSE)$p.value
+)
+```
+
+```{r}
+#huxreg("Original model" = bpDE, bpIT, bpSE)!spørsmål til arnstæin!!!
 ```
 
 ### 1. Heteroskedasticity testing
@@ -1255,6 +1261,8 @@ In the original model, the extremely low p-value suggests evidence of heterosked
 For Sweden (SE), the high p-value suggests no strong evidence of heteroskedasticity.
 
 The same picture can be observed for the alternative models (logarithmic and quadratic), were both Germany (DE) and Italy (IT) have extremely low p-values suggesting evidence of heteroskedasticity, while Sweden (SE) has a high p-value suggesting no strong evidence of heteroskedasticity.
+
+**!!! We have observed heteroskedasticity in our data (see appendix x). .....**
 
 ### 2. Causality discussion
 
