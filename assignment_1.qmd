@@ -372,6 +372,8 @@ merged_data |>
 
 ```
 
+Tolkning Tyskland; **The zero values occur as a result of some regions are actually defined as a region, but in reality they are a foreign embassy, army base or offshore energy production with no permanent residence. This means they do not have any GDP per capita [@eurostat2021]. Moreover, we assume that the zero values can also be a result of missing data report from different regions in Germany.**
+
 Italy
 
 The reason why we divide Italy into north and south is because it makes our ggplot more clear.
@@ -609,16 +611,14 @@ Lastly, @lessmann2017 state that an area where ethnic groups dominate as a minor
 Based on the research conducted by @lessmann2017, considering regional inequities is essential since it can influence economic outcomes.
 The research shows many examples of high- and low-income countries experiencing unbalanced regional development that results in income inequality [@lessmann2017].
 
-**The Gini coefficient is a measurement for inequality, used in regions to measure the inequalities in sub regions of a country @lessmann2017 . We have used the weighted Gini coefficient which takes a regions GDP per capita with regards to population, The reasoning behind this is to get the true Gini coefficient, and not omit the population variable, as it is a important variable for explaining a regions inequality. By looking at the gini coefficient at a NUTS2 level, we are expecting to see the socio-economic differences, and to understand the reasoning behind the inequity based on factors such as resource allocation. By looking at a 20 year span, we are also expecting to be able to predict and forecast future trends.**
-
 ### 2. Gini coefficient calculation
 
-To calculate the population-weighted Gini coefficient for GDP for each European NUTS2 level region within Germany, Finland and Romania, we used the data on the GDP and population for the different regions and associated countries.
+**The Gini coefficient is a measurement for inequality, used in regions to measure the inequalities in sub regions of a country @lessmann2017 . We have used the weighted Gini coefficient which takes a regions GDP per capita with regards to population, The reasoning behind this is to get the true Gini coefficient, and not omit the population variable, as it is a important variable for explaining a regions inequality. By looking at the gini coefficient at a NUTS2 level, we are expecting to see the socio-economic differences, and to understand the reasoning behind the inequity based on factors such as resource allocation. By looking at a 20 year span, we are also expecting to be able to predict and forecast future trends.**
+
+To calculate the population-weighted Gini coefficient for GDP for each European NUTS2 level region within Austria, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Germany, Italy, Serbia, Sweden, we used the data on the GDP and population for the different regions and associated countries.
 The Gini coefficient measures income or wealth inequality within a population [@imfnd].
 In this case, we want to calculate the Gini coefficient for GDP, which is a measure of economic inequality.
 We calculated the Gini coefficient using the following formula:
-
-**In order to calculate the Gini coefficient for NUTS2 regions using NUTS3 data, we first have to group population and GDP per capita of the level 3 data to level 2. This has been done by subtracting the common denominator, country codes. Grouping makes it possible to utilize the formula by weighing the level 2 regions GDP per capita by population, as seen below.**
 
 $GINW_j=\frac{1}{2 \bar{y_j}} \sum_{i}^{n_j}\sum_{l}^{n_j}\frac{p_i}{P_j} \frac{p_l}{P_j} |y_i-y_l|$
 
@@ -633,10 +633,6 @@ These societies tend to have a larger middle class and fewer people living in po
 A Gini coefficient close to 1 signifies a high level of income or wealth inequality.
 In societies with high Gini coefficients, a significant portion of the income or wealth is concentrated among a small percentage of the population, leading to pronounced disparities.
 These societies may have a large gap between the rich and the poor, with some individuals or households having substantially more resources than others [@imfnd].
-
-The zero values occur as a result of some regions are actually defined as a region, but in reality they are a foreign embassy, army base or offshore energy production with no permanent residence.
-This means they do not have any GDP per capita [@eurostat2021].
-Moreover, we assume that the zero values can also be a result of missing data report from different regions in Germany and Finland.
 
 ```{r}
 #| echo: false
