@@ -168,6 +168,19 @@ educ <- educ |>
     ungroup() |> 
   select(-age)
 
+merged_data <- merged_data |> 
+  filter(!is.na(Population),
+         Population != 0,
+         GDPpcn3 != 0, 
+         GDPpcn3 != "NA"
+  ) |> 
+  mutate(
+         GDPpcn2 = mean(GDPpcn3), 
+         popn2 = sum(Population),
+         GDPn2 = sum(GDP),
+         numberofregions = n_distinct(geo)
+         ) 
+ # select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2, numberofregions, GDPn2, GDPpcn2, popn2) 
 
 
 
@@ -324,26 +337,28 @@ This standard deviation measures how much spread or variance there is in the val
 Furthermore, the dataset has an average of 3826 GDP per capita, with a median of 3378 GDP per capita.
 When the median is lower than the mean, this means that the data set has more values closer to the minimum value in the data set.
 
-```{r}
-#| echo: false
-# Since Germany contains many regions, we have deceided to present them in two new values.
-# DEz1North and DEz2SOUTH are the two values where we have devided Germany in South and North. 
-# Created a combined value consisting of the Northern and Southern part of Germany.
-DEz1NORTH <- c("DE30", "DE40", "DE50", "DE60", "DE80", "DE91", "DE92", "DE93", "DE94", "DEA1", "DEA2", "DEA3", "DEA4", "DEA5", "DEE0", "DEF0", "DEG0") 
-DEz2SOUTH <- c("DE11", "DE12", "DE13", "DE14", "DE21", "DE22", "DE23", "DE24", "DE25", "DE26", "DE27", "DE71", "DE72", "DE73", "DEB1", "DEB2", "DEB3", "DEC0", "DED2", "DED4", "DED5")
-DE <- c(DEz1NORTH, DEz2SOUTH)
-```
+## Germany
+
+In order to achieve a presentable figure showing GDP per year for the German sub-regions, we decided to divide the data into Northern and Southern Germany.
+This prevented the data from becoming overly clustered and improved our ability to interpret the graphs.
+The first figure presents data for Northern Germany, and the second figure presents data for Southern Germany.
+
+## North Germany
 
 ```{r}
-#| echo: FALSE
-#| label: fig-GDPDENORTH
+#| label: fig-regional_gdp_per_year_NG
+#| echo: false
 #| cap-location: bottom
-#| fig-cap: "GDP plot North Germany"
+#| fig-cap: "GDP per capita in year - Northern Germany"
+# First step is to place the location of the figure caption and name it.
+# Secondly, we filter GDP_DE_nuts2 to contain the values in Northern Germany (DEz1NORTH) from column id_nuts2.
+# Thirdly, we represent the data in GPD_DE_nuts2 by mapping them in a plot using ggplot, where the x-axis represents year and y-axis represents GPD_per_capita. Furthermore the colour is determined by id_nuts2.
+# Fourthly, we use geom_line since this gives a accurate description of our data from Germany.
 merged_data |>
   filter(str_detect(geo, "DE30|DE40|DE50|DE60|DE80|DE91|DE92|DE93|DE94|DEA1| DEA2|DEA3|DEA4|DEA5|DEE0|DEF0|DEG0")) |> 
   ggplot(mapping = aes(
   x = year, 
-  y = GDPpcn3, 
+  y = GDPpcn2, 
   colour = nuts2
 )) + 
   geom_line() +
@@ -352,25 +367,60 @@ merged_data |>
        y = "GDP per capita") 
 ```
 
-## GERMANY
+## South Germany
 
 ```{r}
-
+#| label: fig-regional_gdp_per_year_SG
+#| echo: false
+#| #| cap-location: bottom
+#| fig-cap: "GDP per capita in year - Southern Germany"
+# Duplicating the same steps for Southern Germany (DEz2SOUTH) as for the Northern part. 
 # UNFINISHED SOUTH
-#erged_data |>
- # filter(str_detect(geo, "DE11", "DE12", "DE13", "DE14", "DE21", "DE22", "DE23", "DE24", "DE25", "DE26", "DE27", "DE71", "DE72", "DE73", "DEB1", "DEB2", "DEB3", "DEC0", "DED2", "DED4", "DED5")) |> 
- # ggplot(mapping = aes(
-  #x = year, 
-  #y = GDPpcn3, 
-  #colour = nuts2
-#)) + 
-#  geom_line() +
- #   labs(title = "South Germany",
-  #     x = "Year",
-   #    y = "GDP per capita") 
+merged_data |>
+ filter(str_detect(geo, "DE11|DE12|DE13|DE14|DE21|DE22|DE23|DE24|DE25|DE26|DE27|DE71|DE72|DE73|DEB1|DEB2|DEB3|DEC0|DED2|DED4|DED5")) |> 
+  ggplot(mapping = aes(
+  x = year, 
+  y = GDPpcn2, 
+  colour = nuts2
+)) + 
+  geom_line() +
+    labs(title = "South Germany",
+       x = "Year",
+       y = "GDP per capita") 
 
 
 ```
+
+Bekgrunnelse for valg av nuts2 nivå på Tyskland!!!!!
+
+In @fig-regional_gdp_per_year_NG we see that there is a relatively similar trend in GDP growth per year from 2000 to 2020, with the exception of one outlier.
+This is the top graph which has a much higher GDP per capita than the other regions.
+This region is Hamburg (DE60), which is located in Northern Germany, which had a GDP per capita of 45,659 € in 2000, and 64,366 € in 2020.
+Hamburg is home to a diverse range of industries, including maritime trade, logistics, manufacturing, aviation, and media.
+Also, the Port of Hamburg is one of Europe's largest and busiest ports.
+
+The region with the lowest GDP per capita was Thüringen (DEG0), which is located in Northern Germany, with a GDP of 16,139 € in 2000, and 28,874 € in 2020.
+Thüringen has a relatively small and less diversified economy compared to other German states.
+It relies heavily on traditional industries such as agriculture and manufacturing, which may not contribute significantly to GDP.
+We also note that there is a significant fall in GDP per capita in 2010 for the region Mecklenburg-Vorpommern (DE80).
+
+In @fig-regional_gdp_per_year_SG we see that there is a relatively similar trend in GDP growth per year from 2000 to 2020, with the exception of three outliers.
+The first outlier is the top graph (Hamburg) which is significantly higher than the rest.
+The two other outliers are the second and third highest graphs, which are also significantly higher, however lower than Hamburg.
+These regions are Braunschweig (DE91), where we find Wolfsburg, and Bremen (DE50).
+We also note that there is a significant fall in GDP per capita in 2010 for the regions Chemnitz (DED4) and Leipzig (DED5).
+
+In Germany in 2000, GDP per capita had an average value (mean) of 25,593 €.
+The median value of 24,894 € indicates that the distribution is slightly skewed to the left, with about half of the population having values below the mean.
+The standard deviation of 5,872 € quantifies the extent of variation around the mean, suggesting a moderate level of variability in GDP per capita across the population.
+
+In 2020, GDP per capita had an average value (mean) of 39,439 €.
+The median value of 38,941 € indicates that the distribution is slightly skewed to the left, with about half of the population having values below the mean.
+The higher standard deviation of 8,267 € compared to 2000 quantifies the extent of variation around the mean, suggesting a relatively higher level of variability in economic indicators across the population in 2020.
+
+We can also observe that there is a slope in both figures from 2007 to 2009.
+This is most likely caused by the Financial Crisis (2007-2008), which caused the GDP per capita to decline.
+There is also a slope in both figures in 2019, which is most likely due to Covid-19.
 
 Tolkning Tyskland; **The zero values occur as a result of some regions are actually defined as a region, but in reality they are a foreign embassy, army base or offshore energy production with no permanent residence. This means they do not have any GDP per capita [@eurostat2021]. Moreover, we assume that the zero values can also be a result of missing data report from different regions in Germany.**
 
@@ -804,13 +854,14 @@ Below is a list of all six presumptions:
 6.  Normality: Because our Error term is not equal to zero, the population error term is not normally distributed in our datasets.
 
 ```{r}
+#| include: FALSE
 #| echo: false
 # Test for heteroskedasticity 
 # The test statistic is 4.0861 and the corresponding p-value is x Since the p-value is not less than 0.05, we fail to reject the null hypothesis. We do not have sufficient evidence to say that heteroscedasticity is present in the regression model.
 
-bptest(partaDE)$p.value
-bptest(partaIT)$p.value
-bptest(partaSE)$p.value
+#bptest(partaDE)$p.value
+#bptest(partaIT)$p.value
+#bptest(partaSE)$p.value
 ```
 
 ## Visualization
