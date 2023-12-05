@@ -795,7 +795,8 @@ lmIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "
 
 lmSE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "SE" & gini_n2 > 0))
 
-huxreg(DE = lmDE, IT = lmIT, SE = lmSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
+huxreg(DE = lmDE, IT = lmIT, SE = lmSE, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"), stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+       note = "Note): {stars} T statistics in brackets.")
 ```
 
 In the table above we see the coefficients, standard errors, and significance levels (indicated by asterisks) for a simple linear regression model for the year 2010.
@@ -990,7 +991,8 @@ lm3 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area) + log(Roadkm), subset(m
 
 lm4 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area) + log(Roadkm), subset(merged2010, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
 
-huxreg("Model 1 DE" = lm1, "Model 1 IT" = lm2, "Model 2 DE" = lmarea, "Model 2 IT" = lmarea2, "Model 3 DE" = lm3, "Model 3 IT" = lm4, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
+huxreg("Model 1 DE" = lm1, "Model 1 IT" = lm2, "Model 2 DE" = lmarea, "Model 2 IT" = lmarea2, "Model 3 DE" = lm3, "Model 3 IT" = lm4, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"), stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+       note = "Note): {stars} T statistics in brackets.")
 ```
 
 The provided multiple regression models aim to explain regional inequality, with three different models.
@@ -1042,7 +1044,7 @@ partaDE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "DE" & gini
 partaIT <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 partaSE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg(DE = partaDE, IT = partaIT, SE = partaSE, statistics = c("nobs", "r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg(DE = partaDE, IT = partaIT, SE = partaSE, statistics = c("Number of observations" = "nobs", "r.squared","adj.r.squared", "statistic", "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -1092,7 +1094,7 @@ lmlogIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "IT" & gini_n
 
 lmlogSE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, "Model 1 SE" = lmlogSE, statistics = c("nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, "Model 1 SE" = lmlogSE, statistics = c("Number of observations" = "nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -1128,7 +1130,7 @@ lmquadIT <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 
 
 lmquadSE <- lm(gini_n2 ~ logGDPpcn2 + logGDPpcn2quad, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, "Model 1 SE" = lmquadSE, statistics = c("Number of observations" = "nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -1233,6 +1235,13 @@ To address heteroskedasticity, one strategy is to use robust standard errors or 
 Additionally, exploring other functional forms or including relevant predictors may help address the issue.
 Reflecting on the causal interpretation, it's essential to acknowledge that heteroskedasticity doesn't necessarily invalidate causal relationships but emphasizes the importance of addressing statistical assumptions for more reliable inference.
 
+1.  Homoskedasticity: To fulfill the OLS assumptions, variance in the observations needs to be equal, known as homoskedasticity.
+    There are many tests for heteroskedasticity.
+    In each case, the null hypothesis is homoskedasticity and the alternative is heteroskedasticity.
+    If the variance in the observations are not equal, heteroskedasticity could be present.
+    This may result in incorrect standard errors that are computed for the least squares estimators, and could lead to incorrect conclusions.
+    In order to check for heteroskedasticity, we utilize the Breusch-Pagan test, **see appendix model X**
+
 ## Part D: Panel estimates
 
 ### 1. Panel estimation task
@@ -1269,7 +1278,7 @@ plm3 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2")
 
 plm4 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c( "year","nuts2"), model = "within",effect = "twoway") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
-huxreg(plm1, plm2, plm3, plm4, statistics = c("nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg(plm1, plm2, plm3, plm4, statistics = c("Number of observations" = "nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -1337,28 +1346,15 @@ bp_pvalues <- c(
   bpquadDE = bptest(lmquadDE)$p.value,
   bpquadIT = bptest(lmquadIT)$p.value,
   bpquadSE = bptest(lmquadSE)$p.value
-)
+) 
+```
+
+*A.1 Test results for heteroskedasticity using a Breusch-Pagan test*
+
+```{r}
+#| echo: FALSE
 print(bp_pvalues)
+
 ```
 
 bp = Original models, log = logarithmic models, quad = quadratic models.
-
-## Residuals:
-
-### Residuals vs. Fitted (Germany)
-
-```{r}
-#| echo: FALSE
-residuals_DE <- resid(lmDE)
-
-plot(lmDE$fitted.values, residuals_DE, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted (Germany)")
-```
-
-### Residuals vs. Fitted (Italy)
-
-```{r}
-#| echo: FALSE
-residuals_IT <- resid(lmIT)
-
-plot(lmIT$fitted.values, residuals_IT, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted (Italy)")
-```
