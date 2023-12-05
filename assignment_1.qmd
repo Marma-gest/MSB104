@@ -337,88 +337,6 @@ This standard deviation measures how much spread or variance there is in the val
 Furthermore, the dataset has an average of 3826 GDP per capita, with a median of 3378 GDP per capita.
 When the median is lower than the mean, this means that the data set has more values closer to the minimum value in the data set.
 
-## Germany
-
-In order to achieve a presentable figure, our analysis focuses on the NUTS2 level for Germany rather than NUTS3 due to the larger scale and has been split into North- and South Germany.
-This allows for a more comprehensive examination of regional variations, and captures a broader perspective on regional dynamics and economic disparities.
-
-The zero values present in the data occur as a result of regions that are actually defined as a region, but in reality are a foreign embassy, army base or offshore energy production with no permanent residence.
-This means they do not have any GDP per capita [@eurostat2021].
-Moreover, we assume that the zero values can also be a result of missing data report from different regions in Germany.
-
-```{r}
-#| label: fig-regional_gdp_per_year_NG
-#| echo: false
-#| cap-location: bottom
-#| fig-cap: "GDP per capita in year - Northern Germany"
-# First step is to place the location of the figure caption and name it.
-# Secondly, we filter GDP_DE_nuts2 to contain the values in Northern Germany (DEz1NORTH) from column id_nuts2.
-# Thirdly, we represent the data in GPD_DE_nuts2 by mapping them in a plot using ggplot, where the x-axis represents year and y-axis represents GPD_per_capita. Furthermore the colour is determined by id_nuts2.
-# Fourthly, we use geom_line since this gives a accurate description of our data from Germany.
-merged_data |>
-  filter(str_detect(geo, "DE30|DE40|DE50|DE60|DE80|DE91|DE92|DE93|DE94|DEA1| DEA2|DEA3|DEA4|DEA5|DEE0|DEF0|DEG0")) |> 
-  ggplot(mapping = aes(
-  x = year, 
-  y = GDPpcn2, 
-  colour = nuts2
-)) + 
-  geom_line() +
-    labs(title = "North Germany",
-       x = "Year",
-       y = "GDP per capita") 
-```
-
-```{r}
-#| label: fig-regional_gdp_per_year_SG
-#| echo: false
-#| #| cap-location: bottom
-#| fig-cap: "GDP per capita in year - Southern Germany"
-# Duplicating the same steps for Southern Germany (DEz2SOUTH) as for the Northern part. 
-# UNFINISHED SOUTH
-merged_data |>
- filter(str_detect(geo, "DE11|DE12|DE13|DE14|DE21|DE22|DE23|DE24|DE25|DE26|DE27|DE71|DE72|DE73|DEB1|DEB2|DEB3|DEC0|DED2|DED4|DED5")) |> 
-  ggplot(mapping = aes(
-  x = year, 
-  y = GDPpcn2, 
-  colour = nuts2
-)) + 
-  geom_line() +
-    labs(title = "South Germany",
-       x = "Year",
-       y = "GDP per capita") 
-
-
-```
-
-In @fig-regional_gdp_per_year_NG we see that there is a relatively similar trend in GDP growth per year from 2000 to 2020, with the exception of one outlier.
-This is the top graph which has a much higher GDP per capita than the other regions.
-This region is Hamburg (DE60), which is located in Northern Germany, which had a GDP per capita of 45,659 € in 2000, and 64,366 € in 2020.
-Hamburg is home to a diverse range of industries, including maritime trade, logistics, manufacturing, aviation, and media.
-Also, the Port of Hamburg is one of Europe's largest and busiest ports.
-
-The region with the lowest GDP per capita was Thüringen (DEG0), which is located in Northern Germany, with a GDP of 16,139 € in 2000, and 28,874 € in 2020.
-Thüringen has a relatively small and less diversified economy compared to other German states.
-It relies heavily on traditional industries such as agriculture and manufacturing, which may not contribute significantly to GDP.
-We also note that there is a significant fall in GDP per capita in 2010 for the region Mecklenburg-Vorpommern (DE80).
-
-In @fig-regional_gdp_per_year_SG we see that there is a relatively similar trend in GDP growth per year from 2000 to 2020, with the exception of three outliers.
-The first outlier is the top graph (Hamburg) which is significantly higher than the rest.
-The two other outliers are the second and third highest graphs, which are also significantly higher, however lower than Hamburg.
-These regions are Braunschweig (DE91), where we find Wolfsburg, and Bremen (DE50).
-We also note that there is a significant fall in GDP per capita in 2010 for the regions Chemnitz (DED4) and Leipzig (DED5).
-
-In Germany in 2000, GDP per capita had an average value (mean) of 25,593 €.
-The median value of 24,894 € indicates that the distribution is slightly skewed to the left, with about half of the population having values below the mean.
-The standard deviation of 5,872 € quantifies the extent of variation around the mean, suggesting a moderate level of variability in GDP per capita across the population.
-
-In 2020, GDP per capita had an average value (mean) of 39,439 €.
-The median value of 38,941 € indicates that the distribution is slightly skewed to the left, with about half of the population having values below the mean.
-The higher standard deviation of 8,267 € compared to 2000 quantifies the extent of variation around the mean, suggesting a relatively higher level of variability in economic indicators across the population in 2020.
-
-We can also observe that there is a slope in both figures from 2007 to 2009.
-This is most likely caused by the Financial Crisis (2007-2008), which caused the GDP per capita to decline.
-There is also a slope in both figures in 2019, which is most likely due to Covid-19.
-
 ## Italy
 
 The reason why we divide Italy into north and south is because it makes our ggplot more clear.
@@ -628,6 +546,107 @@ Bosnia and Herzegovia (EU candidate Countries)
 
 The reason why Bosnia and Herzegovina lacks data from 2000 - 2020 in Eurostat is explained by the fact that they did not become an EU candidate until December 2022.
 
+```{r}
+#| echo: false
+#| label: Gini coefficient
+# Grouping NUTS3 to NUTS2
+# Adding the gini coefficient to the gpd pr capita variable and weighing by population (grouped by nuts2)
+merged_data <- merged_data |> 
+  group_by(nuts2, year) |> 
+  mutate(gini_n2 = gini.wtd(GDPpcn3, Population),
+         GDPpcn2 = mean(GDPpcn3), 
+         popn2 = sum(Population),
+         GDPn2 = sum(GDP),
+         numberofregions = n_distinct(geo)
+         ) |> 
+  slice(1) |> 
+  ungroup() |> 
+  select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2, numberofregions, GDPn2, GDPpcn2, popn2) 
+  # number of regions is wrong, want to show number of nuts3 regions in a nuts2 region as a vector
+```
+
+## Germany
+
+In order to achieve a presentable figure, our analysis focuses on the NUTS2 level for Germany rather than NUTS3 due to the larger scale and has been split into North- and South Germany.
+This allows for a more comprehensive examination of regional variations, and captures a broader perspective on regional dynamics and economic disparities.
+
+The zero values present in the data occur as a result of regions that are actually defined as a region, but in reality are a foreign embassy, army base or offshore energy production with no permanent residence.
+This means they do not have any GDP per capita [@eurostat2021].
+Moreover, we assume that the zero values can also be a result of missing data report from different regions in Germany.
+
+```{r}
+#| label: fig-regional_gdp_per_year_NG
+#| echo: false
+#| cap-location: bottom
+#| fig-cap: "GDP per capita in year - Northern Germany"
+# First step is to place the location of the figure caption and name it.
+# Secondly, we filter GDP_DE_nuts2 to contain the values in Northern Germany (DEz1NORTH) from column id_nuts2.
+# Thirdly, we represent the data in GPD_DE_nuts2 by mapping them in a plot using ggplot, where the x-axis represents year and y-axis represents GPD_per_capita. Furthermore the colour is determined by id_nuts2.
+# Fourthly, we use geom_line since this gives a accurate description of our data from Germany.
+merged_data |>
+  filter(str_detect(geo, "DE30|DE40|DE50|DE60|DE80|DE91|DE92|DE93|DE94|DEA1| DEA2|DEA3|DEA4|DEA5|DEE0|DEF0|DEG0")) |> 
+  ggplot(mapping = aes(
+  x = year, 
+  y = GDPpcn2, 
+  colour = nuts2
+)) + 
+  geom_line() +
+    labs(title = "North Germany",
+       x = "Year",
+       y = "GDP per capita") 
+```
+
+```{r}
+#| label: fig-regional_gdp_per_year_SG
+#| echo: false
+#| #| cap-location: bottom
+#| fig-cap: "GDP per capita in year - Southern Germany"
+# Duplicating the same steps for Southern Germany (DEz2SOUTH) as for the Northern part. 
+# UNFINISHED SOUTH DE, DEB, DEC
+merged_data |>
+  filter(str_detect(nuts2, "DE11|DE12|DE13|DE14|DE21|DE22|DE23|DE24|DE25|DE26|DE27|DE71|DE72|DE73|DEB1|DEB2|DEB3|DEC0|DED2|DED4|DED5")) |> 
+  ggplot(mapping = aes(
+    x = year, 
+    y = GDPpcn2, 
+    colour = nuts2
+  )) + 
+  geom_line() +
+  labs(title = "South Germany",
+       x = "Year",
+       y = "GDP per capita") 
+
+
+```
+
+In @fig-regional_gdp_per_year_NG we see that there is a relatively similar trend in GDP growth per year from 2000 to 2020, with the exception of one outlier.
+This is the top graph which has a much higher GDP per capita than the other regions.
+This region is Hamburg (DE60), which is located in Northern Germany, which had a GDP per capita of 45,659 € in 2000, and 64,366 € in 2020.
+Hamburg is home to a diverse range of industries, including maritime trade, logistics, manufacturing, aviation, and media.
+Also, the Port of Hamburg is one of Europe's largest and busiest ports.
+
+The region with the lowest GDP per capita was Thüringen (DEG0), which is located in Northern Germany, with a GDP of 16,139 € in 2000, and 28,874 € in 2020.
+Thüringen has a relatively small and less diversified economy compared to other German states.
+It relies heavily on traditional industries such as agriculture and manufacturing, which may not contribute significantly to GDP.
+We also note that there is a significant fall in GDP per capita in 2010 for the region Mecklenburg-Vorpommern (DE80).
+
+In @fig-regional_gdp_per_year_SG we see that there is a relatively similar trend in GDP growth per year from 2000 to 2020, with the exception of three outliers.
+The first outlier is the top graph (Hamburg) which is significantly higher than the rest.
+The two other outliers are the second and third highest graphs, which are also significantly higher, however lower than Hamburg.
+These regions are Braunschweig (DE91), where we find Wolfsburg, and Bremen (DE50).
+We also note that there is a significant fall in GDP per capita in 2010 for the regions Chemnitz (DED4) and Leipzig (DED5).
+
+In Germany in 2000, GDP per capita had an average value (mean) of 25,593 €.
+The median value of 24,894 € indicates that the distribution is slightly skewed to the left, with about half of the population having values below the mean.
+The standard deviation of 5,872 € quantifies the extent of variation around the mean, suggesting a moderate level of variability in GDP per capita across the population.
+
+In 2020, GDP per capita had an average value (mean) of 39,439 €.
+The median value of 38,941 € indicates that the distribution is slightly skewed to the left, with about half of the population having values below the mean.
+The higher standard deviation of 8,267 € compared to 2000 quantifies the extent of variation around the mean, suggesting a relatively higher level of variability in economic indicators across the population in 2020.
+
+We can also observe that there is a slope in both figures from 2007 to 2009.
+This is most likely caused by the Financial Crisis (2007-2008), which caused the GDP per capita to decline.
+There is also a slope in both figures in 2019, which is most likely due to Covid-19.
+
 ## Part B: Regional inequity
 
 ### 1. Literature review
@@ -689,30 +708,6 @@ In societies with high Gini coefficients, a significant portion of income or wea
 The focus in this case is on a weighted Gini coefficient that considers both GDP per capita and population.
 This approach aims to capture the true Gini coefficient, considering the significance of the population variable in explaining regional inequality.
 The analysis is conducted at a NUTS2 level for various European regions, including countries such as Austria, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Germany, Italy, Serbia, and Sweden.
-
-```{r}
-#| echo: false
-#| label: Gini coefficient
-# Grouping NUTS3 to NUTS2
-# Adding the gini coefficient to the gpd pr capita variable and weighing by population (grouped by nuts2)
-merged_data <- merged_data |> 
-  filter(!is.na(Population),
-         Population != 0,
-         GDPpcn3 != 0, 
-         GDPpcn3 != "NA"
-  ) |> 
-group_by(nuts2, year) |> 
-  mutate(gini_n2 = gini.wtd(GDPpcn3, Population),
-         GDPpcn2 = mean(GDPpcn3), 
-         popn2 = sum(Population),
-         GDPn2 = sum(GDP),
-         numberofregions = n_distinct(geo)
-         ) |> 
-  slice(1) |> 
-  ungroup() |> 
-  select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2, numberofregions, GDPn2, GDPpcn2, popn2) 
-  # number of regions is wrong, want to show number of nuts3 regions in a nuts2 region as a vector
-```
 
 ### Data Presentation
 
@@ -861,21 +856,11 @@ Below is a list of all six presumptions:
     In each case, the null hypothesis is homoskedasticity and the alternative is heteroskedasticity.
     If the variance in the observations are not equal, heteroskedasticity could be present.
     This may result in incorrect standard errors that are computed for the least squares estimators, and could lead to incorrect conclusions.
-    In order to check for heteroskedasticity, we utilize the Breusch-Pagan test.
+    In order to check for heteroskedasticity, we utilize the Breusch-Pagan test, **see appendix model X**
 
 6.  Normality: In the context of ordinary least squares (OLS) assumptions, the normality criteria demands that the error term adheres to a normal distribution with an expected value of zero.
     This implies that the discrepancies between observed and predicted values, known as residuals, should have a mean of zero, ensuring a homoskedasticity error term.
     However, it is imperative to note that the failure of the error term to equal zero implies a departure from normality in the population error term within the dataset, thus rendering the normality assumption unfulfilled.
-
-```{r}
-#| echo: false
-# Test for heteroskedasticity 
-# The test statistic is 4.0861 and the corresponding p-value is x Since the p-value is not less than 0.05, we fail to reject the null hypothesis. We do not have sufficient evidence to say that heteroscedasticity is present in the regression model.
-
-#bptest(partaDE)$p.value
-#bptest(partaIT)$p.value
-#bptest(partaSE)$p.value
-```
 
 ## Visualization
 
@@ -1229,32 +1214,6 @@ The alternative model present enhanced explanatory power, capturing potential no
 
 ## Part C: Heteroskedasticity testing and causality discussion
 
-```{r}
-#| echo: false
-#| output: false
-
-# Testing for heteroskedasticity in the original models, logarithmic models and quadratic models.
-
-# Original models
-bp_pvalues <- c(
-  bpDE = bptest(partaDE)$p.value,
-  bpIT = bptest(partaIT)$p.value,
-  bpSE = bptest(partaSE)$p.value,
-  #logarithmic models
-  bplogDE = bptest(lmlogDE)$p.value,
-  bplogIT = bptest(lmlogIT)$p.value,
-  bplogSE = bptest(lmlogSE)$p.value,
-  #Quadratic models
-  bpquadDE = bptest(lmquadDE)$p.value,
-  bpquadIT = bptest(lmquadIT)$p.value,
-  bpquadSE = bptest(lmquadSE)$p.value
-)
-```
-
-```{r}
-#huxreg("Original model" = bpDE, bpIT, bpSE)!spørsmål til arnstæin!!!
-```
-
 ### 1. Heteroskedasticity testing
 
 In the original model, the extremely low p-value suggests evidence of heteroskedasticity for both Germany (DE) and Italy (IT).
@@ -1357,6 +1316,32 @@ The statistical tests (statistic) indicate overall model significance.
 Model (4) has the highest statistic, suggesting that the predictors collectively have a significant effect on the dependent variable.
 
 # Appendix
+
+## BPpvalues
+
+```{r}
+#| echo: false
+
+# Testing for heteroskedasticity in the original models, logarithmic models and quadratic models.
+
+# Original models
+bp_pvalues <- c(
+  bpDE = bptest(partaDE)$p.value,
+  bpIT = bptest(partaIT)$p.value,
+  bpSE = bptest(partaSE)$p.value,
+  #logarithmic models
+  bplogDE = bptest(lmlogDE)$p.value,
+  bplogIT = bptest(lmlogIT)$p.value,
+  bplogSE = bptest(lmlogSE)$p.value,
+  #Quadratic models
+  bpquadDE = bptest(lmquadDE)$p.value,
+  bpquadIT = bptest(lmquadIT)$p.value,
+  bpquadSE = bptest(lmquadSE)$p.value
+)
+print(bp_pvalues)
+```
+
+bp = Original models, log = logarithmic models, quad = quadratic models.
 
 ## Residuals:
 
