@@ -1235,12 +1235,7 @@ To address heteroskedasticity, one strategy is to use robust standard errors or 
 Additionally, exploring other functional forms or including relevant predictors may help address the issue.
 Reflecting on the causal interpretation, it's essential to acknowledge that heteroskedasticity doesn't necessarily invalidate causal relationships but emphasizes the importance of addressing statistical assumptions for more reliable inference.
 
-1.  Homoskedasticity: To fulfill the OLS assumptions, variance in the observations needs to be equal, known as homoskedasticity.
-    There are many tests for heteroskedasticity.
-    In each case, the null hypothesis is homoskedasticity and the alternative is heteroskedasticity.
-    If the variance in the observations are not equal, heteroskedasticity could be present.
-    This may result in incorrect standard errors that are computed for the least squares estimators, and could lead to incorrect conclusions.
-    In order to check for heteroskedasticity, we utilize the Breusch-Pagan test, **see appendix model X**
+1.  Homoskedasticity: To fulfill the OLS assumptions, variance in the observations needs to be equal, known as homoskedasticity. There are many tests for heteroskedasticity. In each case, the null hypothesis is homoskedasticity and the alternative is heteroskedasticity. If the variance in the observations are not equal, heteroskedasticity could be present. This may result in incorrect standard errors that are computed for the least squares estimators, and could lead to incorrect conclusions. In order to check for heteroskedasticity, we utilize the Breusch-Pagan test, **see appendix model X**
 
 ## Part D: Panel estimates
 
@@ -1315,6 +1310,50 @@ This gives us a better estimate on our variables.
 This means that specific time constant factors and fixed effects are accounted for.
 
 ### 3. Panel estimation discussion
+
+The coefficients for GDPpcn2 and log(GDPpcn2) are statistically significant in Models (1), (3), and (4), indicating a potential association with the dependent variable.
+However, the lack of significance in Model (2) for both variables raises questions about their contribution in that specification.
+Examining effect sizes, the negative and substantial magnitudes of log(GDPpcn2) in Models (1), (3), and (4) suggest a meaningful impact on the dependent variable.
+The negative coefficient for GDPpcn2 in Model (1) is also noteworthy.
+Adjusted R-squared values are negative in Models (1) and (2), which is unusual and suggests potential overfitting or model misspecification.
+The statistical tests (statistic) indicate overall model significance.
+Model (4) has the highest statistic, suggesting that the predictors collectively have a significant effect on the dependent variable.
+
+XXXXXXX
+
+2\.
+Panel Estimation Analysis
+
+GDPpcn2:
+
+Models 2 and 3 exhibit a significant effect, indicating the influence of time and regional fixed effects on the relationship.
+Model 1 reveals a significant negative effect, suggesting that increased regional development reduces regional inequality (p \< 0.001).
+Model 4 demonstrates a significant positive effect, indicating that, considering both country and time fixed effects, increased regional development increases regional inequality (p \< 0.001).
+
+log(GDPpcn2):
+
+In Model 1, a significant positive effect suggests a positive association between the logarithm of GDP per capita and regional inequality (p \< 0.001).
+Model 2 reveals a significant negative effect, suggesting a negative association when considering only time fixed effects (p \< 0.05).
+Model 3 indicates a significant negative effect, suggesting a negative association when considering only regional fixed effects (p \< 0.01).
+Model 4 demonstrates a significant negative effect, indicating a negative association when considering both country and time fixed effects (p \< 0.001).
+
+Comparison of Fixed Effects Models:
+
+Model 1 contains Country Fixed Effects.
+The positive GDPpcn2 coefficient suggests increased regional development reduces regional inequality.
+The negative log(GDPpcn2) coefficient suggests an increase in GDP per capita positively correlates with regional inequality.
+
+Models 2 and 3 contain Time and Regional Fixed Effects.
+There is no significant effect of GDPpcn2, while the negative log(GDPpcn2) coefficients suggest a negative association with regional inequality.
+
+Model 4 contains both Country and Time Fixed Effects.
+The positive GDPpcn2 coefficient suggests increased regional development increases regional inequality, while the negative log(GDPpcn2) coefficient suggests a negative association with regional inequality.
+
+By using panel data estimates, constants that might affect our estimates are removed, leveraging time data as these effects become obsolete.
+This provides a better estimate on our variables, accounting for specific time-constant factors and fixed effects.
+
+3\.
+Panel Estimation Discussion
 
 The coefficients for GDPpcn2 and log(GDPpcn2) are statistically significant in Models (1), (3), and (4), indicating a potential association with the dependent variable.
 However, the lack of significance in Model (2) for both variables raises questions about their contribution in that specification.
