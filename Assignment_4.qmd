@@ -1,0 +1,217 @@
+---
+title: "Assignment 4"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| output: false
+#| message: false
+#| echo: false
+library(eurostat)
+library(dineq)
+library(readr)
+library(tidyverse)
+library(stringr)
+library(huxtable)
+library(vtable)
+library(ggplotify)
+library(grid)
+library(dplyr)
+library(gridExtra)
+library(ggplot2)
+library(broom)
+library(lmtest)
+library(plm)
+```
+
+```{r, show_col_types = FALSE}
+#| echo: FALSE
+#| output: FALSE
+#| label: Datasets and variable mutations
+# Loading datasets
+# Country code list: "IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
+# 
+nama_10r_3gdp_linear_csv <- read_csv("nama_10r_3gdp_linear.csv.gz", 
+    na = "NA")
+demo_r_pjanaggr3_linear_csv <- read_csv("demo_r_pjanaggr3_linear.csv.gz", 
+    na = "NA")
+roads <- read_csv("roads.gz")
+educ <- read_csv("educ.gz")
+aream2 <- read_csv("aream2.gz")
+
+# Subset of countries from 2000 to 2020
+# Filtering geo = 5 to only get NUTS3 level data
+gdp_filtered <- nama_10r_3gdp_linear_csv |> 
+  filter(
+    nchar(geo) == 5, 
+    unit == "MIO_EUR", 
+      TIME_PERIOD %in% c(2000:2020),
+    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
+    ) |> 
+  select(
+    year = TIME_PERIOD, 
+    geo, GDP = OBS_VALUE
+    ) 
+
+# Filtering population demo for nuts3 countries and years
+# Filtering sex = T to only get the total of both genders
+# Filtering age = TOTAL.
+pop <- demo_r_pjanaggr3_linear_csv |> 
+    filter(
+      nchar(geo) == 5,
+      sex == "T",
+      age == "TOTAL",
+      TIME_PERIOD %in% c(2000:2020), 
+    str_sub(geo, start = 1L, end = 2L) %in% c("IT", "SE", "BE", "AT", "HR", "RS", "BA", "BG", "DE")
+    ) |> 
+  select(
+    year = TIME_PERIOD, 
+    geo, Population = OBS_VALUE
+    ) 
+
+# Merging the two datasets
+merged_data <- merge(gdp_filtered, pop, by = "geo") |> 
+  select(
+    -year.y,
+    Year = year.x,)
+
+# merging the two datasets from eurostat and removing NA and zero values
+merged_data <- merge(gdp_filtered, pop, by = c("geo","year"), all = TRUE) |> 
+filter(!is.na(Population),
+         Population != 0,
+         GDP != 0, 
+         GDP != "NA"
+)
+# Generating the GDP per capita variable
+merged_data <- merged_data |> 
+  mutate(
+    GDPpcn3 = GDP / Population
+  )
+# Adding GDP variable by deviding gdp on population
+merged_data <- merged_data |> 
+  mutate(GDPpcn3 = (GDP / Population)*1000000)
+
+# Calculating GINI in nuts3 data for nuts2 regions to measure inequity on a nuts2 scale
+merged_data <- merged_data |> 
+ mutate(
+    nuts2 = substr(geo, 1,4),
+    nuts0 = substr(geo, 1,2)
+ )
+
+# Cleaning the road dataset by removing irrelevant data and NA values
+roads <- roads |> 
+  select(
+    nuts2 = geo, Roadkm = OBS_VALUE, year = TIME_PERIOD
+  ) 
+roads <- roads |>
+  filter(
+    !is.na(Roadkm),
+    Roadkm != 0
+  ) 
+# Cleaning education dataset renaming variables
+educ <- educ |> 
+  filter(sex == "T") |> 
+  select(
+    nuts2 = geo, age, year = TIME_PERIOD, education = OBS_VALUE, level = isced11
+  ) |> 
+  filter(nuts2 != "NA", age != "NA", year != "NA", education != "NA")
+  
+# We are only looking for data for College education (ED5-8) and we devide education by 100 to get the percentages on percentage form.
+educ <- educ |> 
+  mutate(
+    education = education/100
+  ) |> 
+  filter(level == "ED5-8") 
+
+# Aream2 refers to the dataset containing area data for each nuts3 region measured in squared kilometres
+aream2 <- aream2 |>
+    mutate(
+    year2 = 2010
+  ) |> 
+   select(
+    nuts2 = geo, year = year2, area = OBS_VALUE
+  ) 
+# We noticed the dataset contained age groups, and two of those groups contained much of the same data: age 25-34 and 30-34. This created issues as some of these observations would be counted twice. We therefore decied to remove the group 30-34.
+educ <- educ |> 
+  filter(
+    !age %in% "Y30-34"
+  ) |> 
+  mutate(
+     nuts2 = substr(nuts2, 1,4),
+  ) |> 
+  group_by(nuts2) |> 
+  mutate(
+    sumeduc = sum(education, na.rm = TRUE)
+  ) |> 
+    slice(1) |> 
+    ungroup() |> 
+  select(-age)
+
+merged_data <- merged_data |> 
+  filter(!is.na(Population),
+         Population != 0,
+         GDPpcn3 != 0, 
+         GDPpcn3 != "NA"
+  ) |> 
+  mutate(
+         GDPpcn2 = mean(GDPpcn3), 
+         popn2 = sum(Population),
+         GDPn2 = sum(GDP),
+         numberofregions = n_distinct(geo)
+         ) 
+ # select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2, numberofregions, GDPn2, GDPpcn2, popn2) 
+
+
+```
+
+# Introduction
+
+Bakgrunn:
+
+Objectives; Outline the main objectives and research questions addressed in Assignments 1, 2, and 3.
+
+**Significance:** Highlight the importance and relevance of the research undertaken.
+
+# Literature Review
+
+Tidligere arbeid!!
+oppsummer hovedlitteraturen til reginal devolopment og inequality
+
+Research gap!
+Nytt arbeid
+
+# Data and Methodology
+
+**Data Sources:** Briefly describe the primary data sources used in the previous assignments, noting any limitations.
+
+**Methodological Approach:** Summarize the methodologies applied in Assignments 1, 2, and 3, highlighting the rationale behind choosing each method.
+
+# Empirical Findings
+
+**Cross-sectional Estimates:** Summarize essential results obtained from the cross-sectional analysis in Assignment 2.
+
+**Alternative Functional Forms and Panel Estimates:** Present the key insights derived from exploring alternative functional forms and panel estimates in Assignment 3.
+
+# Discussion
+
+**Key Insights:** Synthesize and discuss the central insights emerging from the empirical findings.
+
+**Policy Implications:** Deliberate on the potential implications of your results for policy-making and practice in the realm of regional development and inequality.
+
+# Limitations and Future Research
+
+**Research Limitations:** Acknowledge any constraints or limitations encountered during your analysis.
+
+# Conclusion
+
+**Summary:** Provide a succinct summary of the main findings and their significance.
+
+**Final Reflection:** Briefly reflect on the research process and the contributions of your study to the field of regional development and inequality.
+
+# References
+
+```{r}
+
+```
