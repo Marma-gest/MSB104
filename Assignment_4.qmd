@@ -182,8 +182,6 @@ Vi ser på Tyskland og Italia pga de har ulik økonomi & industri.
 
 # Literature Review
 
-### 1. Literature review
-
 Regional inequality shows variation in regional GDP per capita, and according to @lessmann2017, regional inequality occurs when one region experiences different assumptions than other regions.
 Moreover, when the level of economic development is high, there is significant regional inequality [@lessmann2017].
 According to @williamson1965, one crucial difference that leads to regional inequality is the access to natural resources.
@@ -218,7 +216,7 @@ Vi ser på videre utvikling frem til 2020 ettersom denne littraturen slutter i 2
 
 **Data Sources:** Briefly describe the primary data sources used in the previous assignments, noting any limitations.
 
-### 1. Data acquisition
+### Data acquisition
 
 By using Eurostat, we have downloaded data containing GDP and population for each country in the EU from year 1990 to 2023.
 However, we are only interested in the following countries from 2000 to 2020:
@@ -235,30 +233,22 @@ However, we are only interested in the following countries from 2000 to 2020:
 
 ## Description
 
-The first dataset we downloaded from Eurostat was **demo_r_pjanaggr3,** which contains population data from Europe.
-In our case, we have selected population data from Sweden, Italy, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Germany.
-According to @eurostat2021, the dataset of demography is a set of statistical numbers each country in Europe sends yearly to Eurostat by 31 December of the following calendar year.
-Furthermore, the definition of "population" is, according to @eurostat2021, all persons having their residences in a member state, including all live births and deaths during the year when the statistical numbers are heading to Eurostat.
-Moreover, the demographic data at a regional level are separated into different groups named NUTS, which are defined as nomenclature for territorial units for statistics [@eurostat2021].
-The purpose of the NUTS function is to subdivide the territory of the European Union into 104 regions at NUTS level 1 and break it down by to 281 at NUTS level 2 and 1348 at NUTS level 3 [@eurostat2021].
-In the beginning of this paper, we have focused on the numbers of NUTS 3 level, but the dataset containing population data has been broken down by sex and broad age groups (0-14, 15-64 and 65 or more).
+*The first dataset we downloaded from Eurostat was **demo_r_pjanaggr3,** which contains population data from Europe. In our case, we have selected population data from Sweden, Italy, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Germany. According to @eurostat2021, the dataset of demography is a set of statistical numbers each country in Europe sends yearly to Eurostat by 31 December of the following calendar year. Furthermore, the definition of "population" is, according to @eurostat2021, all persons having their residences in a member state, including all live births and deaths during the year when the statistical numbers are heading to Eurostat. Moreover, the demographic data at a regional level are separated into different groups named NUTS, which are defined as nomenclature for territorial units for statistics [@eurostat2021]. The purpose of the NUTS function is to subdivide the territory of the European Union into 104 regions at NUTS level 1 and break it down by to 281 at NUTS level 2 and 1348 at NUTS level 3 [@eurostat2021]. In the beginning of this paper, we have focused on the numbers of NUTS 3 level, but the dataset containing population data has been broken down by sex and broad age groups (0-14, 15-64 and 65 or more).*
 
-The following dataset we downloaded from Eurostat was the **nama_10r_3gdp dataset**.
-Furthermore, this dataset is also broken down to NUTS level 3 which focus on GDP data from the sub-regions in Sweden, Italy, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Germany.
-According to @eurostat2023, GDP (Gross domsetsic product) at market prices is defined as the final result of the production activity of resident producer units [@eurostat2023].
+*The following dataset we downloaded from Eurostat was the **nama_10r_3gdp dataset**. Furthermore, this dataset is also broken down to NUTS level 3 which focus on GDP data from the sub-regions in Sweden, Italy, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Germany. According to @eurostat2023, GDP (Gross domsetsic product) at market prices is defined as the final result of the production activity of resident producer units [@eurostat2023].*
 
 ### 3. Descriptive analysis
 
 ```{r}
 #Legg til alle landene i denne summery tabbelen
-##| echo: FALSE
-##| tbl-cap: Summary_Austria
+#| echo: FALSE
+#| tbl-cap: Summary_All_Countries
 # Generates descriptive statistics for variables in plot for AT
 
-#merged_data |> 
-  #filter(str_detect(geo,"AT")) |> 
-  #select(-1,-year) |> 
-  #st("GDPpcn3", add.median = TRUE)
+merged_data |> 
+  filter(str_detect(geo,"AT")) |> 
+  select(-1,-year) |> 
+  st("GDPpcn3", add.median = TRUE)
 
 
 ```
@@ -370,7 +360,6 @@ The basis for this theory is that an increase of ten thousand euros (one percent
 There comes a point where an increase in GDP per capita will have a greater impact on those with a small GDP per capita, versus those with a larger GDP per capita.
 The reason for this is because the effect of the increase in GDP per capita hits those with larger GDP per capita different than those with a smaller GDP per capita.
 
-
 Skriv i dette avsnittet at orginalmodellen passer dårlig, og at logaritmic blir "hovedmodellen" vår.
 vis orginal mot logaritmic i en facet i appendix
 
@@ -394,6 +383,8 @@ By employing the year 2010 as a focal point and augmenting our models with these
 
 ## Exploring alternative functional forms
 
+Ser igjen vekk fra 2010 og bruker andre metoder
+
 ### 1. Functional form exploration
 
 *By exploring different functional forms, we are able to determine the best functional form for our estimates by looking at descriptive statistics to justify our selections. We found no significant difference by including a cubic function, and thus, concluded to utilize a logarithmic function as well as a quadratic model.*
@@ -407,7 +398,18 @@ $$ Inequality_i = ß_0 + ß_1(logDevelopment)^2 $$
 
 We believe that the regional development in a quadratic model will have a concave shape as we believe that an increase in GDP per capita will have a increased effect on inequality but a decreased effect as the number increases.
 
-## Qubic
+## Cubic
+
+Cubic forms accommodate more complex non-linear relationships, capturing patterns where the impact of development on inequality changes direction multiple times.
+
+The instruction asks you to explore these forms and select two that may provide a better fit.
+This typically involves estimating each model, assessing goodness-of-fit measures, and comparing the models to determine which ones better capture the underlying relationship in your data.
+
+$$ Inequality_i = ß_0 + ß_1(logDevelopment)^3 $$
+
+We believe that the regional development in a Cubic model will have a concave shape as we believe that an increase in GDP per capita will have a increased effect on inequality but a decreased effect as the number increases.
+
+Teori: at stiger/avtar/stiger
 
 Skriv om at vi brukte logaritmic, quadratic + vi må tilføre quic som metode.
 Dette gjøres for å se hvilke metode som er "Best fit" og begrunn valg for de ulike metodene.
@@ -460,12 +462,12 @@ Hovedmodell;
 ```{r}
 #| echo: FALSE
 #| tbl-cap: The effect of regional development on inequality
-#| label: original_models
+#| label: Parta
 # Fit the three models
 partaDE <- lm(gini_n2 ~ log(GDPpcn2), data = subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
 partaIT <- lm(gini_n2 ~ log(GDPpcn2), data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
-huxreg(DE = partaDE, IT = partaIT, statistics = c("nobs", "r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg(DE = partaDE, IT = partaIT, statistics = c("Number of observations" = "nobs", "r.squared","adj.r.squared", "statistic", "P-value F-test" = "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -677,18 +679,18 @@ huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, statistics = c("Number 
        note = "Note): {stars} T statistics in brackets.")
 ```
 
-### Qubic;
+### Cubic;
 
 ```{r}
 #| echo: FALSE
 #| tbl-cap: The effect of log squared regional development on inequality
-lmqubicDE <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+lmCubicDE <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
 
-lmqubicIT <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+lmCubicIT <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
 #Tar denne vekk fordi vi ikke skal legge til sverige før i panel#lmquadSE <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg("Model 1 DE" = lmqubicDE, "Model 1 IT" = lmqubicIT, statistics = c("Number of obervations" = "nobs","r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
+huxreg("Model 1 DE" = lmCubicDE, "Model 1 IT" = lmCubicIT, statistics = c("Number of obervations" = "nobs","r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -734,7 +736,7 @@ merged_data |>
       x = logGDPpcn2,
       y = gini_n2
     )
-  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1) 
+  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,3), se = F, span = 1) 
 ```
 
 The relationship between regional inequality and regional development in Italy illustrates a different relationship than Germany.
@@ -755,26 +757,12 @@ group_by(nuts2, year) |>
   slice(1) |> 
   ungroup() |> 
   select(nuts0, nuts2, geo, year, gini_n2, GDPpcn2, logGDPpcn2, logGDPpcn2quad, logGDPpcn2cubic, numberofregions) |> 
-  filter(nuts0 == c("DE", "IT", "SE"))
-#HUSK Å LEGG TIL FLERE LAND!! leg også til qubic?
+  filter(nuts0 == c("DE", "IT", "SE", "AT", "BE", "BG"))
+
 ```
 
 Her er panelet vårt, rart med negativ r adjusted??
 bare bruk vanlig r hilsen Andre!
-
-```{r}
-#| echo: FALSE
-#| tbl-cap: The effect of regional development on inequality
-#| label: original_models
-# Fit the three models
-partaDE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
-partaIT <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
-partaSE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
-
-huxreg(DE = partaDE, IT = partaIT, SE = partaSE, statistics = c("nobs", "r.squared","adj.r.squared", "statistic", "p.value"), 
-       stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
-       note = "Note): {stars} T statistics in brackets.")
-```
 
 ```{r}
 #| echo: false
@@ -791,7 +779,7 @@ plm3 <- plm(gini_n2 ~ log(GDPpcn2) + logGDPpcn2quad + logGDPpcn2cubic, data = pm
 
 plm4 <- plm(gini_n2 ~ log(GDPpcn2) + logGDPpcn2quad + logGDPpcn2cubic, data = pmerged, index = c( "year","nuts2"), model = "within",effect = "twoway") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
-huxreg(plm1, plm2, plm3, plm4, statistics = c("nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg(plm1, plm2, plm3, plm4, statistics = c("Number of observations" = "nobs","r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -838,15 +826,15 @@ observasjoner ikke har like mye å si lengre, og forklar hvorfor dette ikke har 
 bp_pvalues <- c(
   bpDE = bptest(partaDE)$p.value,
   bpIT = bptest(partaIT)$p.value,
-  bpSE = bptest(partaSE)$p.value,
+  
   #logarithmic models
   bplogDE = bptest(lmlogDE)$p.value,
   bplogIT = bptest(lmlogIT)$p.value,
-  bplogSE = bptest(lmlogSE)$p.value,
+  
   #Quadratic models
   bpquadDE = bptest(lmquadDE)$p.value,
-  bpquadIT = bptest(lmquadIT)$p.value,
-  bpquadSE = bptest(lmquadSE)$p.value
+  bpquadIT = bptest(lmquadIT)$p.value
+  
 )
 print(bp_pvalues)
 ```
