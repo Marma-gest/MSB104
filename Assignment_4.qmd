@@ -247,7 +247,31 @@ The following dataset we downloaded from Eurostat was the **nama_10r_3gdp datase
 Furthermore, this dataset is also broken down to NUTS level 3 which focus on GDP data from the sub-regions in Sweden, Italy, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Germany.
 According to @eurostat2023, GDP (Gross domsetsic product) at market prices is defined as the final result of the production activity of resident producer units [@eurostat2023].
 
-### 2. GDP per capita calculation
+### 3. Descriptive analysis
+
+```{r}
+#Legg til alle landene i denne summery tabbelen
+##| echo: FALSE
+##| tbl-cap: Summary_Austria
+# Generates descriptive statistics for variables in plot for AT
+
+#merged_data |> 
+  #filter(str_detect(geo,"AT")) |> 
+  #select(-1,-year) |> 
+  #st("GDPpcn3", add.median = TRUE)
+
+
+```
+
+**Skriv ut i fra denne tabellen som argument for hvilke land vi tar med oss videre!! "kommenter begrensninger; 0 verdier, eu kandidat og når land ble eu kandidat.**
+
+**Methodological Approach:** Summarize the methodologies applied in Assignments 1, 2, and 3, highlighting the rationale behind choosing each method.
+
+De ulike metodene er;
+
+Assigment 1 brukte vi gdp mot gini
+
+### 2. GDP per capita calculation (metode 1)
 
 In order to visualize the GDP per capita, we have merged the two datasets together and added a new variable that executes this formula in order to generate the GDP per capita for every country.
 
@@ -261,54 +285,194 @@ This is described by Eurostat to be "a measure of economic activity, defined as 
 How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes" @eurostat2023.
 To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth" @eurostat2023.
 
-### 3. Descriptive analysis
+### 2. Gini coefficient calculation
+
+The Gini coefficient is a measure of economic inequality within a population, and it is used to assess the distribution of income or wealth among individuals or households.
+The formula below is used for the population-weighted Gini coefficient for GDP at the NUTS2 level in various European regions.
+
+$GINW_j=\frac{1}{2 \bar{y_j}} \sum_{i}^{n_j}\sum_{l}^{n_j}\frac{p_i}{P_j} \frac{p_l}{P_j} |y_i-y_l|$
+
+The Gini coefficient is calculated by summing the absolute differences in GDP per capita between all pairs of sub-regions, weighted by the products of their populations and the total population.
+The components of the formula consist of the following:
+
+-   $GINIW_j$: Represents the population-weighted Gini coefficient for a specific region or country (indexed by ($j$).
+
+-   $y̅j$: This is the avarage GDP per capita in the region or country $j$.
+
+-   $n_j$: The number of observations (sub-regions) in the region $j$.
+
+-   $i,l$: Indices for individual observations (sub-regions) within the region or country $j$.
+
+-   $p_i, p_l$: The poppulations of sub-regions $i$ and $l$ within the region or country $j$.
+
+-   $P_j$: The total population of the region or country $j$.
+
+-   $y_i, y_l$: The GDP per capita of sub-regions $i$ and $l$ within the region or country $j$.
+
+    The Gini coefficient is calculated by summing the absolute differences in GDP per caita between pairs of sub-regions $(i, l)$, weighted by the products of their populations $(P_j)$.
+    The result is normalized by twice the avarage GDP per capita $(2y̅_j)$.
+
+A Gini coefficient close to 0 suggests a more equal distribution of income or wealth among the population.
+Societies with low Gini coefficients generally exhibit less economic inequality, with resources more evenly distributed and a larger middle class.
+Conversely, a Gini coefficient close to 1 indicates high income or wealth inequality.
+In societies with high Gini coefficients, a significant portion of income or wealth is concentrated among a small percentage of the population, leading to pronounced disparities
+
+The focus in this case is on a weighted Gini coefficient that considers both GDP per capita and population.
+This approach aims to capture the true Gini coefficient, considering the significance of the population variable in explaining regional inequality.
+The analysis is conducted at a NUTS2 level for various European regions, including countries such as Austria, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Germany, Italy, Serbia, and Sweden.
+
+### 
 
 ```{r}
-#Legg til alle landene i denne summery tabbelen
-#| echo: FALSE
-#| tbl-cap: Summary_Austria
-# Generates descriptive statistics for variables in plot for AT
-
-merged_data |> 
-  filter(str_detect(geo,"AT")) |> 
-  select(-1,-year) |> 
-  st("GDPpcn3", add.median = TRUE)
-
-
+#| echo: false
+#| label: Gini coefficient
+# Grouping NUTS3 to NUTS2
+# Adding the gini coefficient to the gpd pr capita variable and weighing by population (grouped by nuts2)
+merged_data <- merged_data |> 
+  group_by(nuts2, year) |> 
+  mutate(gini_n2 = gini.wtd(GDPpcn3, Population),
+         GDPpcn2 = mean(GDPpcn3), 
+         popn2 = sum(Population),
+         GDPn2 = sum(GDP),
+         numberofregions = n_distinct(geo)
+         ) |> 
+  slice(1) |> 
+  ungroup() |> 
+  select(nuts0, nuts2, geo, year, GDP, Population, GDPpcn3, gini_n2, numberofregions, GDPn2, GDPpcn2, popn2) 
+  # number of regions is wrong, want to show number of nuts3 regions in a nuts2 region as a vector
 ```
 
-**Skriv ut i fra denne tabellen som argument for hvilke land vi tar med oss videre!!**
+## Original modell
 
-**Methodological Approach:** Summarize the methodologies applied in Assignments 1, 2, and 3, highlighting the rationale behind choosing each method.
+In this part we want to estimate a simple linear regression model for the year 2010, with regional development, measured in GDP per capita, as the independent variable and regional inequality, measured in Gini, as the dependent variable.
+This is because we want to see the impact a change in the regional development will have on inequity in a given country.
 
-De ulike metodene er;
+Lessmann and Seidel discuss that the national development level can be an outcome of regional inequalities.
+Our aim is to showcase this with regional development (GDP per capita​) as the independent variable and regional inequality (gini_n2) as the dependent variable.
 
-Assigment 1 brukte vi gdp mot gini
+Our aim is to explain the regional inequalities with regional development as the explanatory variable.
+This brings forward the following expression:
+
+$$ Gini = ß_0 + ß_1GDPpcn2 $$
+
+*"Existing studies have shown a serious bias towards middle -- and high -income countries entire population"* [@lessmann2017].
+We therefore use the level of economic development measured as log by the GDP pr capita measured in euros in million\`s.
+The reason why we use GDP per capita on a regional level is because the of GDP pr capita and GDP has a different meaning.
+GDP measure a country as a hole, where the GDP per capita is measuring the productivity of the population.
+
+We will reduce bias by looking at country's entire populations through the GDP per capita of Italy and Germany.
+The reason we choose the selected countries is because they are the largest and have the most observations, which reduces potential bias.
+
+*Theory:*
+
+An increase in GDP per capita will lead to a decrease in the Gini coefficient (regional inequity).
+The basis for this theory is that an increase of ten thousand euros (one percent of one million) in GDP per capita will have a greater effect on the regions that stand out.
+There comes a point where an increase in GDP per capita will have a greater impact on those with a small GDP per capita, versus those with a larger GDP per capita.
+The reason for this is because the effect of the increase in GDP per capita hits those with larger GDP per capita different than those with a smaller GDP per capita.
+
+
+Skriv i dette avsnittet at orginalmodellen passer dårlig, og at logaritmic blir "hovedmodellen" vår.
+vis orginal mot logaritmic i en facet i appendix
+
+## Logaritmic - Flett denne sammen med orginalmodellen
+
+Using a logarithmic model creates a asymptotic behavior for the regression line.
+The non linear relationship between regional inequality and regional development will either go towards full inequality, or towards zero inequality, but will never completely reach the maximum or minimum (1 or 0).
+In order to calculate this, we use the following formula:
+
+$$ Inequality_i = ß_0 + ß_1 log(Development_i) + ε_i $$
+
+## 
+
+## Cross - sectional estimates: motorvei og utdanning
+
+In our analysis, we focus on a specific year, 2010, to conduct cross-sectional estimates for the countries of Italy and Germany.
+This targeted approach allows us to capture a snapshot of the socio-economic landscape during that particular period and explore the dynamics influencing inequality within these nations.
+To delve deeper into the drivers of inequality, we introduce additional variables such as education (educ) and regional area, aiming to discern their potential impact on the relationship between a percentage increase in GDP per capita and inequality.
+The inclusion of education as a variable provides insights into the role of human capital in shaping regional disparities, while accounting for regional area allows us to consider geographical factors that might contribute to varying levels of inequality.
+By employing the year 2010 as a focal point and augmenting our models with these pertinent variables, we seek to unravel the nuanced interplay between economic development, education, and spatial dimensions in shaping inequality trends within the regions of Italy and Germany.
+
+## Exploring alternative functional forms
+
+### 1. Functional form exploration
+
+*By exploring different functional forms, we are able to determine the best functional form for our estimates by looking at descriptive statistics to justify our selections. We found no significant difference by including a cubic function, and thus, concluded to utilize a logarithmic function as well as a quadratic model.*
+
+## Quadratic
+
+Using a quadratic model shows the non linear relationship between regional inequality and regional development with either a U-shaped line, or a inverted u-shaped line.
+In order to calculate this, we use the following formula:
+
+$$ Inequality_i = ß_0 + ß_1(logDevelopment)^2 $$
+
+We believe that the regional development in a quadratic model will have a concave shape as we believe that an increase in GDP per capita will have a increased effect on inequality but a decreased effect as the number increases.
+
+## Qubic
 
 Skriv om at vi brukte logaritmic, quadratic + vi må tilføre quic som metode.
 Dette gjøres for å se hvilke metode som er "Best fit" og begrunn valg for de ulike metodene.
 
+## Fixed Effects
+
+Til slutt skal vi bruke en metode som går ut på å se på fixed effekts gjennom et panel, hvor de ulike fixed effectsene er; Nuts 0, Nuts2, year og nuts 2 og year sammen
+
+In our panel data analysis, we adopt a robust methodology by incorporating fixed effects to mitigate potential sources of bias and better capture the underlying dynamics of our data.
+Specifically, we include NUTS 0 (country-level), NUTS 2 (sub-regional), and year fixed effects in our models.
+The inclusion of NUTS 0 fixed effects allows us to account for country-specific heterogeneity, capturing unobserved factors that might influence the relationship under investigation.
+Additionally, NUTS 2 fixed effects enable us to control for sub-regional variations, offering insights into localized patterns.
+Furthermore, by incorporating year fixed effects, we address temporal trends and time-specific factors that may impact our dependent variable.
+To delve deeper into the nuanced interplay between sub-regional dynamics and temporal effects, we extend our analysis by combining NUTS 2 and year as joint fixed effects.
+This comprehensive approach ensures a thorough exploration of the intricate relationships within our panel dataset, enhancing the robustness and reliability of our findings.
+
+### **Classical assumptions OLS for MLR**
+
+There are underlying assumptions in statistical analysis like ordinary least squares regression (OLS).
+OLS yields the best estimates when these conventional presumptions hold true.
+OLS regression is based on six traditional assumptions.
+Our models are unbiased if the first four conditions are met.
+Below is a list of all six presumptions:
+
+1.  Linearity: There must be a linear relationship between the dependent variable (regional GINI) and independent variable (GDP per capita).
+    We can read from the two scatterplots below, @fig-scatterplot-RL-DE and @fig-scatterplot-RL-IT, that the relationship for both Germany and Italy seems to be linear, with only some few outliers.
+
+2.  Sample variation: We can also see from @fig-scatterplot-RL-DE and @fig-scatterplot-RL-IT that there is variation in the independent variable (GDP per capita).
+
+3.  Random sampling: There is no random sampling of the population as we are looking at the entire population.
+
+4.  Exogeneity: As inequality is closely related to the development of a country as undeveloped countries typically have higher levels of inequality, there is likely concerns of endogenity.
+    This means that there is likely a correlation between the dependent and independent variable.
+
+5.  Homoskedasticity: To fulfill the OLS assumptions, variance in the observations needs to be equal, known as homoskedasticity.
+    There are many tests for heteroskedasticity.
+    In each case, the null hypothesis is homoskedasticity and the alternative is heteroskedasticity.
+    If the variance in the observations are not equal, heteroskedasticity could be present.
+    This may result in incorrect standard errors that are computed for the least squares estimators, and could lead to incorrect conclusions.
+    In order to check for heteroskedasticity, we utilize the Breusch-Pagan test, **see appendix model X**
+
+6.  Normality: In the context of ordinary least squares (OLS) assumptions, the normality criteria demands that the error term adheres to a normal distribution with an expected value of zero.
+    This implies that the discrepancies between observed and predicted values, known as residuals, should have a mean of zero, ensuring a homoskedasticity error term.
+    However, it is imperative to note that the failure of the error term to equal zero implies a departure from normality in the population error term within the dataset, thus rendering the normality assumption unfulfilled.
+
 # Empirical Findings
 
-Orginalmodell fra assignment 3;
+Hovedmodell;
 
 ```{r}
 #| echo: FALSE
 #| tbl-cap: The effect of regional development on inequality
 #| label: original_models
 # Fit the three models
-partaDE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
-partaIT <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
-partaSE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
+partaDE <- lm(gini_n2 ~ log(GDPpcn2), data = subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+partaIT <- lm(gini_n2 ~ log(GDPpcn2), data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
-huxreg(DE = partaDE, IT = partaIT, SE = partaSE, statistics = c("nobs", "r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg(DE = partaDE, IT = partaIT, statistics = c("nobs", "r.squared","adj.r.squared", "statistic", "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
 
-**Cross-sectional Estimates:** Summarize essential results obtained from the cross-sectional analysis in Assignment 2.
+## **Cross-sectional Estimates:** Summarize essential results obtained from the cross-sectional analysis in Assignment 2.
 
-Orginalmodell 2010; Denne bruker vi for å se på et spesifikt år, videre skal vi
+Modellen fra Assignment 2; 2010; Denne bruker vi for å se på et spesifikt år, videre skal vi
 
 ```{r}
 #| echo: false
@@ -319,9 +483,9 @@ Orginalmodell 2010; Denne bruker vi for å se på et spesifikt år, videre skal 
 lmDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
 lmIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
 
-lmSE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "SE" & gini_n2 > 0))
-
-huxreg(DE = lmDE, IT = lmIT, SE = lmSE, statistics = c("Number of observations" = "nobs", "r.squared","adj.r.squared", "statistic", "p.value"))
+huxreg(DE = lmDE, IT = lmIT, statistics = c("Number of observations" = "nobs", "r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
+       stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+       note = "Note): {stars} T statistics in brackets.")
 ```
 
 In the table above we see the coefficients, standard errors, and significance levels (indicated by asterisks) for a simple linear regression model for the year 2010.
@@ -358,35 +522,6 @@ For both Germany and Italy, the adjusted R-squared is lower than the R-squared, 
 The statistic value (statistic) and p-value (p.value) are typically used to test the overall significance of the regression model.
 For Germany, the t-statistic is 9.183, and the associated p-value is 0.005, indicating that the model is statistically significant at the 0.05 significance level.
 For Italy, the t-statistic is 1.485, and the associated p-value is 0.242, suggesting that the model is not statistically significant at the 0.05 significance level.
-
-### **Classical assumptions OLS for MLR**
-
-There are underlying assumptions in statistical analysis like ordinary least squares regression (OLS).
-OLS yields the best estimates when these conventional presumptions hold true.
-OLS regression is based on six traditional assumptions.
-Our models are unbiased if the first four conditions are met.
-Below is a list of all six presumptions:
-
-1.  Linearity: There must be a linear relationship between the dependent variable (regional GINI) and independent variable (GDP per capita).
-    We can read from the two scatterplots below, @fig-scatterplot-RL-DE and @fig-scatterplot-RL-IT, that the relationship for both Germany and Italy seems to be linear, with only some few outliers.
-
-2.  Sample variation: We can also see from @fig-scatterplot-RL-DE and @fig-scatterplot-RL-IT that there is variation in the independent variable (GDP per capita).
-
-3.  Random sampling: There is no random sampling of the population as we are looking at the entire population.
-
-4.  Exogeneity: As inequality is closely related to the development of a country as undeveloped countries typically have higher levels of inequality, there is likely concerns of endogenity.
-    This means that there is likely a correlation between the dependent and independent variable.
-
-5.  Homoskedasticity: To fulfill the OLS assumptions, variance in the observations needs to be equal, known as homoskedasticity.
-    There are many tests for heteroskedasticity.
-    In each case, the null hypothesis is homoskedasticity and the alternative is heteroskedasticity.
-    If the variance in the observations are not equal, heteroskedasticity could be present.
-    This may result in incorrect standard errors that are computed for the least squares estimators, and could lead to incorrect conclusions.
-    In order to check for heteroskedasticity, we utilize the Breusch-Pagan test, **see appendix model X**
-
-6.  Normality: In the context of ordinary least squares (OLS) assumptions, the normality criteria demands that the error term adheres to a normal distribution with an expected value of zero.
-    This implies that the discrepancies between observed and predicted values, known as residuals, should have a mean of zero, ensuring a homoskedasticity error term.
-    However, it is imperative to note that the failure of the error term to equal zero implies a departure from normality in the population error term within the dataset, thus rendering the normality assumption unfulfilled.
 
 Visualusering av modellen i assignment 2;
 
@@ -492,66 +627,11 @@ merged2010 <- merged_data |>
   )
 ```
 
-Her har vi lagt til motorvei pr areal og motorvei for å se om dette øker forklaringsgraden.
+Her har vi lagt til motorvei pr areal og motorvei for å se om dette øker forklaringsgraden?
 
-```{r}
-#| echo: FALSE
-#| tbl-cap: Multiple regression models
+## Alternative functional forms;
 
-# In lm1 and lm2 we look at how the GDP per capita of each nuts 2 region as well as education may explain the gini coefficient. We have used. a log transformation on the GDP because both gini and education is measured in percentages, and without doing so the GDP data is significantly skewed
-
-lm1 <- lm(gini_n2 ~ log(GDPpcn2) + education, subset(merged2010, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
-lm2 <- lm(gini_n2 ~ log(GDPpcn2) + education, subset(merged2010, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
-
-# lmarea looks at the above, but adds the area variable. This is also log transformed as we are interested in the changes in percentage
-
-lmarea <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area), subset(merged2010, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
-
-lmarea2 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area), subset(merged2010, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
-
-# lm3 and lm4 also includes roads (amount of highway in kilometres in a region). These models takes all explanatory variables in to account.
-
-lm3 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area) + log(Roadkm), subset(merged2010, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
-
-lm4 <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area) + log(Roadkm), subset(merged2010, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
-
-huxreg("Model 1 DE" = lm1, "Model 1 IT" = lm2, "Model 2 DE" = lmarea, "Model 2 IT" = lmarea2, "Model 3 DE" = lm3, "Model 3 IT" = lm4, statistics = c("r.squared","adj.r.squared", "statistic", "p.value"))
-```
-
-The provided multiple regression models aim to explain regional inequality, with three different models.
-
--   Model 1; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education when it comes to inequality for the country's DE (Germany), and IT (Italy).
--   Model 2; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education and area when it comes to inequality for the country's DE (Germany), and IT (Italy).
--   Model 3; Explains how regional development (GDP per capita) as the independent variable and regional inequality (gini_n2) as the dependent variable is affected by education + area + Road(km) when it comes to inequality for the country's DE (Germany), and IT (Italy).
-
-### 3. **Model Interpretation**
-
-In Model 1, the R-squared values are 0.222 for Germany and 0.122 for Italy.
-In Model 2, they increase to 0.309 for Germany and 0.338 for Italy.
-In Model 3, they remain relatively consistent at 0.313 for Germany and 0.340 for Italy.
-
-The adjusted R-squared values follow a similar pattern, indicating that Model 2 has the highest explanatory power for both Germany and Italy.
-However, the increase in R-squared between Model 1 and Model 2 suggests that Model 2 provides a better fit compared to Model 1.
-
-The coefficients associated with each independent variable (log(GDPpcn2), education, log(area), and log(Roadkm)) indicate the direction and strength of their influence on regional inequality.
-For log(GDPpcn2), positive coefficients indicate that an increase in GDP per capita is associated with higher regional inequality.
-In Model 2 and Model 3, log(GDPpcn2) is statistically significant at the 0.01 significance level for both Germany and Italy.
-For education, negative coefficients suggest that higher education levels are associated with lower regional inequality.
-However, in all models, education is not statistically significant.
-For log(area), positive coefficients imply that larger regions tend to have higher regional inequality.
-In Model 2 and Model 3, log(area) is statistically significant at the 0.05 significance level for both Germany and Italy.
-For log(Roadkm), the coefficients are generally small, and in Model 2 and Model 3, they are not statistically significant.
-
-The F-statistic value and p-value indicate that Model 2 is statistically significant at the 0.01 significance level for both Germany and Italy, while Model 1 is statistically significant for Germany but not for Italy.
-Model 3 is statistically significant at the 0.05 significance level for Germany but not for Italy.
-
-In summary, Model 2 appears to have the best overall fit, as indicated by the highest R-squared and adjusted R-squared values for both Germany and Italy.
-The primary contributor to explaining variations in regional inequality appears to be log(GDPpcn2), as it is consistently statistically significant at the 0.01 significance level in Model 2 and Model 3.
-The impact of other independent variables, such as education, log(area), and log(Roadkm, is less clear, as they are generally not statistically significant in the models. The specific implications of these findings would depend on the context of your analysis and the objectives of your research. It's important to consider the practical significance of these results and conduct further analysis if needed.
-
-**Alternative Functional Forms and Panel Estimates:** Present the key insights derived from exploring alternative functional forms and panel estimates in Assignment 3.
-
-Logaritmic modell assignment 3;
+### Logaritmic;
 
 ```{r}
 #| echo: FALSE
@@ -560,12 +640,13 @@ lmlogDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "DE" & gini_n
 
 lmlogIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
-lmlogSE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, "Model 1 SE" = lmlogSE, statistics = c("nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, statistics = c("nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
+
+### Quadratic;
 
 Formaterer litt før quadratic
 
@@ -596,7 +677,25 @@ huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, statistics = c("Number 
        note = "Note): {stars} T statistics in brackets.")
 ```
 
-**Vi må også lage qubic!!!!!**
+### Qubic;
+
+```{r}
+#| echo: FALSE
+#| tbl-cap: The effect of log squared regional development on inequality
+lmqubicDE <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+
+lmqubicIT <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+
+#Tar denne vekk fordi vi ikke skal legge til sverige før i panel#lmquadSE <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
+
+huxreg("Model 1 DE" = lmqubicDE, "Model 1 IT" = lmqubicIT, statistics = c("Number of obervations" = "nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
+       stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+       note = "Note): {stars} T statistics in brackets.")
+```
+
+### Panel:
+
+**Alternative Functional Forms and Panel Estimates:** Present the key insights derived from exploring alternative functional forms and panel estimates in Assignment 3.
 
 Her skal vi visualisere hvilken modell som passer best og skrive om det. Her kommer et forslag med qudratic som utgangspunkt for tysklad og italia;
 
