@@ -641,7 +641,7 @@ lmlogDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "DE" & gini_n
 lmlogIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
 
-huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, statistics = c("nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, statistics = c("Number of obervations" = "nobs","r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -672,7 +672,7 @@ lmquadIT <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, nuts0 == "IT" & gin
 
 #Tar denne vekk fordi vi ikke skal legge til sverige før i panel#lmquadSE <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, statistics = c("Number of obervations" = "nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, statistics = c("Number of obervations" = "nobs","r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -688,7 +688,7 @@ lmqubicIT <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, nuts0 == "IT" & g
 
 #Tar denne vekk fordi vi ikke skal legge til sverige før i panel#lmquadSE <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
 
-huxreg("Model 1 DE" = lmqubicDE, "Model 1 IT" = lmqubicIT, statistics = c("Number of obervations" = "nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
+huxreg("Model 1 DE" = lmqubicDE, "Model 1 IT" = lmqubicIT, statistics = c("Number of obervations" = "nobs","r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -754,7 +754,7 @@ pmerged <- merged_data |>
 group_by(nuts2, year) |> 
   slice(1) |> 
   ungroup() |> 
-  select(nuts0, nuts2, geo, year, gini_n2, GDPpcn2, logGDPpcn2, numberofregions) |> 
+  select(nuts0, nuts2, geo, year, gini_n2, GDPpcn2, logGDPpcn2, logGDPpcn2quad, logGDPpcn2cubic, numberofregions) |> 
   filter(nuts0 == c("DE", "IT", "SE"))
 #HUSK Å LEGG TIL FLERE LAND!! leg også til qubic?
 ```
@@ -763,19 +763,33 @@ Her er panelet vårt, rart med negativ r adjusted??
 bare bruk vanlig r hilsen Andre!
 
 ```{r}
+#| echo: FALSE
+#| tbl-cap: The effect of regional development on inequality
+#| label: original_models
+# Fit the three models
+partaDE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+partaIT <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+partaSE <- lm(gini_n2 ~ GDPpcn2, data = subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
+
+huxreg(DE = partaDE, IT = partaIT, SE = partaSE, statistics = c("nobs", "r.squared","adj.r.squared", "statistic", "p.value"), 
+       stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+       note = "Note): {stars} T statistics in brackets.")
+```
+
+```{r}
 #| echo: false
 # We look at the fixed effects of country, year and nuts2 for the models using robust standard errors. From plm1 to plm3 we look at the fixed effects seperately, plm4 looks at them jointly.
 
-plm1 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts0"), model = "within",effect = "twoway") %>%
+plm1 <- plm(gini_n2 ~ log(GDPpcn2) + logGDPpcn2quad + logGDPpcn2cubic, data = pmerged, index = c("nuts0"), model = "within",effect = "twoway") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 
-plm2 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("year"), model = "within",effect = "twoway") %>%
+plm2 <- plm(gini_n2 ~ log(GDPpcn2) + logGDPpcn2quad + logGDPpcn2cubic, data = pmerged, index = c("year"), model = "within",effect = "twoway") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 
-plm3 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c("nuts2"), model = "within",effect = "twoway") %>%
+plm3 <- plm(gini_n2 ~ log(GDPpcn2) + logGDPpcn2quad + logGDPpcn2cubic, data = pmerged, index = c("nuts2"), model = "within",effect = "twoway") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 
-plm4 <- plm(gini_n2 ~ GDPpcn2 + log(GDPpcn2), data = pmerged, index = c( "year","nuts2"), model = "within",effect = "twoway") %>%
+plm4 <- plm(gini_n2 ~ log(GDPpcn2) + logGDPpcn2quad + logGDPpcn2cubic, data = pmerged, index = c( "year","nuts2"), model = "within",effect = "twoway") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
 huxreg(plm1, plm2, plm3, plm4, statistics = c("nobs","r.squared","adj.r.squared", "statistic", "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
