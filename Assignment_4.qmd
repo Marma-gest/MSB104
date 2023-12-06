@@ -204,64 +204,66 @@ Lastly, @lessmann2017 state that an area where ethnic groups dominate as a minor
 Based on the research conducted by @lessmann2017, considering regional inequities is essential since it can influence economic outcomes.
 The research shows many examples of high- and low-income countries experiencing unbalanced regional development that results in income inequality [@lessmann2017].
 
-Tidligere arbeid!!
-oppsummer hovedlitteraturen til reginal devolopment og inequality
+### *Research gap*
 
-Research gap!
-Nytt arbeid
+While the existing literature, as synthesized from Lessmann's (2017) work, provides valuable insights into the determinants of regional inequality, a research gap emerges in the specific context of this paper.
+Lessmann's research predominantly covers the periods from 1992-2012, offering a comprehensive understanding of the broader factors influencing regional disparities.
+However, this paper focus on a more localized and contemporary perspective, zooming in on the year 2010 and extending the analysis to encompass the years 2000-2020.
 
-Vi ser på videre utvikling frem til 2020 ettersom denne littraturen slutter i 2012
+The research gap lies in the need for a nuanced examination of the interplay between sub-national GDP per capita and inequality within the specified subset of European countries, concentrating particularly on the year 2010.
+While Lessmann's work sheds light on overarching determinants, the specific dynamics of this relationship within the unique economic, political, and social contexts of the chosen countries during the specified timeframe remain underexplored.
+
+Furthermore, the literature review by Lessmann primarily touches on broader factors influencing regional inequality, creating an opportunity for a more detailed investigation into the nuanced developments that occurred post-2012.
+This paper aim to contribute to filling this research gap by providing an in-depth analysis of regional development and inequality dynamics within the outlined subset of European countries, considering the distinctive contexts that may have shaped regional disparities during and after the year 2010.
 
 # Data and Methodology
 
-**Data Sources:** Briefly describe the primary data sources used in the previous assignments, noting any limitations.
-
-### Data acquisition
+**Data Sources:**
 
 By using Eurostat, we have downloaded data containing GDP and population for each country in the EU from year 1990 to 2023.
 However, we are only interested in the following countries from 2000 to 2020:
 
--   Austria
--   Belgium
--   Bosnia and Herzegovina
--   Bulgaria
--   Croatia
--   Germany
--   Italy
--   Serbia
--   Sweden
-
-## Description
+-   Austria (AT)
+-   Belgium (BE)
+-   Bosnia and Herzegovina (BA)
+-   Bulgaria (BG)
+-   Croatia (HR)
+-   Germany (DE)
+-   Italy (IT)
+-   Serbia (RS)
+-   Sweden (SE)
 
 *The first dataset we downloaded from Eurostat was **demo_r_pjanaggr3,** which contains population data from Europe. In our case, we have selected population data from Sweden, Italy, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Germany. According to @eurostat2021, the dataset of demography is a set of statistical numbers each country in Europe sends yearly to Eurostat by 31 December of the following calendar year. Furthermore, the definition of "population" is, according to @eurostat2021, all persons having their residences in a member state, including all live births and deaths during the year when the statistical numbers are heading to Eurostat. Moreover, the demographic data at a regional level are separated into different groups named NUTS, which are defined as nomenclature for territorial units for statistics [@eurostat2021]. The purpose of the NUTS function is to subdivide the territory of the European Union into 104 regions at NUTS level 1 and break it down by to 281 at NUTS level 2 and 1348 at NUTS level 3 [@eurostat2021]. In the beginning of this paper, we have focused on the numbers of NUTS 3 level, but the dataset containing population data has been broken down by sex and broad age groups (0-14, 15-64 and 65 or more).*
 
 *The following dataset we downloaded from Eurostat was the **nama_10r_3gdp dataset**. Furthermore, this dataset is also broken down to NUTS level 3 which focus on GDP data from the sub-regions in Sweden, Italy, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Germany. According to @eurostat2023, GDP (Gross domsetsic product) at market prices is defined as the final result of the production activity of resident producer units [@eurostat2023].*
 
-### 3. Descriptive analysis
+### Choice of countries:
 
 ```{r}
-#Legg til alle landene i denne summery tabbelen
 #| echo: FALSE
-#| tbl-cap: Summary_All_Countries
+#| tbl-cap: Number of observations for each country
 # Generates descriptive statistics for variables in plot for AT
 
 merged_data |> 
-  filter(str_detect(geo,"AT")) |> 
-  select(-1,-year) |> 
-  st("GDPpcn3", add.median = TRUE)
+  group_by("Country code" = nuts0) |> 
+  summarize("Number of observations" = n()) |> 
+  ungroup()
 
 
 ```
 
-**Skriv ut i fra denne tabellen som argument for hvilke land vi tar med oss videre!! "kommenter begrensninger; 0 verdier, eu kandidat og når land ble eu kandidat.**
+The table above provides a summary of all observations in each country we're considering for our paper.
+It's crucial to highlight that our article's analysis deliberately omits the countries Croatia, Serbia, and Bosnia and Herzegovina.
+This choice is driven by the constraints imposed due to either a lack of observations or an extremely limited dataset for these particular nations.
+Specifically, Bosnia and Herzegovina are excluded due to the absence of observations.
+For Serbia, the available data only spans from 2017 to 2020, which limits the comprehensive analysis across the entire study period.
+Croatia, on the other hand, lacks significant data for various sub-regions, further contributing to its exclusion from our focused investigation.
+Austria, Belgium, Bulgaria, Germany, Italy, and Sweden are selected for inclusion in the paper.
+However, the primary focus will be on Germany and Italy, given their status as the largest countries in the dataset.
 
-**Methodological Approach:** Summarize the methodologies applied in Assignments 1, 2, and 3, highlighting the rationale behind choosing each method.
+**Methodological Approach:**
 
-De ulike metodene er;
-
-Assigment 1 brukte vi gdp mot gini
-
-### 2. GDP per capita calculation (metode 1)
+#### GDP per capita calculation
 
 In order to visualize the GDP per capita, we have merged the two datasets together and added a new variable that executes this formula in order to generate the GDP per capita for every country.
 
@@ -275,7 +277,7 @@ This is described by Eurostat to be "a measure of economic activity, defined as 
 How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes" @eurostat2023.
 To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth" @eurostat2023.
 
-### 2. Gini coefficient calculation
+#### Gini coefficient calculation
 
 The Gini coefficient is a measure of economic inequality within a population, and it is used to assess the distribution of income or wealth among individuals or households.
 The formula below is used for the population-weighted Gini coefficient for GDP at the NUTS2 level in various European regions.
@@ -332,9 +334,13 @@ merged_data <- merged_data |>
   # number of regions is wrong, want to show number of nuts3 regions in a nuts2 region as a vector
 ```
 
-## Original modell
+**Methodological Approach:**
 
-In this part we want to estimate a simple linear regression model for the year 2010, with regional development, measured in GDP per capita, as the independent variable and regional inequality, measured in Gini, as the dependent variable.
+Before selecting the appropriate method for our analysis, it is imperative to scrutinize GDP as the dependent variable and inequality (GINI) as the independent variable.
+This entails a thorough examination of the components encompassed within GDP and the factors influencing the GINI index.
+Understanding the intricacies of these variables is crucial for making informed decisions regarding the analytical approach to be employed.
+
+The first step is to estimate a simple linear regression model for the year 2010, with regional development, measured in GDP per capita, as the independent variable and regional inequality, measured in Gini, as the dependent variable.
 This is because we want to see the impact a change in the regional development will have on inequity in a given country.
 
 Lessmann and Seidel discuss that the national development level can be an outcome of regional inequalities.
@@ -343,7 +349,7 @@ Our aim is to showcase this with regional development (GDP per capita​) as the
 Our aim is to explain the regional inequalities with regional development as the explanatory variable.
 This brings forward the following expression:
 
-$$ Gini = ß_0 + ß_1GDPpcn2 $$
+$$ Orginal Model: Inequality_i = ß_0 + ß_1Devolopment_i $$
 
 *"Existing studies have shown a serious bias towards middle -- and high -income countries entire population"* [@lessmann2017].
 We therefore use the level of economic development measured as log by the GDP pr capita measured in euros in million\`s.
@@ -353,17 +359,10 @@ GDP measure a country as a hole, where the GDP per capita is measuring the produ
 We will reduce bias by looking at country's entire populations through the GDP per capita of Italy and Germany.
 The reason we choose the selected countries is because they are the largest and have the most observations, which reduces potential bias.
 
-*Theory:*
-
-An increase in GDP per capita will lead to a decrease in the Gini coefficient (regional inequity).
-The basis for this theory is that an increase of ten thousand euros (one percent of one million) in GDP per capita will have a greater effect on the regions that stand out.
-There comes a point where an increase in GDP per capita will have a greater impact on those with a small GDP per capita, versus those with a larger GDP per capita.
-The reason for this is because the effect of the increase in GDP per capita hits those with larger GDP per capita different than those with a smaller GDP per capita.
-
-Skriv i dette avsnittet at orginalmodellen passer dårlig, og at logaritmic blir "hovedmodellen" vår.
-vis orginal mot logaritmic i en facet i appendix
-
-## Logaritmic - Flett denne sammen med orginalmodellen
+We have opted to employ a logarithmic model instead of the original model.
+This decision is grounded in the observation that the logarithmic model better aligns with the characteristics of our dataset, offering a more accurate representation because of potential skewed data.
+Table A.1 and A.
+2 in the Appendix illustrate the differences between the orginal model and the log original model.
 
 Using a logarithmic model creates a asymptotic behavior for the regression line.
 The non linear relationship between regional inequality and regional development will either go towards full inequality, or towards zero inequality, but will never completely reach the maximum or minimum (1 or 0).
@@ -371,7 +370,15 @@ In order to calculate this, we use the following formula:
 
 $$ Inequality_i = ß_0 + ß_1 log(Development_i) + ε_i $$
 
-## 
+By exploring different functional forms, we are able to determine the best functional form for our estimates by looking at descriptive statistics to justify our selections.
+We found no significance by including the original function, and thus, concluded to utilize a logarithmic function.
+
+*Theory:*
+
+An increase in GDP per capita will lead to a decrease in the Gini coefficient (regional inequity).
+The basis for this theory is that an increase of ten thousand euros (one percent of one million) in GDP per capita will have a greater effect on the regions that stand out.
+There comes a point where an increase in GDP per capita will have a greater impact on those with a small GDP per capita, versus those with a larger GDP per capita.
+The reason for this is because the effect of the increase in GDP per capita hits those with larger GDP per capita different than those with a smaller GDP per capita.
 
 ## Cross - sectional estimates: motorvei og utdanning
 
@@ -381,15 +388,25 @@ To delve deeper into the drivers of inequality, we introduce additional variable
 The inclusion of education as a variable provides insights into the role of human capital in shaping regional disparities, while accounting for regional area allows us to consider geographical factors that might contribute to varying levels of inequality.
 By employing the year 2010 as a focal point and augmenting our models with these pertinent variables, we seek to unravel the nuanced interplay between economic development, education, and spatial dimensions in shaping inequality trends within the regions of Italy and Germany.
 
+*Theory:*
+
+We believe that if a region has a big difference in the level of education among subregions, this will increase the regional inequality based on the assumption that a subregion with higher educated citizens will typically earn more than subregions with lesser educated citizens, thus increasing the difference in GDP per capita on the regional level.
+Another assumption that can explain the increased expectancy, is that higher educated citizens tend to have a higher probability of centralizing towards city centers, contrary to less educated citizens.
+
+The centralization assumption is also true for the area of the regions.
+If a region is large, the probability for centralization could be bigger, based on factors such as job markets, mobility and distance between cities or areas.
+This is the basis of why we chose to add the highway infrastructure variable, as a higher level of infrastructure might decrease the likelihood for centralization as mobility increases.
+
 ## Exploring alternative functional forms
 
-Ser igjen vekk fra 2010 og bruker andre metoder
+Building on our prior analysis that focused on the variables education (educ), area, and road length (roadkm) in the specific context of the year 2010, we will now narrow our scope.
+For the period spanning 2000-2020, our attention turns to a more focused examination of the relationship between log(GDP) and inequality in Germany and Italy.
+In this phase, we will utilize alternative methods to delve into the intricate dynamics of how log(GDP) influences regional inequality across these two nations.
+This approach allows us to explore nuanced patterns and evolving trends in the interaction between economic development and inequality over the course of the past two decades.
 
-### 1. Functional form exploration
+*Functional form exploration*
 
-*By exploring different functional forms, we are able to determine the best functional form for our estimates by looking at descriptive statistics to justify our selections. We found no significant difference by including a cubic function, and thus, concluded to utilize a logarithmic function as well as a quadratic model.*
-
-## Quadratic
+*Quadratic*
 
 Using a quadratic model shows the non linear relationship between regional inequality and regional development with either a U-shaped line, or a inverted u-shaped line.
 In order to calculate this, we use the following formula:
@@ -398,7 +415,7 @@ $$ Inequality_i = ß_0 + ß_1(logDevelopment)^2 $$
 
 We believe that the regional development in a quadratic model will have a concave shape as we believe that an increase in GDP per capita will have a increased effect on inequality but a decreased effect as the number increases.
 
-## Cubic
+*Cubic*
 
 Cubic forms accommodate more complex non-linear relationships, capturing patterns where the impact of development on inequality changes direction multiple times.
 
@@ -815,7 +832,51 @@ observasjoner ikke har like mye å si lengre, og forklar hvorfor dette ikke har 
 
 # Appendix
 
-*A.1 Breusch-Pagan BP-Test*
+*A.1 Orginal- and logarithmic model for Germany*
+
+```{r}
+merged_data |> 
+  filter(numberofregions > 1, nuts0 == "DE") |> 
+  ggplot(
+    aes(
+      x = GDPpcn2,
+      y = gini_n2
+    )
+  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ x, se = F, span = 1) 
+
+merged_data |> 
+  filter(numberofregions > 1, nuts0 == "DE") |> 
+  ggplot(
+    aes(
+      x = logGDPpcn2,
+      y = gini_n2
+    )
+  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ x, se = F, span = 1)
+```
+
+*A.2 Orginal- and logarithmic model for Italy*
+
+```{r}
+merged_data |> 
+  filter(numberofregions > 1, nuts0 == "IT") |> 
+  ggplot(
+    aes(
+      x = GDPpcn2,
+      y = gini_n2
+    )
+  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ x, se = F, span = 1) 
+
+merged_data |> 
+  filter(numberofregions > 1, nuts0 == "IT") |> 
+  ggplot(
+    aes(
+      x = logGDPpcn2,
+      y = gini_n2
+    )
+  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ x, se = F, span = 1)
+```
+
+*A.3 Breusch-Pagan BP-Test*
 
 ```{r}
 #| echo: false
