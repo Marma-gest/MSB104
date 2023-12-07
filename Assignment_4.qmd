@@ -234,7 +234,7 @@ The purpose of the NUTS function is to subdivide the territory of the European U
 The GDP dataset is also broken down to NUTS level 3 which focus on GDP data from the sub-regions (NUTS3).
 According to @eurostat2023, GDP (Gross domsetsic product) at market prices is defined as the final result of the production activity of resident producer units [@eurostat2023].
 
-## Choice of countries:
+## Choice of countries
 
 ```{r}
 #| echo: FALSE
@@ -333,7 +333,7 @@ merged_data <- merged_data |>
   # number of regions is wrong, want to show number of nuts3 regions in a nuts2 region as a vector
 ```
 
-## Methodological Approach:
+## Methodological Approach
 
 The first step is to estimate a regression model for the year 2010, with regional development, measured in GDP per capita, as the independent variable and regional inequality, measured in Gini, as the dependent variable.
 This is because we want to see the impact a change in the regional development will have on inequity in a given country.
@@ -406,7 +406,7 @@ Below is a list of all six presumptions:
     This implies that the discrepancies between observed and predicted values, known as residuals, should have a mean of zero, ensuring a homoskedasticity error term.
     However, it is imperative to note that the failure of the error term to equal zero implies a departure from normality in the population error term within the dataset, thus rendering the normality assumption unfulfilled.
 
-### Cross-sectional estimates:
+### Cross-sectional estimates
 
 In our analysis, we focus on a specific year, 2010, to conduct cross-sectional estimates for the countries of Italy and Germany.
 This targeted approach allows us to capture a snapshot of the socio-economic landscape during that particular period and explore the dynamics influencing inequality within these nations.
