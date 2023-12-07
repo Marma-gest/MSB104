@@ -727,7 +727,6 @@ Moving to FE Nuts2, the coefficient for log(GDPpcn2) turns positive (0.741), ind
 The FE Nuts2 and Year model presents a significant positive effect for log(GDPpcn2) (1.931, p \< 0.05), implying a potential interaction effect over time and across regions.
 The quadratic and cubic terms demonstrate nuanced effects, with quadratic terms generally significant and cubic terms showing less consistent significance.
 The adjusted R-squared values vary across models, underscoring the complexity of the relationship between GDP and inequality under different fixed effects specifications.
-The F-tests confirm the overall model significance, highlighting the relevance of considering various fixed effects structures.
 
 # V. Discussion
 
