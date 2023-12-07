@@ -466,7 +466,7 @@ This comprehensive approach ensures a thorough exploration of the intricate rela
 
 # IV. Empirical Findings
 
-Main modell - koble denne sammen med teksten vi har komt med tidligere
+Below is a table of a linear regression of inequality (GINIW) with logGDP as the independant variable, showing the baseline for our findings.
 
 ```{r}
 #| echo: FALSE
