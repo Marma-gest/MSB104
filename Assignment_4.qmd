@@ -330,7 +330,7 @@ merged_data <- merged_data |>
 
 ## Methodological Approach:
 
-The first step is to estimate a simple linear regression model for the year 2010, with regional development, measured in GDP per capita, as the independent variable and regional inequality, measured in Gini, as the dependent variable.
+The first step is to estimate a regression model for the year 2010, with regional development, measured in GDP per capita, as the independent variable and regional inequality, measured in Gini, as the dependent variable.
 This is because we want to see the impact a change in the regional development will have on inequity in a given country.
 
 Lessmann and Seidel discuss that the national development level can be an outcome of regional inequalities.
@@ -344,7 +344,7 @@ $$ Orginal Model: Inequality_i = ß_0 + ß_1Devolopment_i $$
 *"Existing studies have shown a serious bias towards middle -- and high -income countries entire population"* [@lessmann2017].
 We therefore use the level of economic development measured as log by the GDP pr capita measured in euros in million\`s.
 The reason why we use GDP per capita on a regional level is because the of GDP pr capita and GDP has a different meaning.
-GDP measure a country as a hole, where the GDP per capita is measuring the productivity of the population.
+GDP measure a country as a whole, where the GDP per capita is measuring the productivity of the population.
 
 We will reduce bias by looking at country's entire populations through the GDP per capita of Italy and Germany.
 The reason we choose the selected countries is because they are the largest and have the most observations, which reduces potential bias.
@@ -381,7 +381,7 @@ Our models are unbiased if the first four conditions are met.
 Below is a list of all six presumptions:
 
 1.  Linearity: There must be a linear relationship between the dependent variable (regional GINI) and independent variable (GDP per capita).
-    We can read from the two scatterplots, @fig-scatterplot-RL-DE and @fig-scatterplot-RL-IT, that the relationship for both Germany and Italy seems to be linear, with only some few outliers.
+    We can read from the two scatterplots, @fig-scatterplot-RL-DE and @fig-scatterplot-RL-IT, that the relationship for both Germany and Italy seems to be non-linear, with only some few outliers.
 
 2.  Sample variation: We can also see from @fig-scatterplot-RL-DE and @fig-scatterplot-RL-IT that there is variation in the independent variable (GDP per capita).
 
@@ -401,7 +401,7 @@ Below is a list of all six presumptions:
     This implies that the discrepancies between observed and predicted values, known as residuals, should have a mean of zero, ensuring a homoskedasticity error term.
     However, it is imperative to note that the failure of the error term to equal zero implies a departure from normality in the population error term within the dataset, thus rendering the normality assumption unfulfilled.
 
-### Cross - sectional estimates:
+### Cross- sectional estimates:
 
 In our analysis, we focus on a specific year, 2010, to conduct cross-sectional estimates for the countries of Italy and Germany.
 This targeted approach allows us to capture a snapshot of the socio-economic landscape during that particular period and explore the dynamics influencing inequality within these nations.
@@ -465,21 +465,6 @@ To delve deeper into the nuanced interplay between sub-regional dynamics and tem
 This comprehensive approach ensures a thorough exploration of the intricate relationships within our panel dataset, enhancing the robustness and reliability of our findings.
 
 # IV. Empirical Findings
-
-Below is a table of a linear regression of inequality (GINIW) with logGDP as the independant variable, showing the baseline for our findings.
-
-```{r}
-#| echo: FALSE
-#| tbl-cap: The effect of regional development on inequality
-#| label: Parta
-# Fit the three models
-partaDE <- lm(gini_n2 ~ log(GDPpcn2), data = subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
-partaIT <- lm(gini_n2 ~ log(GDPpcn2), data = subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
-
-huxreg(DE = partaDE, IT = partaIT, statistics = c("Number of observations" = "nobs", "r.squared","adj.r.squared", "statistic", "P-value F-test" = "p.value"), 
-       stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
-       note = "Note): {stars} T statistics in brackets.")
-```
 
 ## **Cross-sectional Estimates**
 
@@ -641,8 +626,13 @@ huxreg(DElog = FullDE, ITlog = FullIT, DEquad = FullDE1, ITquad = FullIT1, DEcub
        note = "Note): {stars} T statistics in brackets.")
 ```
 
-In the forthcoming visualization, the relationships between log(GDP) and inequality using the quadratic and cubic estimates.
-Although the cubic model exhibits marginally higher explanatory power than the quadratic one, we have opted to visualize the quadratic model.
+In the presented table, we provide an overview of the alternative functional forms applied to the time span from 2000 to 2020 for both Germany and Italy.
+The models encompass logarithmic (DElog, ITlog), quadratic (DEquad, ITquad), and cubic (DEcubic, ITcubic) specifications.
+It's noteworthy that the cubic model exhibits a marginally better goodness of fit compared to the quadratic model.
+However, in alignment with our theoretical framework, we opt to utilize the quadratic specification, as it better aligns with our theoretical expectations, whereas the cubic model does not.
+This decision ensures the coherence between the chosen functional form and the underlying conceptual framework of our analysis.
+
+The two figures below, @fig-logGDPpcn2DE and @fig-logGDPpcn2IT visualize a quadratic relationship between log(GDP) and inequality for Germany and Italy.
 
 ```{r}
 #| echo: false
