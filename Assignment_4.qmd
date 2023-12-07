@@ -781,9 +781,14 @@ Acknowledging these limitations, future research can provide a more nuanced expl
 
 # VII. Conclusion
 
-**Summary:** Provide a succinct summary of the main findings and their significance.
+In conclusion, our comprehensive exploration of regional development and inequality dynamics in Germany and Italy yielded crucial insights.
+No matter how we transform GDP, its impact on trying to explain regional inequality is minimal.
+This implies that GDP per capita alone is not enough to explain regional inequality and that other omitted variables are likely better at explaining the variance.
+As seen in the cross-selection estimations, increasing the number of explanatory variables such as population and geographical data, helped increase the explanatory power of regional inequality. 
 
-**Final Reflection:** Briefly reflect on the research process and the contributions of your study to the field of regional development and inequality.
+The unexpected results underscore the complexity of regional dynamics.
+While our study adds a layer of nuance to the discourse, further research is warranted to unravel the intricate factors influencing regional inequality.
+This reflection emphasizes the dynamic nature of regional development and the continuous need for nuanced investigations to inform effective policy strategies.
 
 # Appendix
 
