@@ -166,11 +166,11 @@ merged_data <- merged_data |>
 
 ```
 
-# Introduction
+# I. Introduction
 
 Bakgrunn:
 
-Objectives; Outline the main objectives and research questions addressed in Assignments 1, 2, and 3.
+Objectives; Outline the main obectives and research questions addressed in Assignments 1, 2, and 3.
 
 **Significance:** Highlight the importance and relevance of the research undertaken.
 
@@ -180,7 +180,7 @@ Forklar at noen land er rik og noen er fattig.
 For å belyse dette på en god måte bør man bruke land med mange opservasjoner.
 Vi ser på Tyskland og Italia pga de har ulik økonomi & industri.
 
-# Literature Review
+# II. Literature Review
 
 Regional inequality shows variation in regional GDP per capita, and according to @lessmann2017, regional inequality occurs when one region experiences different assumptions than other regions.
 Moreover, when the level of economic development is high, there is significant regional inequality [@lessmann2017].
@@ -204,7 +204,7 @@ Lastly, @lessmann2017 state that an area where ethnic groups dominate as a minor
 Based on the research conducted by @lessmann2017, considering regional inequities is essential since it can influence economic outcomes.
 The research shows many examples of high- and low-income countries experiencing unbalanced regional development that results in income inequality [@lessmann2017].
 
-### *Research gap*
+## *Research gap*
 
 While the existing literature, as synthesized from Lessmann's (2017) work, provides valuable insights into the determinants of regional inequality, a research gap emerges in the specific context of this paper.
 Lessmann's research predominantly covers the periods from 1992-2012, offering a comprehensive understanding of the broader factors influencing regional disparities.
@@ -216,9 +216,7 @@ While Lessmann's work sheds light on overarching determinants, the specific dyna
 Furthermore, the literature review by Lessmann primarily touches on broader factors influencing regional inequality, creating an opportunity for a more detailed investigation into the nuanced developments that occurred post-2012.
 This paper aim to contribute to filling this research gap by providing an in-depth analysis of regional development and inequality dynamics within the outlined subset of European countries, considering the distinctive contexts that may have shaped regional disparities during and after the year 2010.
 
-# Data and Methodology
-
-**Data Sources:**
+# III. Data and Methodology
 
 The data for this study was gathered through Eurostat, and contains population and GDP data for the countries that are in our scope.
 Our study scope are the following countries: Sweden, Italy, Belgium, Austria, Croatia, Serbia, Bosnia and Herzegovina, Germany.
@@ -231,7 +229,7 @@ The purpose of the NUTS function is to subdivide the territory of the European U
 The GDP dataset is also broken down to NUTS level 3 which focus on GDP data from the sub-regions (NUTS3).
 According to @eurostat2023, GDP (Gross domsetsic product) at market prices is defined as the final result of the production activity of resident producer units [@eurostat2023].
 
-### Choice of countries:
+## Choice of countries:
 
 ```{r}
 #| echo: FALSE
@@ -261,7 +259,7 @@ Before selecting the appropriate method for our analysis, it is imperative to sc
 This entails a thorough examination of the components encompassed within GDP and the factors influencing the GINI index.
 Understanding the intricacies of these variables is crucial for making informed decisions regarding the analytical approach to be employed.
 
-*GDP per capita calculation*
+### *GDP per capita calculation*
 
 In order to visualize the GDP per capita, we have merged the two datasets together and added a new variable that executes this formula in order to generate the GDP per capita for every country.
 
@@ -275,7 +273,7 @@ This is described by Eurostat to be "a measure of economic activity, defined as 
 How Eurostat calculates the annual growth rate in GDP "comparisons of the dynamics of economic development both over time and between economies of different sizes" @eurostat2023.
 To measure the growth rate of GDP over time "in volume, GDP in current prices is valued at the prices of the previous year, and the volume changes thus calculated are imposed on the level of a reference year; this is called a chain-linked series. Consequently, price movements will not inflate growth" @eurostat2023.
 
-*Gini coefficient calculation*
+### *Gini coefficient calculation*
 
 The Gini coefficient is a measure of economic inequality within a population, and it is used to assess the distribution of income or wealth among individuals or households.
 The formula below is used for the population-weighted Gini coefficient for GDP at the NUTS2 level in various European regions.
@@ -330,7 +328,7 @@ merged_data <- merged_data |>
   # number of regions is wrong, want to show number of nuts3 regions in a nuts2 region as a vector
 ```
 
-*Methodological Approach:*
+## Methodological Approach:
 
 The first step is to estimate a simple linear regression model for the year 2010, with regional development, measured in GDP per capita, as the independent variable and regional inequality, measured in Gini, as the dependent variable.
 This is because we want to see the impact a change in the regional development will have on inequity in a given country.
@@ -403,7 +401,7 @@ Below is a list of all six presumptions:
     This implies that the discrepancies between observed and predicted values, known as residuals, should have a mean of zero, ensuring a homoskedasticity error term.
     However, it is imperative to note that the failure of the error term to equal zero implies a departure from normality in the population error term within the dataset, thus rendering the normality assumption unfulfilled.
 
-## Cross - sectional estimates:
+### Cross - sectional estimates:
 
 In our analysis, we focus on a specific year, 2010, to conduct cross-sectional estimates for the countries of Italy and Germany.
 This targeted approach allows us to capture a snapshot of the socio-economic landscape during that particular period and explore the dynamics influencing inequality within these nations.
@@ -421,7 +419,7 @@ The centralization assumption is also true for the area of the regions.
 If a region is large, the probability for centralization could be bigger, based on factors such as job markets, mobility and distance between cities or areas.
 This is the basis of why we chose to add the highway infrastructure variable, as a higher level of infrastructure might decrease the likelihood for centralization as mobility increases.
 
-## Exploring alternative functional forms
+### Exploring alternative functional forms
 
 Building on our prior analysis that focused on the variables education (educ), area, and road length (roadkm) in the specific context of the year 2010, we will now narrow our scope.
 For the period spanning 2000-2020, our attention turns to a more focused examination of the relationship between log(GDP) and inequality in Germany and Italy.
@@ -434,9 +432,9 @@ The quadratic and cubic forms provide flexibility in capturing potential non-lin
 By assessing descriptive statistics and goodness-of-fit measures, we aim to justify the selection of the most appropriate functional form that enhances the accuracy and explanatory power of our models.
 This iterative approach allows us to systematically evaluate the performance of various functional forms and make informed choices based on empirical evidence.
 
-*Functional form exploration*
+### *Functional form exploration*
 
-*Quadratic*
+#### *Quadratic*
 
 Using a quadratic model shows the non linear relationship between regional inequality and regional development with either a U-shaped line, or a inverted u-shaped line.
 In order to calculate this, we use the following formula:
@@ -445,7 +443,7 @@ $$ Inequality_i = ß_0 + ß_1(logDevelopment)^2 $$
 
 We believe that the regional development in a quadratic model will have a concave shape as we believe that an increase in GDP per capita will have a increased effect on inequality but a decreased effect as the number increases.
 
-*Cubic*
+#### *Cubic*
 
 Cubic forms accommodate more complex non-linear relationships, capturing patterns where the impact of development on inequality changes direction multiple times.
 
@@ -456,7 +454,7 @@ $$ Inequality_i = ß_0 + ß_1(logDevelopment)^3 $$
 
 We believe that the regional development in a Cubic model will have a concave shape as we believe that an increase in GDP per capita will have a increased effect on inequality but a decreased effect as the number increases.
 
-## Fixed Effects
+### Fixed Effects
 
 Til slutt skal vi bruke en metode som går ut på å se på fixed effekts gjennom et panel, hvor de ulike fixed effectsene er; Nuts 0, Nuts2, year og nuts 2 og year sammen
 
@@ -468,9 +466,9 @@ Furthermore, by incorporating year fixed effects, we address temporal trends and
 To delve deeper into the nuanced interplay between sub-regional dynamics and temporal effects, we extend our analysis by combining NUTS 2 and year as joint fixed effects.
 This comprehensive approach ensures a thorough exploration of the intricate relationships within our panel dataset, enhancing the robustness and reliability of our findings.
 
-# Empirical Findings
+# IV. Empirical Findings
 
-Hovedmodell;
+Main modell - koble denne sammen med teksten vi har komt med tidligere
 
 ```{r}
 #| echo: FALSE
@@ -485,7 +483,7 @@ huxreg(DE = partaDE, IT = partaIT, statistics = c("Number of observations" = "no
        note = "Note): {stars} T statistics in brackets.")
 ```
 
-## **Cross-sectional Estimates:** Summarize essential results obtained from the cross-sectional analysis in Assignment 2.
+## **Cross-sectional Estimates**
 
 ```{r}
 #| echo: false
@@ -538,7 +536,7 @@ The absence of asterisks suggests that this coefficient is not statistically sig
 This implies that there is no strong statistical evidence of a linear relationship between the GDP per capita and the Gini coefficient in Italy in 2010.
 The standard error of the coefficient is 0.043, providing a measure of the precision of this relationship.
 
-## **Model Diagnostics**
+### 
 
 R-squared (r.squared) is a measure of how well the independent variable(s) explain the variation in the dependent variable.
 For Germany, the R-squared is 0.229, indicating that approximately 22.9% of the variation in the Gini coefficient can be explained by variations in log(GDPpcn2).
@@ -598,8 +596,6 @@ In @fig-scatterplot-RL-IT, we plot GDP per capita on nuts 2 level (x) against Gi
 Italy has a bigger decrease in inequality compared to Germany.
 The inequality (y-axis) starts off with a decrease as the GDP per capita (x-axis) increases.
 However, at some point it increases again meaning an increasing GDP per capita result in bigger regional inequality.
-
-### 2. **Multiple Linear Regression Model**
 
 ```{r}
 #| echo: FALSE
@@ -745,7 +741,7 @@ huxreg("FE Nuts0" = plm1, "FE Year" = plm2, "FE Nuts2" = plm3, "FE Nuts2 and Yea
        note = "Note): {stars} T statistics in brackets.")
 ```
 
-# Discussion
+# V. Discussion
 
 **Key Insights:** Synthesize and discuss the central insights emerging from the empirical findings.
 
@@ -758,17 +754,17 @@ Skriv noe om at panel kan være bra.
 Si at vi her kan ta med landene vi har pga.
 observasjoner ikke har like mye å si lengre, og forklar hvorfor dette ikke har like mye å si.
 
-# Limitations and Future Research
+# VI. Limitations and Future Research
 
 **Research Limitations:** Acknowledge any constraints or limitations encountered during your analysis.
 
-# Conclusion
+# VII. Conclusion
 
 **Summary:** Provide a succinct summary of the main findings and their significance.
 
 **Final Reflection:** Briefly reflect on the research process and the contributions of your study to the field of regional development and inequality.
 
-# References
+# VIII. References
 
 ```{r}
 
