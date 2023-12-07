@@ -552,40 +552,22 @@ huxreg(DElog = lmDE, ITlog = lmIT, DEquad = lmDE1, ITquad = lmIT1, DEcubic = lmD
        note = "Note): {stars} T statistics in brackets.")
 ```
 
-In the table above we see the coefficients, standard errors, and significance levels (indicated by asterisks) for a simple linear regression model for the year 2010.
-The model has GDP per capita as the independent variable and regional Gini as the dependent variable for both Germany (DE) and Italy (IT).
+The table presents the results of regression models for Germany (DE) and Italy (IT) using logarithmic, quadratic, and cubic functional forms to explore the relationship between GDP per capita (log(GDPpcn2)) and regional inequality.
+In the logarithmic model, the intercept is significantly negative for both countries, suggesting a baseline negative impact on inequality.
+The coefficient for log(GDPpcn2) is positive and highly significant for both countries, indicating that an increase in GDP per capita is associated with higher inequality.
 
-For Germany (DE), the intercept coefficient is -2.129\*\*, which indicates a high level of statistical significance at the 1% level.
-This means that when GDP per capita is zero, the estimated Gini coefficient for Germany is -2.129.
-The standard error of the intercept is 0.755, indicating the precision of the estimate.
+Moving to the quadratic model, the coefficients for the quadratic terms (logGDPpcn2quad) are positive and statistically significant for both countries.
+This suggests a convex relationship between GDP per capita and inequality, indicating diminishing returns to economic development in terms of reducing inequality.
 
-For Italy (IT), the intercept coefficient is -0.478 and is not significant.
-This means that when GDP per capita is zero, the estimated Gini coefficient for Italy is 0.478.
-The standard error of the intercept is 0.433.
+In the cubic model, the coefficients for the cubic terms (logGDPpcn2cubic) are positive and highly significant for both countries, indicating a more pronounced curvature in the relationship between GDP per capita and inequality.
 
-For Germany (DE), the coefficient for log(GDPpcn2) is 0.222\*\*.
-This implies a high level of statistical significance at the 1% level.
-In other words, there is strong evidence of a positive linear relationship between the GDP per capita and the Gini coefficient in Germany in 2010.
-The standard error associated with the coefficient is 0.073, which indicates the precision of this relationship.
+The R-squared values show a modest improvement from the logarithmic to the cubic model, suggesting that the inclusion of higher-order terms contributes to explaining more variability in inequality.
+However, the adjusted R-squared values are relatively lower, indicating potential overfitting.
 
-For Italy (IT), the coefficient for log(GDPpcn2) is 0.052.
-The absence of asterisks suggests that this coefficient is not statistically significant at commonly used significance levels.
-This implies that there is no strong statistical evidence of a linear relationship between the GDP per capita and the Gini coefficient in Italy in 2010.
-The standard error of the coefficient is 0.043, providing a measure of the precision of this relationship.
+Overall, the models provide insights into the non-linear relationship between GDP per capita and regional inequality, with evidence of diminishing returns and a more complex curvature as additional higher-order terms are included.
+The statistical significance of these terms suggests their relevance in capturing the underlying dynamics of this relationship.
 
-### 
-
-R-squared (r.squared) is a measure of how well the independent variable(s) explain the variation in the dependent variable.
-For Germany, the R-squared is 0.229, indicating that approximately 22.9% of the variation in the Gini coefficient can be explained by variations in log(GDPpcn2).
-For Italy, the R-squared is 0.090, suggesting that about 9.0% of the variation in the Gini coefficient can be explained by variations in log(GDPpcn2).
-
-Adjusted R-squared (adj.r.squared) is a modified version of R-squared that accounts for the number of independent variables.
-It penalizes the inclusion of unnecessary variables.
-For both Germany and Italy, the adjusted R-squared is lower than the R-squared, indicating that some variables may not be contributing significantly to the model.
-
-The statistic value (statistic) and p-value (p.value) are typically used to test the overall significance of the regression model.
-For Germany, the t-statistic is 9.183, and the associated p-value is 0.005, indicating that the model is statistically significant at the 0.05 significance level.
-For Italy, the t-statistic is 1.485, and the associated p-value is 0.242, suggesting that the model is not statistically significant at the 0.05 significance level.
+*Visualization*
 
 In the upcoming visualizations, we will showcase the quadratic and cubic methods, emphasizing their fit in explaining the relationship between the Gini index (dependent variable) and GDP (independent variable) for the year 2010.
 Despite the cubic method demonstrating marginally higher explanatory power, it deviates from our theoretical expectations.
