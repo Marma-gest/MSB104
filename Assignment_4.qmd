@@ -456,8 +456,6 @@ We believe that the regional development in a Cubic model will have a concave sh
 
 ### Fixed Effects
 
-Til slutt skal vi bruke en metode som går ut på å se på fixed effekts gjennom et panel, hvor de ulike fixed effectsene er; Nuts 0, Nuts2, year og nuts 2 og year sammen
-
 In our panel data analysis, we adopt a robust methodology by incorporating fixed effects to mitigate potential sources of bias and better capture the underlying dynamics of our data.
 Specifically, we include NUTS 0 (country-level), NUTS 2 (sub-regional), and year fixed effects in our models.
 The inclusion of NUTS 0 fixed effects allows us to account for country-specific heterogeneity, capturing unobserved factors that might influence the relationship under investigation.
@@ -484,6 +482,45 @@ huxreg(DE = partaDE, IT = partaIT, statistics = c("Number of observations" = "no
 ```
 
 ## **Cross-sectional Estimates**
+
+```{r}
+#| echo: FALSE
+# Adding the new variables to the main dataset
+merged_data <- left_join(merged_data, aream2, by = c("nuts2", "year"))
+
+merged_data <- left_join(merged_data, educ, by = c("nuts2", "year"))
+
+merged_data <- left_join(merged_data, roads, by = c("nuts2", "year"))
+```
+
+```{r}
+#| echo: FALSE
+#| label: Dataset for 2010 variables
+# Creating a new dataset that only contains Germany and Italy for the year 2010.
+merged2010 <- merged_data |> 
+  filter(year == 2010) |> 
+  select(nuts2, year, everything()) |> 
+  select(nuts2, year, GDPpcn2, gini_n2, education, area, Roadkm) |> 
+  filter(str_detect(nuts2, "IT|DE"), nchar(nuts2) == 4) |> 
+  filter(
+    Roadkm != "NA",
+    Roadkm != 0
+  ) |> 
+  mutate(
+    nuts0 = substr(nuts2, 1,2)
+  ) |> 
+    mutate(
+    roadratio = Roadkm/area
+  ) |> 
+  select(
+    nuts0, nuts2, everything()
+  )
+```
+
+In the following section, we will present cross-sectional estimates using different functional forms; logarithmic, quadratic, and cubic models.
+The objective is to assess which of these forms provides the best fit for our data.
+By exploring these alternative models, we aim to gain insights into the nature of the relationship between the logarithm of GDP per capita and inequality.
+This analysis allows us to evaluate the nuances and potential nonlinearities in the association, helping us identify the most suitable functional form for our subsequent interpretations and conclusions.
 
 ```{r}
 #| echo: false
@@ -550,7 +587,9 @@ The statistic value (statistic) and p-value (p.value) are typically used to test
 For Germany, the t-statistic is 9.183, and the associated p-value is 0.005, indicating that the model is statistically significant at the 0.05 significance level.
 For Italy, the t-statistic is 1.485, and the associated p-value is 0.242, suggesting that the model is not statistically significant at the 0.05 significance level.
 
-Visualusering av modell 2010 for tyskland, merk at denne er quadratic
+In the upcoming visualizations, we will showcase the quadratic and cubic methods, emphasizing their fit in explaining the relationship between the Gini index (dependent variable) and GDP (independent variable) for the year 2010.
+Despite the cubic method demonstrating marginally higher explanatory power, it deviates from our theoretical expectations.
+As a result, we will demonstrate why the quadratic method is preferred, aligning more closely with our theoretical framework and providing valuable insights into the dynamics of regional inequality and economic development in Germany and Italy.
 
 ```{r}
 #| echo: FALSE
@@ -597,41 +636,9 @@ Italy has a bigger decrease in inequality compared to Germany.
 The inequality (y-axis) starts off with a decrease as the GDP per capita (x-axis) increases.
 However, at some point it increases again meaning an increasing GDP per capita result in bigger regional inequality.
 
-```{r}
-#| echo: FALSE
-# Adding the new variables to the main dataset
-merged_data <- left_join(merged_data, aream2, by = c("nuts2", "year"))
+## Alternative functional forms
 
-merged_data <- left_join(merged_data, educ, by = c("nuts2", "year"))
-
-merged_data <- left_join(merged_data, roads, by = c("nuts2", "year"))
-```
-
-```{r}
-#| echo: FALSE
-#| label: Dataset for 2010 variables
-# Creating a new dataset that only contains Germany and Italy for the year 2010.
-merged2010 <- merged_data |> 
-  filter(year == 2010) |> 
-  select(nuts2, year, everything()) |> 
-  select(nuts2, year, GDPpcn2, gini_n2, education, area, Roadkm) |> 
-  filter(str_detect(nuts2, "IT|DE"), nchar(nuts2) == 4) |> 
-  filter(
-    Roadkm != "NA",
-    Roadkm != 0
-  ) |> 
-  mutate(
-    nuts0 = substr(nuts2, 1,2)
-  ) |> 
-    mutate(
-    roadratio = Roadkm/area
-  ) |> 
-  select(
-    nuts0, nuts2, everything()
-  )
-```
-
-## Alternative functional forms; 2000-2020
+In the table below is a summary of the alternative functional forms for the time period 2000 - 2020 for Germany and Italy.
 
 ```{r}
 #| echo: false
