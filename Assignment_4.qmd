@@ -659,10 +659,8 @@ huxreg(DElog = FullDE, ITlog = FullIT, DEquad = FullDE1, ITquad = FullIT1, DEcub
        note = "Note): {stars} T statistics in brackets.")
 ```
 
-In the forthcoming visualization, we will explore the relationships between GDP and inequality using the quadratic and cubic estimates.
+In the forthcoming visualization, the relationships between log(GDP) and inequality using the quadratic and cubic estimates.
 Although the cubic model exhibits marginally higher explanatory power than the quadratic one, we have opted to visualize the quadratic model.
-This decision is rooted in its better alignment with our theoretical framework, prioritizing consistency with our research hypotheses.
-By employing the quadratic model, we aim to present a visual representation that not only captures the nuances of the data but also resonates with our conceptual understanding of the relationship between regional economic development and inequality in Germany and Italy.
 
 ```{r}
 #| echo: false
@@ -681,12 +679,6 @@ merged_data |>
 
 ```
 
-Using a quadratic logarithmic model enables us to look at the non linear relationship between the two variables.
-As seen in the figure, as the X-axis increases, so does the coefficient of regional development.
-This suggests that the increase in regional development will have a growing impact on inequality.
-While the coefficient is positive, a positive increase in GINI reflects a higher level of inequality.
-This means that as the regional development in Germany increases, the effect it has on the level of inequality grows increasingly.
-
 ```{r}
 #| echo: false
 #| label: fig-logGDPpcn2IT
@@ -701,6 +693,12 @@ merged_data |>
     )
   ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1) 
 ```
+
+Using a quadratic logarithmic model enables us to look at the non linear relationship between the two variables.
+As seen in the figure, as the X-axis increases, so does the coefficient of regional development.
+This suggests that the increase in regional development will have a growing impact on inequality.
+While the coefficient is positive, a positive increase in GINI reflects a higher level of inequality.
+This means that as the regional development in Germany increases, the effect it has on the level of inequality grows increasingly.
 
 The relationship between regional inequality and regional development in Italy illustrates a different relationship than Germany.
 The non linearity of the model is greatly visualized as the convex shape means that the initial growth in regional development will have a decreased effect on inequality.
@@ -724,8 +722,12 @@ group_by(nuts2, year) |>
 
 ```
 
-Her er panelet vårt, rart med negativ r adjusted??
-bare bruk vanlig r hilsen Andre!
+## Fixed effects
+
+We will now proceed to summarize fixed effects in a table below.
+This analysis focuses on the countries Austria, Belgium, Bulgaria, Germany, Italy, and Sweden, considering fixed effects at NUTS 0, NUTS 2, the year level, and the combination of NUTS 2 and year.
+Fixed effects play a crucial role in our study as they allow us to incorporate all these countries into our analysis, even those with fewer observations.
+By applying fixed effects, we aim to mitigate the impact of factors that could influence our results, enabling a comprehensive examination of the selected European countries.
 
 ```{r}
 #| echo: false
@@ -746,6 +748,14 @@ huxreg("FE Nuts0" = plm1, "FE Year" = plm2, "FE Nuts2" = plm3, "FE Nuts2 and Yea
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
+
+In the FE Nuts0 model, the coefficient for log(GDPpcn2) is significantly negative (-8.733, p \< 0.01), suggesting a substantial impact on regional inequality.
+However, the FE Year model shows a less pronounced negative effect (-4.098, p \< 0.05).
+Moving to FE Nuts2, the coefficient for log(GDPpcn2) turns positive (0.741), indicating a shift in the relationship, but it lacks statistical significance.
+The FE Nuts2 and Year model presents a significant positive effect for log(GDPpcn2) (1.931, p \< 0.05), implying a potential interaction effect over time and across regions.
+The quadratic and cubic terms demonstrate nuanced effects, with quadratic terms generally significant and cubic terms showing less consistent significance.
+The adjusted R-squared values vary across models, underscoring the complexity of the relationship between GDP and inequality under different fixed effects specifications.
+The F-tests confirm the overall model significance, highlighting the relevance of considering various fixed effects structures.
 
 # V. Discussion
 
