@@ -539,13 +539,13 @@ merged_data <- merged_data |>
 #| tbl-cap: "Cross-sectional estimates year 2010 for Germany and Italy"
 # Estimating cross-sectional estimates for Germany and Italy with Gini and GDP per capita.
 # By using the formula we observed skewed data and mitigated the issue by log transforming the independant variable. 
-lmDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
-lmDE1 <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
-lmDE2 <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
+lmDE <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area) + Roadkm, subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
+lmDE1 <- lm(gini_n2 ~ logGDPpcn2quad + education + log(area) + Roadkm, subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
+lmDE2 <- lm(gini_n2 ~ logGDPpcn2cubic + education + log(area) + Roadkm, subset(merged_data, year == 2010 & nuts0 == "DE" & gini_n2 > 0))
 
-lmIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
-lmIT1 <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
-lmIT2 <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
+lmIT <- lm(gini_n2 ~ log(GDPpcn2) + education + log(area) + Roadkm, subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
+lmIT1 <- lm(gini_n2 ~ logGDPpcn2quad + education + log(area) + Roadkm, subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
+lmIT2 <- lm(gini_n2 ~ logGDPpcn2cubic + education + log(area) + Roadkm, subset(merged_data, year == 2010 & nuts0 == "IT" & gini_n2 > 0))
 
 huxreg(DElog = lmDE, ITlog = lmIT, DEquad = lmDE1, ITquad = lmIT1, DEcubic = lmDE2, ITcubic = lmIT2, statistics = c("Number of observations" = "nobs", "r.squared","adj.r.squared"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
