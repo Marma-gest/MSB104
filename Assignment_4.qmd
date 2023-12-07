@@ -749,7 +749,7 @@ merged_data |>
       x = logGDPpcn2,
       y = gini_n2
     )
-  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,3), se = F, span = 1) 
+  ) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2), se = F, span = 1) 
 ```
 
 The relationship between regional inequality and regional development in Italy illustrates a different relationship than Germany.
