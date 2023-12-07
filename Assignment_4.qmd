@@ -659,11 +659,10 @@ huxreg(DElog = FullDE, ITlog = FullIT, DEquad = FullDE1, ITquad = FullIT1, DEcub
        note = "Note): {stars} T statistics in brackets.")
 ```
 
-### 
-
-**Alternative Functional Forms and Panel Estimates:** Present the key insights derived from exploring alternative functional forms and panel estimates in Assignment 3.
-
-Her skal vi visualisere hvilken modell som passer best og skrive om det. Her kommer et forslag med qudratic som utgangspunkt for tysklad og italia;
+In the forthcoming visualization, we will explore the relationships between GDP and inequality using the quadratic and cubic estimates.
+Although the cubic model exhibits marginally higher explanatory power than the quadratic one, we have opted to visualize the quadratic model.
+This decision is rooted in its better alignment with our theoretical framework, prioritizing consistency with our research hypotheses.
+By employing the quadratic model, we aim to present a visual representation that not only captures the nuances of the data but also resonates with our conceptual understanding of the relationship between regional economic development and inequality in Germany and Italy.
 
 ```{r}
 #| echo: false
