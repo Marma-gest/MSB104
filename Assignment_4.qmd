@@ -1,7 +1,9 @@
 ---
-title: "Assignment 4"
+title: "The effect of regional development on regional inequality"
 format: html
 editor: visual
+bibliography: [MSB104.bib, MSB104_Assignment.bib, MSB104_Assignment1.bib]
+author: Marius Martinussen, Espen Knutsen og Asbjørn Gaard
 ---
 
 ```{r}
@@ -168,17 +170,20 @@ merged_data <- merged_data |>
 
 # I. Introduction
 
-Bakgrunn:
+Understanding the reasoning for regional inequality is a complex topic, and understanding how economic growth, educational disparities, and spatial factors contribute to regional inequalities is crucial for informed policymaking.
+In the context of this research, our focus is on a select group of countries, each with its unique socio-economic landscape, to delve into the nuanced dynamics of regional development and inequality. 
 
-Objectives; Outline the main obectives and research questions addressed in Assignments 1, 2, and 3.
+Laying the foundation for our analysis involves selecting a dataset encompassing several designated countries.
+This initial step is vital in identifying the key nations that will be subject to closer scrutiny in subsequent assignments.
+Furthermore, we extend our investigation to the year 2010, employing cross-sectional estimation techniques.
+This step allows us to observe the state of regional development and inequality at a specific point in time.
+Additionally, we introduce variables such as education, country area, and amount of highway infrastructure measured in kilometers to enrich our analysis and offer a more comprehensive understanding of the factors influencing regional dynamics.
+Finally, we test the effectiveness of logarithmic, quadratic, and cubic models, considering their implications for understanding the relationship between regional development and inequality.
+Fixed effects are introduced to account for nuanced variations across countries, providing a more nuanced and robust perspective.
 
-**Significance:** Highlight the importance and relevance of the research undertaken.
-
-Snakk om viktigheten til hvorfor se på Gdp og ulikhet, andre ting som kan påvirke som; vei, utdanning, motorvei.
-
-Forklar at noen land er rik og noen er fattig.
-For å belyse dette på en god måte bør man bruke land med mange opservasjoner.
-Vi ser på Tyskland og Italia pga de har ulik økonomi & industri.
+This research holds significance in shedding light on the multifaceted relationship between regional development and inequality.
+By employing diverse methodologies and incorporating essential variables, we aim to contribute nuanced insights that can inform policymakers and stakeholders in devising effective strategies for promoting balanced regional growth and mitigating inequality.
+The importance of understanding these dynamics lies in its potential to foster inclusive development and ensure that the benefits of economic progress are equitably distributed across regions.
 
 # II. Literature Review
 
@@ -401,7 +406,7 @@ Below is a list of all six presumptions:
     This implies that the discrepancies between observed and predicted values, known as residuals, should have a mean of zero, ensuring a homoskedasticity error term.
     However, it is imperative to note that the failure of the error term to equal zero implies a departure from normality in the population error term within the dataset, thus rendering the normality assumption unfulfilled.
 
-### Cross- sectional estimates:
+### Cross-sectional estimates:
 
 In our analysis, we focus on a specific year, 2010, to conduct cross-sectional estimates for the countries of Italy and Germany.
 This targeted approach allows us to capture a snapshot of the socio-economic landscape during that particular period and explore the dynamics influencing inequality within these nations.
@@ -730,32 +735,55 @@ The adjusted R-squared values vary across models, underscoring the complexity of
 
 # V. Discussion
 
-**Key Insights:** Synthesize and discuss the central insights emerging from the empirical findings.
+## Key Insights
 
-Hetro/homo, hadde variablene motorvei/utdanning noe å si i år 2010 ( orginalmodell 2010) se hvilke del av teksten fra forige del som skal her for å diskutere ulike modeller.
-her kommer vi frem til hvilke modell som er "best fit"
+The empirical analysis of regional development and inequality in Germany and Italy yields key insights into the complex relationship between GDP per capita (log(GDPpcn2)) and regional inequality.
 
-**Policy Implications:** Deliberate on the potential implications of your results for policy-making and practice in the realm of regional development and inequality.
+The non-linear nature of the relationship emerges as a central theme, evidenced by the quadratic and cubic functional forms.
+This complexity suggests diminishing returns of regional development in terms of reducing inequality.
+Comparing alternative functional forms reveals the importance of the quadratic specification.
+Despite a slightly better goodness of fit observed in the cubic model, the decision to opt for the quadratic model aligns with the theoretical framework, providing robustness to the analysis.
 
-Skriv noe om at panel kan være bra.
-Si at vi her kan ta med landene vi har pga.
-observasjoner ikke har like mye å si lengre, og forklar hvorfor dette ikke har like mye å si.
+Fixed effects analysis adds layers of complexity to the findings.
+Varying coefficients under different fixed effects structures highlight the importance of considering regional and temporal factors in understanding the impact of regional development on inequality.
+Visualizations further enrich the narrative.
+Figures 1 to 4 vividly illustrate the estimated relationships, depicting non-linear patterns in the impact of GDP per capita on inequality.
+Germany and Italy exhibit distinct trends, emphasizing the need for region-specific policy considerations.
+
+## Policy Considerations
+
+Building upon the key insights, the analysis offers critical policy considerations for crafting effective and nuanced interventions in the realms of regional development and inequality.
+
+Recognizing the non-linear relationship, policymakers should craft interventions that suit the developmental stage of each region.
+Strategies promoting economic growth need to be nuanced, considering the varying effects on inequality.
+Policymakers should account for regional and temporal factors when designing policies.
+The shifting relationships observed under different fixed effects structures underscore the need for adaptive and context-specific interventions.
+
+Policymakers must continuously track regional inequality trends to ensure the relevance and effectiveness of policies over time.
+Timely adjustments can enhance the impact of interventions and address emerging challenges.
+Recognizing diminishing returns in the quadratic relationship, policymakers should strategically allocate resources.
+Focused investments in areas where the impact is most significant can lead to more efficient outcomes.
+Policymakers should approach models with higher-order terms cautiously.
+The non-linear relationships suggest that the impact of economic development on inequality is context-dependent, necessitating thoughtful policy responses.
+
+In summary, these policy considerations provide a robust foundation for informed policy decisions, enabling policymakers to navigate the complexities and implement targeted strategies that promote inclusive and sustainable regional growth.
 
 # VI. Limitations and Future Research
 
-**Research Limitations:** Acknowledge any constraints or limitations encountered during your analysis.
+In our study of regional development and inequality, mainly in Germany and Italy, certain limitations suggest consideration.
+The applicability of our findings beyond these specific regions may be constrained, given potential localized factors.
+Our temporal scope, covering 2000 to 2020, might overlook evolving conditions.
+Future research could extend the analysis to diverse regions and a more extended timeframe.
+Micro-level investigations into education, infrastructure, and policies could enhance understanding.
+Dynamic modeling, policy impact assessments, and additional variables would contribute to a more comprehensive analysis.
+Robustness checks and alternative methodologies can further validate our findings.
+Acknowledging these limitations, future research can provide a more nuanced exploration of regional development and inequality dynamics.
 
 # VII. Conclusion
 
 **Summary:** Provide a succinct summary of the main findings and their significance.
 
 **Final Reflection:** Briefly reflect on the research process and the contributions of your study to the field of regional development and inequality.
-
-# VIII. References
-
-```{r}
-
-```
 
 # Appendix
 
@@ -830,3 +858,9 @@ print(bp_pvalues)
 ```
 
 log = Main logarithmic models, quad = Quadratic models, cubic = Cubic models.
+
+# References
+
+```{r}
+
+```
