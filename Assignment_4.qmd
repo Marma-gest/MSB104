@@ -831,19 +831,19 @@ merged_data |>
 
 # Main logarithmic models
 bp_pvalues <- c(
-  bpDE = bptest(FullDE)$p.value,
-  bpIT = bptest(FullIT)$p.value,
-  
-  #Quadratic models
   bplogDE = bptest(FullDE)$p.value,
   bplogIT = bptest(FullIT)$p.value,
   
+  #Quadratic models
+  bpquadDE = bptest(FullDE)$p.value,
+  bpquadIT = bptest(FullIT)$p.value,
+  
   #Cubic models
-  bpquadDE = bptest(FullDE1)$p.value,
-  bpquadIT = bptest(FullIT1)$p.value
+  bpcubicDE = bptest(FullDE1)$p.value,
+  bpcubicIT = bptest(FullIT1)$p.value
   
 )
 print(bp_pvalues)
 ```
 
-bp = Original models, log = logarithmic models, quad = quadratic models.
+log = Main logarithmic models, quad = Quadratic models, cubic = Cubic models.
