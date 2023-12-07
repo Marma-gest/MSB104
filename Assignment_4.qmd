@@ -228,7 +228,6 @@ Furthermore, the definition of "population" is, according to @eurostat2021, all 
 Moreover, the demographic data at a regional level are separated into different groups named NUTS, which are defined as nomenclature for territorial units for statistics [@eurostat2021].
 The purpose of the NUTS function is to subdivide the territory of the European Union into 104 regions at NUTS level 1 and break it down by to 281 at NUTS level 2 and 1348 at NUTS level 3 [@eurostat2021].
 
-
 The GDP dataset is also broken down to NUTS level 3 which focus on GDP data from the sub-regions (NUTS3).
 According to @eurostat2023, GDP (Gross domsetsic product) at market prices is defined as the final result of the production activity of resident producer units [@eurostat2023].
 
@@ -636,58 +635,28 @@ merged2010 <- merged_data |>
   )
 ```
 
-Her har vi lagt til motorvei pr areal og motorvei for å se om dette øker forklaringsgraden?
-
-## Alternative functional forms;
-
-### Logaritmic;
+## Alternative functional forms; 2000-2020
 
 ```{r}
-#| echo: FALSE
-#| tbl-cap: The effect of log regional development on inequality
-lmlogDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+#| echo: false
+#| cap-location: bottom
+#| tbl-cap: "Goodness of fit between log, quadratic and cubic estimates year 2000-2020 for Germany and Italy"
+# Estimating goodness of fit between log, quadratic and cubic estimates for Germany and Italy with Gini and GDP per capita.
+ 
+FullDE <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+FullDE1 <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
+FullDE2 <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
 
-lmlogIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+FullIT <- lm(gini_n2 ~ log(GDPpcn2), subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+FullIT1 <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
+FullIT2 <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
 
-
-huxreg("Model 1 DE" = lmlogDE, "Model 1 IT" = lmlogIT, statistics = c("Number of obervations" = "nobs","r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
+huxreg(DElog = FullDE, ITlog = FullIT, DEquad = FullDE1, ITquad = FullIT1, DEcubic = FullDE2, ITcubic = FullIT2, statistics = c("Number of observations" = "nobs", "r.squared","adj.r.squared"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
 
-### Quadratic;
-
-```{r}
-#| echo: FALSE
-#| tbl-cap: The effect of log squared regional development on inequality
-lmquadDE <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
-
-lmquadIT <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
-
-#Tar denne vekk fordi vi ikke skal legge til sverige før i panel#lmquadSE <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
-
-huxreg("Model 1 DE" = lmquadDE, "Model 1 IT" = lmquadIT, statistics = c("Number of obervations" = "nobs","r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
-       stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
-       note = "Note): {stars} T statistics in brackets.")
-```
-
-### Cubic;
-
-```{r}
-#| echo: FALSE
-#| tbl-cap: The effect of log squared regional development on inequality
-lmCubicDE <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, nuts0 == "DE" & gini_n2 > 0))
-
-lmCubicIT <- lm(gini_n2 ~ logGDPpcn2cubic, subset(merged_data, nuts0 == "IT" & gini_n2 > 0))
-
-#Tar denne vekk fordi vi ikke skal legge til sverige før i panel#lmquadSE <- lm(gini_n2 ~ logGDPpcn2quad, subset(merged_data, nuts0 == "SE" & gini_n2 > 0))
-
-huxreg("Model 1 DE" = lmCubicDE, "Model 1 IT" = lmCubicIT, statistics = c("Number of obervations" = "nobs","r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
-       stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
-       note = "Note): {stars} T statistics in brackets.")
-```
-
-### Panel:
+### 
 
 **Alternative Functional Forms and Panel Estimates:** Present the key insights derived from exploring alternative functional forms and panel estimates in Assignment 3.
 
@@ -771,7 +740,7 @@ plm3 <- plm(gini_n2 ~ log(GDPpcn2) + logGDPpcn2quad + logGDPpcn2cubic, data = pm
 
 plm4 <- plm(gini_n2 ~ log(GDPpcn2) + logGDPpcn2quad + logGDPpcn2cubic, data = pmerged, index = c( "year","nuts2"), model = "within",effect = "twoway") %>%
   coeftest(vcov. = vcovHC, type = "HC1", save = TRUE)
-huxreg(plm1, plm2, plm3, plm4, statistics = c("Number of observations" = "nobs","r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
+huxreg("FE Nuts0" = plm1, "FE Year" = plm2, "FE Nuts2" = plm3, "FE Nuts2 and Year" = plm4, statistics = c("Number of observations" = "nobs","r.squared","adj.r.squared", "statistic", "P-value F-Test" = "p.value"), 
        stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
        note = "Note): {stars} T statistics in brackets.")
 ```
@@ -860,18 +829,18 @@ merged_data |>
 
 # Testing for heteroskedasticity in the original models, logarithmic models and quadratic models.
 
-# Original models
+# Main logarithmic models
 bp_pvalues <- c(
-  bpDE = bptest(partaDE)$p.value,
-  bpIT = bptest(partaIT)$p.value,
-  
-  #logarithmic models
-  bplogDE = bptest(lmlogDE)$p.value,
-  bplogIT = bptest(lmlogIT)$p.value,
+  bpDE = bptest(FullDE)$p.value,
+  bpIT = bptest(FullIT)$p.value,
   
   #Quadratic models
-  bpquadDE = bptest(lmquadDE)$p.value,
-  bpquadIT = bptest(lmquadIT)$p.value
+  bplogDE = bptest(FullDE)$p.value,
+  bplogIT = bptest(FullIT)$p.value,
+  
+  #Cubic models
+  bpquadDE = bptest(FullDE1)$p.value,
+  bpquadIT = bptest(FullIT1)$p.value
   
 )
 print(bp_pvalues)
